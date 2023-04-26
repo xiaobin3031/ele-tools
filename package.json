@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "description": "",
   "main": "main.js",
+  "homepage": ".",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "ele": "electron ."
+    "ele": "electron .",
+    "ele-dev": "electron . dev"
   },
   "author": "xuweibin",
   "license": "ISC",

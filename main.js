@@ -1,4 +1,7 @@
 const { app, BrowserWindow } = require('electron')
+const mode = process.argv[2];
+const url = require('url')
+const path = require('path')
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -6,7 +9,16 @@ const createWindow = () => {
     height: 600,
   })
 
-  win.loadFile('index.html')
+  console.log('mode', mode)
+  if(mode === 'dev'){
+    win.loadURL('http://localhost:3000')
+  }else{
+    win.loadURL(url.format({
+      pathname: path.join(__dirname, './build/index.html'),
+      protocol: 'file:',
+      slashes: true
+    }))
+  }
 }
 
 app.whenReady().then(() => {
