@@ -1,0 +1,53 @@
+.x-alert {
+  border: 1px solid;
+  border-radius: 5px;
+}
+.x-alert.danger {
+  background-color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+.x-alert.primary {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+.x-alert.success {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+.x-alert.warning {
+  background-color: var(--color-warning);
+  border-color: var(--color-warning);
+}
+.x-alert.close-auto {
+  animation: scale-disappear 0.5s ease;
+  animation-delay: 4s;
+  animation-fill-mode: forwards;
+}
+.x-alert.close-focus {
+  animation: scale-disappear 0.5s ease;
+}
+.x-alert > .header {
+  padding: 10px 20px;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+.x-alert > .header > .close-icon {
+  float: right;
+  cursor: pointer;
+}
+.x-alert.click-to-close {
+  cursor: pointer;
+}
+.x-alert > .content {
+  padding: 10px 30px;
+}
+.x-alert > .header + .content {
+  border-top: 1px solid #c3c3c3;
+}
+.x-alert > .content > .close-icon {
+  float: right;
+  cursor: pointer;
+  position: relative;
+  top: -25px;
+  right: -10px;
+}

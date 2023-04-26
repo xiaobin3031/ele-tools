@@ -1,0 +1,13 @@
+.x-bread-crumb {
+  list-style: none;
+}
+
+.x-bread-crumb > li:not(:last-child)::after {
+  content: attr(separate);
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.x-bread-crumb > li {
+  display: inline;
+}

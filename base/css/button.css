@@ -1,0 +1,84 @@
+.x-button {
+  border-style: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-size: 1.02em;
+  cursor: pointer;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+.x-button.primary:not(.outline) {
+  background-color: var(--color-primary)
+}
+.x-button.danger:not(.outline) {
+  background-color: var(--color-danger)
+}
+.x-button.success:not(.outline) {
+  background-color: var(--color-success)
+}
+.x-button.warning:not(.outline) {
+  background-color: var(--color-warning)
+}
+.x-button.outline.primary {
+  box-shadow: 0 0 3px var(--color-primary);
+  color: var(--color-primary);
+}
+.x-button.outline.danger {
+  box-shadow: 0 0 3px var(--color-danger);
+  color: var(--color-danger);
+}
+.x-button.outline.success {
+  box-shadow: 0 0 3px var(--color-success);
+  color: var(--color-success);
+}
+.x-button.outline.warning {
+  box-shadow: 0 0 3px var(--color-warning);
+  color: var(--color-warning);
+}
+.x-button.outline {
+  background-color: rgba(0, 0, 0, 0);
+}
+.x-button.outline.primary:focus {
+  box-shadow: inset 0 0 5px var(--color-primary);
+}
+.x-button.outline.danger:focus {
+  box-shadow: inset 0 0 5px var(--color-danger);
+}
+.x-button.outline.success:focus {
+  box-shadow: inset 0 0 5px var(--color-success);
+}
+.x-button.outline.warning:focus {
+  box-shadow: inset 0 0 5px var(--color-warning);
+}
+.x-button:not(.outline):focus {
+  box-shadow: inset 0 0 5px black;
+}
+.x-button.outline.active.primary {
+  background-color:  var(--color-primary);
+  color: white;
+}
+.x-button.outline.active.danger {
+  background-color:  var(--color-danger);
+  color: white;
+}
+.x-button.outline.active.success {
+  background-color:  var(--color-success);
+  color: white;
+}
+.x-button.outline.active.warning {
+  background-color:  var(--color-warning);
+  color: white;
+}
+
+.x-button-group > .x-button {
+  margin: 0;
+  border-radius: 0px;
+}
+.x-button-group > .x-button:first-child {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.x-button-group > .x-button:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
