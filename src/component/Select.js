@@ -1,5 +1,5 @@
 
-export default function Select({list, value="name", desc="desc", showSelect=true, key="key", attr={}}){
+export default function Select({list, value="name", desc="desc", showSelect=true, key="key", ...attr}){
 
   const style = {
     padding: '3px',
@@ -15,9 +15,9 @@ export default function Select({list, value="name", desc="desc", showSelect=true
         !!list && list.length &&
           list.map(a => {
             if(typeof a !== 'object'){
-              return (<option value={a} key={a}>{a}</option>)
+              return (<option value={a} key={!!a[key] ? a[key] : a[value]}>{a}</option>)
             }
-            return (<option value={a[value]} key={a[key] || a[value]}>{a[desc] || a[value]}</option>)
+            return (<option value={a[value]} key={!!a[key] ? a[key] : a[value]}>{a[desc] || a[value]}</option>)
           })
       }
     </select>

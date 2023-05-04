@@ -1,0 +1,16 @@
+.x-http-req-url {
+  display: grid;
+  grid-template-columns: auto auto;
+}
+.x-http-req-param > div:first-child {
+  display: grid;
+  grid-template-columns: 100px auto auto auto;
+}
+.x-http-req-param > div:nth-child(2),div:nth-child(3) {
+  display: grid;
+  grid-template-columns: 100px auto;
+}
+.x-http-res {
+  display: grid;
+  grid-template-columns: auto auto;
+}

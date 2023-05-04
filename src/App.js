@@ -2,6 +2,8 @@
 import './App.css';
 import Calendar from './page/calendar/Calendar';
 import Scene from './page/flow/Scene';
+import HttpReqCompare from './page/hankyu/HttpReqCompare';
+import Order from './page/open-api/order/Order';
 
 function App() {
   // return (
@@ -22,9 +24,12 @@ function App() {
   //     </header>
   //   </div>
   // );
+      //<Scene />
   return (
     <div>
       <Calendar props={{calendar: {}}}/>
+      {/* <Order /> */}
+      {/* <HttpReqCompare /> */}
     </div>
   )
 }
