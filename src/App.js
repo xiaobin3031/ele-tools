@@ -1,5 +1,6 @@
 // import logo from './logo.svg';
 import './App.css';
+import Calendar from './page/calendar/Calendar';
 import Scene from './page/flow/Scene';
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
   // );
   return (
     <div>
-      <Scene />
+      <Calendar props={{calendar: {}}}/>
     </div>
   )
 }

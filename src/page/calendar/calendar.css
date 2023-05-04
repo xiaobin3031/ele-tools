@@ -1,0 +1,19 @@
+.x-calendar-week {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto;
+  height: 50xp;
+}
+.x-calendar-week > div {
+  padding: 10px;
+  border-bottom: 1px solid #c3c3c3ce;
+  text-align: center;
+}
+.x-calendar-week > div:not(:last-child) {
+  border-right: 1px solid #c3c3c3ce;
+}
+
+.x-calendar-day {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto;
+  height: 450px;
+}
