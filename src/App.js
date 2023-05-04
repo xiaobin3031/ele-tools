@@ -1,6 +1,8 @@
 // import logo from './logo.svg';
 import './App.css';
 import Scene from './page/flow/Scene';
+import HttpReqCompare from './page/hankyu/HttpReqCompare';
+import Order from './page/open-api/order/Order';
 
 function App() {
   // return (
@@ -21,9 +23,11 @@ function App() {
   //     </header>
   //   </div>
   // );
+      //<Scene />
   return (
     <div>
-      <Scene />
+      {/* <Order /> */}
+      <HttpReqCompare />
     </div>
   )
 }

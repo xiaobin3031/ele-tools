@@ -1,0 +1,30 @@
+.x-tab-head {
+  list-style: none;
+}
+
+.x-tab-head > li{
+  display: inline;
+  padding: 15px;
+  cursor: pointer;
+}
+
+.x-tab-head > li.active {
+  box-shadow: 0 -3px 4px -1px #818181;
+  /* border: 1px solid #818181; */
+  border-bottom-style: none;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+.x-tab-head > li.active::before {
+  border-bottom-left-radius: 5px;
+  content: '';
+}
+.x-tab-head > li.active::after {
+  border-bottom-left-radius: 5px;
+  content: '';
+}
+.x-tab-body {
+  border-top: 1px solid #818181;
+  margin-left: 20px;
+  margin-right: 20px;
+}
