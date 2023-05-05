@@ -26,7 +26,7 @@ export default function Http(url, data = {}, options={}){
         } else if (_options.type.toLowerCase() === 'post') {
             xhr.open(_options.type, url, true);
             Object.keys(_options.header || {}).forEach(k => xhr.setRequestHeader(k, _options.header[k]));
-            xhr.send(JSON.stringify(data));
+            xhr.send(data);
         }
         xhr.onload = () => {
             if (xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 300) {

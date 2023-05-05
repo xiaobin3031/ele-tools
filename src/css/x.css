@@ -24,10 +24,6 @@ select:focus {
   -webkit-border-color: var(--color-primary);
 }
 
-.x-label {
-  padding: 5px;
-}
-
 
 
 

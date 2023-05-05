@@ -1,0 +1,15 @@
+.x-label {
+  padding: 5px;
+}
+.x-label.primary {
+  color: var(--color-primary)
+}
+.x-label.danger {
+  color: var(--color-danger)
+}
+.x-label.success {
+  color: var(--color-success)
+}
+.x-label.warning {
+  color: var(--color-warning)
+}

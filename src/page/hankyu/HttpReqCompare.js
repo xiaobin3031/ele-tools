@@ -16,14 +16,22 @@ let httpReqCompareId = 1;
 
 const tokenLabel = 'X-Ss-Mall-Token';
 
-const ignoreKey = ['orderAnalyses', 'id', 'specialTypeDic'
+const ignoreKey = ['orderAnalyses', 'id', 'specialTypeDic', 'shipLogo'
+  , 'userId', 'shopId'
+  , 'shopCode', 'shopName'
+  , 'returnAddress', 'returnConsignee', 'returnMobile', 'servicePhone'
+  , 'oriOrderGoods', 'oriOrderPayList'   // 这两个杉杉有默认值，跳过校验
   , 'goodsList' // 暂时跳过，商品中台还是连的杉杉的库
   , 'shop'  //一样的问题
+  , 'user'  //一样的问题
 ];
 
 function params2Json(_params){
   if(!_params){
     return {}
+  }
+  if(_params.charAt(0) === '[' || _params.charAt(0) === '{'){
+    return _params;
   }
   return _params.split('&')
     .reduce((a, b) => {
@@ -65,10 +73,12 @@ function compareObj(_old, _new, _path){
       return !!path;
     })
   if(!flag){
-    const leftKeys = Object.keys(_tmpNew);
+    // 新的接口，允许返回多的字段
+    const leftKeys = Object.keys(_tmpOld)
+      .filter(a => ignoreKey.indexOf(a) === -1);
     flag = leftKeys.length > 0;
     if(flag){
-      path = `${_path}/${leftKeys[0]}, old: hasNone, new: has`
+      path = `${_path}/${leftKeys[0]}, old: has`
     }
   }
   return path;
@@ -103,7 +113,7 @@ export default function HttpReqCompare({}){
 
   const _values = useRef({
     httpMethod: httpMethods[0].name,
-    token: 'f131244e-c32f-4d51-9ae2-272aae7ba318',
+    token: 'aa488143-ccc3-46dd-82d4-a74a3020a2ed',
     oldUrl: 'http://115.238.181.86:13311',
     newUrl: 'http://127.0.0.1:8013'
   });
@@ -156,11 +166,18 @@ export default function HttpReqCompare({}){
     setHttpReqList(_list)
   }
 
+  function setReqPathNew(event, item){
+    if(!item.newReqPath){
+      item.newReqPath = event.target.value.replace('mplaza', 'admin/order');
+    }
+    httpReqChange(event, item);
+  }
+
   return (
     <>
       <div>
         <Label>{tokenLabel}</Label>
-        <Input onChange={valueChange} name={tokenLabel} style={{ width: '50%'}} defaultValue={_values.current.token}/>
+        <Input onChange={valueChange} name='token' style={{ width: '50%'}} defaultValue={_values.current.token}/>
       </div>
       <hr />
       <div className='x-http-req-url'>
@@ -192,9 +209,9 @@ export default function HttpReqCompare({}){
                   <div>
                     <Label>旧请求路径</Label>
                     <Input 
-                      onChange={event => httpReqChange(event, a)} 
+                      onChange={event => setReqPathNew(event, a)} 
                       name="oldReqPath" 
-                      defaultValue={a.oldReqPath}
+                      value={a.oldReqPath}
                       style={{ width: '400px'}} />
                   </div>
                   <div>
@@ -202,7 +219,7 @@ export default function HttpReqCompare({}){
                     <Input 
                       onChange={event => httpReqChange(event, a)} 
                       name="newReqPath" 
-                      defaultValue={a.newReqPath}
+                      value={a.newReqPath}
                       style={{ width: '400px'}} />
                   </div>
                   <div>
@@ -217,9 +234,17 @@ export default function HttpReqCompare({}){
                     <Input 
                       onChange={event => httpReqChange(event, a)} 
                       name="desc" 
-                      defaultValue={a.desc}
+                      value={a.desc}
                       style={{ width: '400px'}} />
-                    </div>
+                  </div>
+                  <div>
+                    <Label>描述</Label>
+                    <Input 
+                      onChange={event => httpReqChange(event, a)} 
+                      name="desc" 
+                      value={a.desc}
+                      style={{ width: '400px'}} />
+                  </div>
                 </div>
                 <div style={{ 'marginTop': '10px'}}>
                   <div>
@@ -236,10 +261,10 @@ export default function HttpReqCompare({}){
                   </div>
                 </div>
                 {
-                  a.error === true && <Label>不匹配: {a.path}</Label>
+                  a.error === true && <Label color='danger'>不匹配: {a.path}</Label>
                 }
                 {
-                  a.error === false && <Label>匹配</Label>
+                  a.error === false && <Label color='success'>匹配</Label>
                 }
               </div>
               <hr />
