@@ -41,12 +41,12 @@ function params2Json(_params){
     } , {});
 }
 
-function compareObj(_old, _new, _path){
+function compareObj(_old, _new, _path, item){
   const _tmpOld = {..._old}, _tmpNew = {..._new};
   let path = void 0;
   let flag = Object.keys(_old)
     .some(a => {
-      if(ignoreKey.indexOf(a) > -1){
+      if(ignoreKey.indexOf(a) > -1 || (!!item.ignoreField && item.ignoreField.indexOf(a + ',') > -1)){
         delete _tmpOld[a];
         delete _tmpNew[a];
       }else{
@@ -59,9 +59,9 @@ function compareObj(_old, _new, _path){
           delete _tmpNew[a];
           if(typeof _oldItem === 'object'){
             if(_oldItem instanceof Array){
-              path = compareArray(_oldItem, _newItem, `${_path}/${a}`);
+              path = compareArray(_oldItem, _newItem, `${_path}/${a}`, item);
             }else{
-              path = compareObj(_oldItem, _newItem, `${_path}/${a}`);
+              path = compareObj(_oldItem, _newItem, `${_path}/${a}`, item);
             }
           }else{
             if(_oldItem !== _newItem){
@@ -75,7 +75,7 @@ function compareObj(_old, _new, _path){
   if(!flag){
     // 新的接口，允许返回多的字段
     const leftKeys = Object.keys(_tmpOld)
-      .filter(a => ignoreKey.indexOf(a) === -1);
+      .filter(a => ignoreKey.indexOf(a) === -1 || (!!item.ignorefield && item.ignoreField.indexOf(a + ',') === -1));
     flag = leftKeys.length > 0;
     if(flag){
       path = `${_path}/${leftKeys[0]}, old: has`
@@ -83,7 +83,7 @@ function compareObj(_old, _new, _path){
   }
   return path;
 }
-function compareArray(_old, _new, _path){
+function compareArray(_old, _new, _path, item){
   if(_old.length !== _new.length){
     return _path;
   }
@@ -92,7 +92,7 @@ function compareArray(_old, _new, _path){
   _old.some((a, i) => {
     if(typeof a === typeof _new[i]){
       if(typeof a === 'object'){
-        path = compareObj(a, _new[i], `${_path}[${i}]`);
+        path = compareObj(a, _new[i], `${_path}[${i}]`, item);
       }else{
         if(a !== _new[i]){
           path = `${_path}[${i}], old: ${a} | new: ${_new[i]}`
@@ -105,8 +105,8 @@ function compareArray(_old, _new, _path){
   });
   return path;
 }
-function compareResult(_old, _new){
-  return compareObj(_old, _new, '');
+function compareResult(_old, _new, item){
+  return compareObj(_old, _new, '', item);
 }
 
 export default function HttpReqCompare({}){
@@ -122,6 +122,9 @@ export default function HttpReqCompare({}){
 
   function httpReqChange(event, item){
     item[event.target.name] = event.target.value;
+    if(event.target.name === 'ignoreField'){
+      item.ignoreField += ',';
+    }
     setHttpReqList(
       httpReqList.map(a => a._id === item._id ? item: a)
     )
@@ -140,7 +143,7 @@ export default function HttpReqCompare({}){
         item.error = true;
         item.path = '/';
       }else{
-        item.path = compareResult(resList[0], resList[1]);
+        item.path = compareResult(resList[0], resList[1], item);
         item.error = !!item.path;
       }
       setHttpReqList(
@@ -238,11 +241,11 @@ export default function HttpReqCompare({}){
                       style={{ width: '400px'}} />
                   </div>
                   <div>
-                    <Label>描述</Label>
+                    <Label>忽略字段</Label>
                     <Input 
                       onChange={event => httpReqChange(event, a)} 
-                      name="desc" 
-                      value={a.desc}
+                      name="ignoreField" 
+                      value={!a.ignoreField ? '' : a.ignoreField}
                       style={{ width: '400px'}} />
                   </div>
                 </div>
