@@ -2,15 +2,18 @@
 import ToDo from './ToDo';
 import ReactDOM from 'react-dom/client';
 import './calendar.css'
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import Row from '../../component/Row';
 import Label from '../../component/Label';
 import Input from '../../component/Input';
+import { Button } from '../../component/Button';
+import globalId from '../../util/globalId';
 
 let weekId= 1;
 let dayId = 1;
 const weekPrefix = "周";
 const weekContentList = ['日', '一', '二', '三', '四', '五', '六'];
+const todoViewId = 'x-calendar-todo-view';
 function Week(){
 
   return (
@@ -25,35 +28,131 @@ function Week(){
     </div>
   )
 }
-function showToView(event){
-  const _todoView = <ToDo />
+
+function selectDayDiv(event){
+  let $dom = event.target;
+  Array.from($dom.parentElement.children)
+    .filter(a => a.classList.contains('selected'))
+    .forEach(a => a.classList.remove('selected'))
+  if(!$dom.classList.contains('today') && !$dom.classList.contains('not-current-month')){
+    $dom.classList.add('selected')
+  }
+}
+function clickDay(event, item, year, month){
+  event.stopPropagation();
+  if(!item.thisMonth){
+    return;
+  }
+  let $todoViewDom = document.getElementById(todoViewId);
+  if(!!$todoViewDom){
+    $todoViewDom.style.display = 'block';
+  }else{
+    const todoView = <TodoAdd year={year} month={month} day={item.day}/>
+    $todoViewDom = document.createElement('div');
+    $todoViewDom.id = todoViewId;
+    $todoViewDom.style.position = 'absolute';
+    document.body.appendChild($todoViewDom);
+    ReactDOM.createRoot($todoViewDom).render(todoView);
+  }
+  // 计算view的位置
+  const pos = {};
+  pos.left = event.target.offsetLeft;
+  pos.top = event.target.offsetTop;
+  pos.width = event.target.offsetWidth;
+  pos.height = event.target.offsetHeight;
+
+  const width = 214;  //元素展示后的实际尺寸
+  const height = 181;//元素展示后的实际尺寸
+  let posClass = '';
+  if(pos.top > height){
+    pos.top -= height - pos.height; // top
+    posClass = 'bottom';
+  }else{
+    // bottom
+    posClass = 'top';
+  }
+  if(width > pos.left){
+    pos.left += pos.width + 10; //在右边
+    posClass += '-left';
+  }else{
+    pos.left -= width + 10;  //在左边
+    posClass += '-right';
+  }
+  $todoViewDom.style.top = `${pos.top}px`
+  $todoViewDom.style.left = `${pos.left}px`
+  Array.from($todoViewDom.classList)
+    .forEach(a => $todoViewDom.classList.remove(a));
+  $todoViewDom.classList.add(posClass);
 }
 
-function TodoAdd({left, top}){
+function TodoAdd({year, month, day}){
 
-  const _values = useRef({});
+  const [values, setValues] = useState({_id: globalId()});
+  const _form = useRef(null);
 
   function valueChange(event){
-    _values.current[event.target.name] = event.target.value;
+    values[event.target.name] = event.target.value;
+    setValues({...values});
   }
 
-  const _style = {
-    position: 'absolute',
-    left: left,
-    top: top
+  function closeTodoView(){
+    _form.current.reset();
+    setValues({_id: globalId()});
+    document.getElementById(todoViewId).style.display = 'none';
+  }
+
+  function saveTodo(){
+    const _item = {...values};
+    _item.day = day;
+    window.fileOp.updateOrSaveCalendarTodo(_item, year, month)
+      .then(res => closeTodoView());
   }
 
   return (
-    <div className='x-calendar-todo-add' style={_style}>
-      <Row>
-        <Label>标题</Label>
-        <Input name="title" value={!_values.current.title ? '' : _values.current.title} onChange={valueChange}/>
-      </Row>
+    <div className='x-calendar-todo-add'>
+      <form ref={_form}>
+        <Row>
+          <Input 
+            name="title" 
+            value={!values.title ? '' : values.title} 
+            placeholder='请输入任务标题'
+            onChange={valueChange}
+            style={{
+              width: 'inherit'
+            }}
+          />
+        </Row>
+        <Row>
+          <textarea
+            name='description'
+            value={!values.description ? '' : values.description}
+            onChange={valueChange}
+            placeholder='请输入任务描述'
+            rows="5"
+            style={{
+              width: 'inherit',
+              resize: 'none'
+            }}
+          ></textarea>
+        </Row>
+        <Row>
+          <Button size='sm' onClick={closeTodoView}>关闭</Button>
+          <Button color='primary' size='sm' style={{float: 'right'}} onClick={saveTodo}>保存</Button>
+        </Row>
+      </form>
     </div>
   )
 }
 
+let reading = 0;
 function Day({dayChange, year, month, day}){
+  const [todoList, setTodoList] = useState([]);
+  if(reading === 0){
+    reading = 1;
+    window.fileOp.readCalendarTodo(year, month).then(_todoList => {
+      setTodoList(_todoList);
+    }).catch(_err => reading = 0);
+  }
   const calendar = new Date();
   calendar.setFullYear(year);
   calendar.setMonth(month - 1);
@@ -106,24 +205,6 @@ function Day({dayChange, year, month, day}){
     }
     calendar.setDate(calendar.getDate() + 1);
   }
-  function selectDayDiv(event){
-    console.log('select day', event.target);
-    let $dom = event.target;
-    Array.from($dom.parentElement.children)
-      .filter(a => a.classList.contains('selected'))
-      .forEach(a => a.classList.remove('selected'))
-    if(!$dom.classList.contains('today') && !$dom.classList.contains('not-current-month')){
-      $dom.classList.add('selected')
-    }
-  }
-  function clickDay(event){
-    event.stopPropagation();
-    const todoView = <TodoAdd left={event.target.offsetLeft} top={event.target.offsetTop} />
-    const $todoViewDom = document.createElement('div');
-    $todoViewDom.id = 'x-calendar-todo-view';
-    document.body.appendChild($todoViewDom);
-    ReactDOM.createRoot($todoViewDom).render(todoView);
-  }
   return (
     <div className='x-calendar-day'>
       {
@@ -141,9 +222,18 @@ function Day({dayChange, year, month, day}){
           }else if(_notInMonth){
             _class.push('not-current-month')
           }
+          const _todoList = todoList.filter(b => b.day === a.day);
           return (
             <div onClick={selectDayDiv} key={`day-id-${dayId++}`} className={_class.join(' ')}>
-              <span onClick={clickDay}>{a.day}</span>
+              <span onClick={event => clickDay(event, a, year, month)}>{a.day}</span>
+              {
+                _todoList.length > 0 &&
+                  _todoList.forEach(b => {
+                    return (
+                      <div key={`cal-todo-${b._id}`}>{b.description}</div>
+                    )
+                  })
+              }
             </div>
           )
         })
@@ -157,6 +247,7 @@ function Month({monthChange}){
 function Year({yearChange}){
   
 }
+
 export default function Calendar({
   year, month, date
 }){
@@ -168,8 +259,6 @@ export default function Calendar({
     month: month || (now.getMonth() + 1),
     date: date || now.getDate()
   })
-
-  console.log('currentRef', currentRef);
 
   function yearChange(_year){
 

@@ -1,11 +1,17 @@
 .x-button {
   border-style: none;
-  padding: 8px 15px;
   border-radius: 5px;
-  font-size: 1.02em;
   cursor: pointer;
   margin-left: 2px;
   margin-right: 2px;
+}
+.x-button.md {
+  font-size: 1.02em;
+  padding: 8px 15px;
+}
+.x-button.sm {
+  font-size: 0.5em;
+  padding: 5px 10px;
 }
 .x-button.primary:not(.outline) {
   background-color: var(--color-primary)

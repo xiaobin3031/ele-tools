@@ -10,18 +10,6 @@ const defaultProps = {
   value: '_value',
   clickBtn: '_clickBtn'
 };
-export function Button({children, type="button", color, outline, ...props}){
-
-  const _classList = ['x-button', color];
-  if(outline){
-    _classList.push('outline');
-  }
-
-  return (
-    <button className={_classList.join(' ')} type={type} {...props}>{children}</button>
-  )
-}
-
 function CheckboxGroup({list, ...props}){
   const _props = {...defaultProps, ...props};
 
@@ -88,6 +76,18 @@ function InnerButtonGroup({list, ...props}){
         onClick={a[_props.clickBtn]}
        >{a[_props.text]}</Button>
     })
+  )
+}
+
+export function Button({children, type="button", color, outline, size='md', ...props}){
+
+  const _classList = ['x-button', color, size];
+  if(outline){
+    _classList.push('outline');
+  }
+
+  return (
+    <button className={_classList.join(' ')} type={type} {...props}>{children}</button>
   )
 }
 

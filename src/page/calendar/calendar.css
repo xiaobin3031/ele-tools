@@ -51,7 +51,31 @@
 .x-calendar-todo-add {
   background-color: rgb(209, 209, 209);
   border-radius: 5px;
-  padding: 10px;
+  padding: 10px 10px 5px;
+}
+#x-calendar-todo-view:before {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background-color: rgb(209, 209, 209);
+  transform: translate(-50%, -50%) rotate(-45deg);
+  display: inline-block;
+}
+#x-calendar-todo-view.top-left:before {
+  /* left: -12px; */
+  top: 12px;
+}
+#x-calendar-todo-view.top-right:before {
+  top: 12px;
+  right: -12px;
+}
+#x-calendar-todo-view.bottom-left:before {
+  bottom: 0px;
+}
+#x-calendar-todo-view.bottom-right:before {
+  right: -12px;
+  bottom: 0px;
 }
 
 @keyframes hover-day {
