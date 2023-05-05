@@ -6,7 +6,8 @@
   display: grid;
   grid-template-columns: 100px auto auto auto;
 }
-.x-http-req-param > div:nth-child(2),div:nth-child(3) {
+.x-http-req-param > div:nth-child(2),
+.x-http-req-param > div:nth-child(3) {
   display: grid;
   grid-template-columns: 100px auto;
 }
