@@ -1,13 +1,15 @@
 // 日历，用来展示一些任务安排
+import ToDo from './ToDo';
 import './calendar.css'
 import { useRef } from "react"
 
 let weekId= 1;
 let dayId = 1;
+const notInMonthClass = ['not-current-month', 'last-day-in-line'];
+const lastDayInLineClass = ['last-day-in-line'];
+const weekPrefix = "周";
+const weekContentList = ['日', '一', '二', '三', '四', '五', '六'];
 function Week(){
-
-  const weekPrefix = "星期";
-  const weekContentList = ['日', '一', '二', '三', '四', '五', '六'];
 
   return (
     <div className='x-calendar-week'>
@@ -21,20 +23,31 @@ function Week(){
     </div>
   )
 }
+function showToView(event){
+  const _todoView = <ToDo />
+}
+
+function TodoAdd(event){
+
+  return (
+    <div className='x-calendar-todo-add'>
+
+    </div>
+  )
+}
+
 function Day({dayChange, year, month, day}){
-  console.log('year', year, month, day)
   const calendar = new Date();
   calendar.setFullYear(year);
   calendar.setMonth(month - 1);
   calendar.setDate(day);
 
-  console.log('calendar', calendar);
-
   const dateList = [];
   dateList.push(
     {
       day: day,
-      thisMonth: true
+      thisMonth: true,
+      today: true
     }
   );
   for(let i = day - 1;i>=1;i--){
@@ -44,18 +57,14 @@ function Day({dayChange, year, month, day}){
     })
     calendar.setDate(i);
   }
-  console.log('dateList1', dateList);
   // 说明不是周日，继续减
-  console.log('calendar.day', calendar.getDay());
   while(calendar.getDay() > 0){
     calendar.setDate(calendar.getDate() - 1);
     dateList.unshift({
       day: calendar.getDate(),
       thisMonth: false
     })
-    console.log('calendar.day', calendar.getDay());
   }
-  console.log('dateList2', dateList);
   calendar.setFullYear(year);
   calendar.setMonth(month - 1);
   calendar.setDate(day);
@@ -69,7 +78,6 @@ function Day({dayChange, year, month, day}){
       thisMonth: true
     })
   }
-  console.log('dateList3', dateList);
   while(true){
     // 说明不是周六，继续加
     dateList.push({
@@ -81,13 +89,33 @@ function Day({dayChange, year, month, day}){
     }
     calendar.setDate(calendar.getDate() + 1);
   }
-  console.log('dateList4', dateList);
+  function selectADay(event){
+    Array.from(event.target.parentElement.children)
+      .filter(a => a.classList.contains('selected'))
+      .forEach(a => a.classList.remove('selected'))
+    if(!event.target.classList.contains('today') && !event.target.classList.contains('not-current-month')){
+      event.target.classList.add('selected')
+    }
+  }
   return (
     <div className='x-calendar-day'>
       {
-        dateList.map(a => {
+        dateList.map((a, index) => {
+          const _notInMonth = !a.thisMonth;
+          const _lastDayInLineFlag = index > 0 && index % 7 === 6;
+          let _class = [];
+          if(a.today){
+            _class.push('today')
+          }
+          if(_notInMonth && _lastDayInLineFlag){
+            _class.push('not-current-month', 'last-day-in-line')
+          }else if(_lastDayInLineFlag){
+            _class.push('last-day-in-line')
+          }else if(_notInMonth){
+            _class.push('not-current-month')
+          }
           return (
-            <div key={`day-id-${dayId++}`} className={a.thisMonth ? '': 'not-current-month'}>{a.day}</div>
+            <div onClick={selectADay} key={`day-id-${dayId++}`} className={_class.join(' ')}><span>{a.day}</span></div>
           )
         })
       }

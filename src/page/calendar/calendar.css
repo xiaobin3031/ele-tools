@@ -1,11 +1,10 @@
 .x-calendar-week {
   display: grid;
-  grid-template-columns: auto auto auto auto auto auto auto;
-  height: 50xp;
+  grid-template-columns: calc(100% / 7) calc(100% / 7) calc(100% / 7) calc(100% / 7) calc(100% / 7) calc(100% / 7) calc(100% / 7);
 }
 .x-calendar-week > div {
   padding: 10px;
-  border-bottom: 1px solid #c3c3c3ce;
+  border-bottom: 1px solid #c3c3c3c3;
   text-align: center;
 }
 .x-calendar-week > div:not(:last-child) {
@@ -14,6 +13,33 @@
 
 .x-calendar-day {
   display: grid;
-  grid-template-columns: auto auto auto auto auto auto auto;
+  grid-template-columns: calc(100% / 7) calc(100% / 7) calc(100% / 7) calc(100% / 7) calc(100% / 7) calc(100% / 7) calc(100% / 7);
   height: 450px;
+}
+.x-calendar-day > div {
+  border-bottom: 1px solid #c3c3c3c3;
+  text-align: right;
+}
+.x-calendar-day > div > span {
+  position: relative;
+  right: 8px;
+  top: 8px;
+}
+.x-calendar-day > div.today > span {
+  font-size: 1.2em;
+}
+.x-calendar-day > div.today {
+  background-color: #3f3fff4a;
+}
+.x-calendar-day > div.selected {
+  box-shadow: 0px 0px 5px #4747ffd4;
+}
+.x-calendar-day > div:not(.last-day-in-line) {
+  border-right: 1px solid #c3c3c3c3
+}
+.x-calendar-day > div.not-current-month {
+  color: #c3c3c3c3;
+}
+.x-calendar-day > div:not(.not-current-month) {
+  cursor: pointer;
 }
