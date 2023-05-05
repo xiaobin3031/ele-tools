@@ -26,9 +26,9 @@ function App() {
       //<Scene />
   return (
     <div>
-      {/* <Calendar props={{calendar: {}}}/> */}
+      <Calendar props={{calendar: {}}}/>
       {/* <Order /> */}
-      <HttpReqCompare />
+      {/* <HttpReqCompare /> */}
     </div>
   )
 }

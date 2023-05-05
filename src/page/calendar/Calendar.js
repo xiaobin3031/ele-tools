@@ -1,12 +1,14 @@
 // 日历，用来展示一些任务安排
 import ToDo from './ToDo';
+import ReactDOM from 'react-dom/client';
 import './calendar.css'
 import { useRef } from "react"
+import Row from '../../component/Row';
+import Label from '../../component/Label';
+import Input from '../../component/Input';
 
 let weekId= 1;
 let dayId = 1;
-const notInMonthClass = ['not-current-month', 'last-day-in-line'];
-const lastDayInLineClass = ['last-day-in-line'];
 const weekPrefix = "周";
 const weekContentList = ['日', '一', '二', '三', '四', '五', '六'];
 function Week(){
@@ -27,11 +29,26 @@ function showToView(event){
   const _todoView = <ToDo />
 }
 
-function TodoAdd(event){
+function TodoAdd({left, top}){
+
+  const _values = useRef({});
+
+  function valueChange(event){
+    _values.current[event.target.name] = event.target.value;
+  }
+
+  const _style = {
+    position: 'absolute',
+    left: left,
+    top: top
+  }
 
   return (
-    <div className='x-calendar-todo-add'>
-
+    <div className='x-calendar-todo-add' style={_style}>
+      <Row>
+        <Label>标题</Label>
+        <Input name="title" value={!_values.current.title ? '' : _values.current.title} onChange={valueChange}/>
+      </Row>
     </div>
   )
 }
@@ -89,13 +106,23 @@ function Day({dayChange, year, month, day}){
     }
     calendar.setDate(calendar.getDate() + 1);
   }
-  function selectADay(event){
-    Array.from(event.target.parentElement.children)
+  function selectDayDiv(event){
+    console.log('select day', event.target);
+    let $dom = event.target;
+    Array.from($dom.parentElement.children)
       .filter(a => a.classList.contains('selected'))
       .forEach(a => a.classList.remove('selected'))
-    if(!event.target.classList.contains('today') && !event.target.classList.contains('not-current-month')){
-      event.target.classList.add('selected')
+    if(!$dom.classList.contains('today') && !$dom.classList.contains('not-current-month')){
+      $dom.classList.add('selected')
     }
+  }
+  function clickDay(event){
+    event.stopPropagation();
+    const todoView = <TodoAdd left={event.target.offsetLeft} top={event.target.offsetTop} />
+    const $todoViewDom = document.createElement('div');
+    $todoViewDom.id = 'x-calendar-todo-view';
+    document.body.appendChild($todoViewDom);
+    ReactDOM.createRoot($todoViewDom).render(todoView);
   }
   return (
     <div className='x-calendar-day'>
@@ -115,7 +142,9 @@ function Day({dayChange, year, month, day}){
             _class.push('not-current-month')
           }
           return (
-            <div onClick={selectADay} key={`day-id-${dayId++}`} className={_class.join(' ')}><span>{a.day}</span></div>
+            <div onClick={selectDayDiv} key={`day-id-${dayId++}`} className={_class.join(' ')}>
+              <span onClick={clickDay}>{a.day}</span>
+            </div>
           )
         })
       }

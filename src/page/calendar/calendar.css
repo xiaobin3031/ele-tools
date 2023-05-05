@@ -21,12 +21,17 @@
   text-align: right;
 }
 .x-calendar-day > div > span {
+  display: inline-block;
   position: relative;
   right: 8px;
   top: 8px;
 }
+.x-calendar-day > div:not(.not-current-month) > span:hover {
+  animation: hover-day .5s;
+  animation-fill-mode: forwards;
+}
 .x-calendar-day > div.today > span {
-  font-size: 1.2em;
+  font-size: 1.5em;
 }
 .x-calendar-day > div.today {
   background-color: #3f3fff4a;
@@ -42,4 +47,21 @@
 }
 .x-calendar-day > div:not(.not-current-month) {
   cursor: pointer;
+}
+.x-calendar-todo-add {
+  background-color: rgb(209, 209, 209);
+  border-radius: 5px;
+  padding: 10px;
+}
+
+@keyframes hover-day {
+  0% {
+
+  }
+  50% {
+    transform: scale(2.5);
+  }
+  100% {
+    transform: scale(2);
+  }
 }
