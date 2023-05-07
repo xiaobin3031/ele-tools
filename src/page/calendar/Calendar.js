@@ -115,7 +115,7 @@ function TodoAdd({year, month, day}){
         <Row>
           <Input 
             name="title" 
-            borderClear={1}
+            borderclear={1}
             value={!values.title ? '' : values.title} 
             placeholder='请输入任务标题'
             onChange={valueChange}
@@ -127,7 +127,7 @@ function TodoAdd({year, month, day}){
         <Row>
           <Input
             multiline={1}
-            borderClear={1}
+            borderclear={1}
             name='description'
             value={!values.description ? '' : values.description}
             onChange={valueChange}
@@ -256,17 +256,19 @@ function Head({year, month, _changeYearMonth}){
         textAlign: 'center'
       }}>
         <table align='center'>
-          <tr>
-            <th><Icon onClick={() => _changeYearMonth(year - 1, month)} iconType="arrow-double-left"/></th>
-            <th><Icon onClick={() => _changeYearMonth(year, month - 1)} iconType="arrow-right" style={{
-              rotate: '180deg'
-            }}/></th>
-            <th style={{
-              fontSize: '2em'
-            }} onClick={() => _changeYearMonth(new Date().getFullYear(), new Date().getMonth() + 1)}>{year} - {month}</th>
-            <th><Icon onClick={() => _changeYearMonth(year, month + 1)} iconType="arrow-right" /></th>
-            <th><Icon onClick={() => _changeYearMonth(year + 1, month)} iconType="arrow-double-right" /></th>
-          </tr>
+          <thead>
+            <tr>
+              <th><Icon onClick={() => _changeYearMonth(year - 1, month)} iconType="arrow-double-left"/></th>
+              <th><Icon onClick={() => _changeYearMonth(year, month - 1)} iconType="arrow-right" style={{
+                rotate: '180deg'
+              }}/></th>
+              <th style={{
+                fontSize: '2em'
+              }} onClick={() => _changeYearMonth(new Date().getFullYear(), new Date().getMonth() + 1)}>{year} - {month}</th>
+              <th><Icon onClick={() => _changeYearMonth(year, month + 1)} iconType="arrow-right" /></th>
+              <th><Icon onClick={() => _changeYearMonth(year + 1, month)} iconType="arrow-double-right" /></th>
+            </tr>
+          </thead>
         </table>
       </div>
       <div></div>
