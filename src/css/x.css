@@ -3,6 +3,7 @@
   --color-success: rgba(141, 255, 124, 0.8);
   --color-danger: rgba(255, 127, 88, 0.8);
   --color-warning: rgba(255, 197, 88, 0.8);
+  --color-border-common: #c3c3c3ce;
 }
 select:focus {
   border-color: var(--color-primary);
@@ -19,4 +20,12 @@ select:focus {
   to {
     scale: 0;
   }
+}
+
+
+
+
+
+.x-test-border {
+  border: 1px solid;
 }

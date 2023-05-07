@@ -1,0 +1,87 @@
+.x-todo {
+  --list-width: 200px;
+  display: grid;
+  grid-template-columns: var(--list-width) calc(100% - var(--list-width));
+  height: 100vh;
+}
+.task-group {
+  height: 100%;
+}
+.task-group > hr {
+  width: 5px;
+  height: 100%;
+  position: relative;
+  top: -101vh;
+  float: right;
+  border-style: none;
+  border-right: 1px solid var(--color-border-common);
+  /* cursor: ew-resize; */
+}
+.task-group-list {
+  height: calc(100% - 30px);
+  max-height: calc(100% - 30px);
+  overflow-y: scroll;
+}
+.task-group-create {
+  height: 30px;
+  border-top: 1px solid var(--color-border-common);
+}
+.task-group-create input {
+  height: 25px;
+  width: 100%;
+  box-sizing: border-box;
+  border-style: none;
+}
+.task-group-list .item {
+  padding: 5px;
+  margin: 0;
+  display: flex;
+  cursor: pointer;
+}
+.task-group-list .item > img {
+  margin-right: 5px;
+}
+
+.task-list-list {
+  height: calc(100% - 30px);
+  max-height: calc(100% - 30px);
+  overflow-y: scroll;
+}
+.task-list-create {
+  height: 30px;
+  border-top: 1px solid var(--color-border-common);
+}
+.task-list-create input {
+  height: 25px;
+  width: 100%;
+  box-sizing: border-box;
+  border-style: none;
+}
+.task-list-list .item {
+  padding: 10px 8px;
+  margin: 0;
+  display: flex;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-border-common);
+}
+.task-list-list .item > .checkbox {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-common);
+  margin-right: 10px;
+}
+.task-list-list .item > .checkbox.complete {
+  animation: complete-animation .5s;
+  animation-fill-mode: forwards;
+}
+
+
+@keyframes complete-animation {
+  0%{}
+
+  100%{
+    background-color: rgb(107, 107, 255, 0.5);
+  }
+}

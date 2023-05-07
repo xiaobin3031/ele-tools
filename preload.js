@@ -1,16 +1,25 @@
 const { contextBridge } = require('electron')
+const { readFile, exists, writeFile } = require('node:fs/promises')
 const fs = require('fs')
+const path = require('path')
 
 const dirPrefix = 'data/';
-const dirList = [dirPrefix + 'httpReq', dirPrefix + 'calendar/todo'];
+const dirObj = {
+  'httpReq': dirPrefix + 'httpReq',
+  'calendarTodo': dirPrefix + 'calendar/todo',
+  'todo': dirPrefix + 'todo'
+}
 
 checkAndCreateDir();
 
 // 检查文件夹是否存在
 function checkAndCreateDir(){
-  dirList.forEach(a => fs.mkdir(a, {recursive: true}, (err) => {
-    console.log('create dir', a, err)
-  }));
+  Object.keys(dirObj)
+    .forEach(key => {
+      fs.mkdir(dirObj[key], {recursive: true}, (err) => {
+        console.log('create dir', dirObj[key], err)
+      })
+    })
 }
 /**
  * 
@@ -20,12 +29,12 @@ function checkAndCreateDir(){
  * } _contents 
  */
 function saveHttpReq(_contents){
-  fs.writeFile(dirList[0] + '/reqList.json', new Uint8Array(Buffer.from(JSON.stringify(_contents))), (err) => {
+  fs.writeFile(dirObj.httpReq + '/reqList.json', new Uint8Array(Buffer.from(JSON.stringify(_contents))), (err) => {
     //todo log
   })
 }
 let initHttpReq = [];
-fs.readFile(dirList[0] + '/reqList.json', (err, _data) => {
+fs.readFile(dirObj.httpReq + '/reqList.json', (err, _data) => {
   if(err){
     return;
   }else{
@@ -37,7 +46,7 @@ function readHttpReq(){
 }
 function readCalendarTodo(year, month){
   return new Promise((resolve, reject) => {
-    fs.readFile(dirList[1] + `/${year}-${month}.json`, (err, _data) => {
+    fs.readFile(dirObj.calendarTodo + `/${year}-${month}.json`, (err, _data) => {
       if(err){
         // todo log
         return;
@@ -53,7 +62,7 @@ function readCalendarTodo(year, month){
 }
 function updateOrSaveCalendarTodo(item, year, month){
   return new Promise((resolve, reject) => {
-    fs.exists(dirList[1] + `/${year}-${month}.json`, (exist) => {
+    fs.exists(dirObj.calendarTodo + `/${year}-${month}.json`, (exist) => {
       if(exist){
         readCalendarTodo(year, month).then(_list => {
           let exist = false;
@@ -77,7 +86,7 @@ function updateOrSaveCalendarTodo(item, year, month){
 }
 function writeCalendarTodo(_list, year, month){
   return new Promise((resolve, reject) => {
-    fs.writeFile(dirList[1] + `/${year}-${month}.json`, new Uint8Array(Buffer.from(JSON.stringify(_list))), (err) => {
+    fs.writeFile(dirObj.calendarTodo + `/${year}-${month}.json`, new Uint8Array(Buffer.from(JSON.stringify(_list))), (err) => {
       if(err){
         reject(err);
       }else{
@@ -86,9 +95,69 @@ function writeCalendarTodo(_list, year, month){
     })
   })
 }
+
+function saveOrUpdateTask({item, type = 'group', groupId}){
+  const path = getTodoFileAndPath(type, groupId);
+  fs.exists(path, _exist => {
+    if(_exist){
+      fs.readFile(path, {encoding: 'utf-8'}, (err, _data) => {
+        if(err){
+          return;
+        }
+        if(!_data){
+          _data = [item];
+        }else{
+          _data = JSON.parse(_data);
+          let pushed = false;
+          for(let i in _data){
+            if(_data[i]._id === item._id){
+              _data[i] = item;
+              pushed = true;
+              break;
+            }
+          }
+          if(!pushed){
+            _data.push(item);
+          }
+          fs.writeFile(path, new Uint8Array(Buffer.from(JSON.stringify(_data))), (err) => {
+            console.log('write todo', err);
+          })
+        }
+      })
+    }else{
+      fs.writeFile(path, new Uint8Array(Buffer.from(JSON.stringify([item]))), (err) => {
+        console.log('write todo', err);
+      })
+    }
+  })
+}
+
+function readTask({type = 'group', groupId}){
+  if(!groupId && type !== 'group'){
+    return [];
+  }
+  const path = getTodoFileAndPath(type, groupId);
+  if(fs.existsSync(path)){
+    const _data = fs.readFileSync(path, {encoding: 'utf-8'});
+    if(!!_data){
+      return JSON.parse(_data);
+    }
+  }
+  return [];
+}
+function getTodoFileAndPath(type, groupId){
+  if(type === 'group'){
+    return path.join(__dirname, `${dirObj.todo}/${type}.json`)
+  }else{
+    return path.join(__dirname, `${dirObj.todo}/${type}-${groupId}.json`)
+  }
+}
+
 contextBridge.exposeInMainWorld('fileOp', {
   saveHttpReq: saveHttpReq,
   readHttpReq: readHttpReq,
   readCalendarTodo: readCalendarTodo,
-  updateOrSaveCalendarTodo: updateOrSaveCalendarTodo
+  updateOrSaveCalendarTodo: updateOrSaveCalendarTodo,
+  saveOrUpdateTask: saveOrUpdateTask,
+  readTask: readTask
 });

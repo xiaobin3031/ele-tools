@@ -20,3 +20,8 @@ textarea:focus {
   box-shadow: 0 0 8px var(--color-primary);
   -webkit-border-color: var(--color-primary);
 }
+
+input:disabled {
+  cursor: not-allowed;
+  background-color: #c3c3c3c3;
+}
