@@ -1,5 +1,6 @@
 // import logo from './logo.svg';
 import './App.css';
+import './css/x.css'
 import Calendar from './page/calendar/Calendar';
 import Scene from './page/flow/Scene';
 import HttpReqCompare from './page/hankyu/HttpReqCompare';

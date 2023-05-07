@@ -8,7 +8,8 @@ const _initSize = 20;
 
 export default function Icon({iconType, size = 'sm', ...props}){
 
-  const _style = {};
+  const _props = {...props};
+  const _style = _props.style || {};
   switch(size){
     case 'md':
       _style.width = `${_initSize * 1.5}px`;

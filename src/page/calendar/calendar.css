@@ -63,7 +63,6 @@
   display: inline-block;
 }
 #x-calendar-todo-view.top-left:before {
-  /* left: -12px; */
   top: 12px;
 }
 #x-calendar-todo-view.top-right:before {
@@ -76,6 +75,15 @@
 #x-calendar-todo-view.bottom-right:before {
   right: -12px;
   bottom: 0px;
+}
+.x-calendar-head {
+  height: 50px;
+  border-bottom: 1px solid #c3c3c3c3;
+  display: grid;
+  grid-template-columns: calc(100% / 3) calc(100% / 3) calc(100% / 3);
+}
+.x-calendar-head > div:nth-child(2) {
+  margin: auto;
 }
 
 @keyframes hover-day {

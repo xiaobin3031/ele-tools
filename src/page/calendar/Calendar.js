@@ -1,13 +1,12 @@
 // 日历，用来展示一些任务安排
-import ToDo from './ToDo';
 import ReactDOM from 'react-dom/client';
 import './calendar.css'
 import { useRef, useState } from "react"
 import Row from '../../component/Row';
-import Label from '../../component/Label';
 import Input from '../../component/Input';
 import { Button } from '../../component/Button';
 import globalId from '../../util/globalId';
+import Icon from '../../component/Icon';
 
 let weekId= 1;
 let dayId = 1;
@@ -38,11 +37,13 @@ function selectDayDiv(event){
     $dom.classList.add('selected')
   }
 }
+
 function clickDay(event, item, year, month){
-  event.stopPropagation();
   if(!item.thisMonth){
     return;
   }
+  const width = 240;  //元素展示后的实际尺寸
+  const height = 175;//元素展示后的实际尺寸
   let $todoViewDom = document.getElementById(todoViewId);
   if(!!$todoViewDom){
     $todoViewDom.style.display = 'block';
@@ -51,6 +52,8 @@ function clickDay(event, item, year, month){
     $todoViewDom = document.createElement('div');
     $todoViewDom.id = todoViewId;
     $todoViewDom.style.position = 'absolute';
+    $todoViewDom.style.width = `${width}px`
+    $todoViewDom.style.height = `${height}px`
     document.body.appendChild($todoViewDom);
     ReactDOM.createRoot($todoViewDom).render(todoView);
   }
@@ -61,8 +64,6 @@ function clickDay(event, item, year, month){
   pos.width = event.target.offsetWidth;
   pos.height = event.target.offsetHeight;
 
-  const width = 214;  //元素展示后的实际尺寸
-  const height = 181;//元素展示后的实际尺寸
   let posClass = '';
   if(pos.top > height){
     pos.top -= height - pos.height; // top
@@ -114,26 +115,30 @@ function TodoAdd({year, month, day}){
         <Row>
           <Input 
             name="title" 
+            borderClear={1}
             value={!values.title ? '' : values.title} 
             placeholder='请输入任务标题'
             onChange={valueChange}
             style={{
-              width: 'inherit'
+              width: '100%'
             }}
           />
         </Row>
         <Row>
-          <textarea
+          <Input
+            multiline={1}
+            borderClear={1}
             name='description'
             value={!values.description ? '' : values.description}
             onChange={valueChange}
             placeholder='请输入任务描述'
             rows="5"
             style={{
-              width: 'inherit',
+              width: '100%',
+              boxSizing: 'border-box',
               resize: 'none'
             }}
-          ></textarea>
+          />
         </Row>
         <Row>
           <Button size='sm' onClick={closeTodoView}>关闭</Button>
@@ -248,6 +253,29 @@ function Year({yearChange}){
   
 }
 
+function Head({year, month}){
+
+  return (
+    <div className='x-calendar-head'>
+      <div></div>
+      <div style={{
+        textAlign: 'center'
+      }}>
+        <span><Icon iconType="arrow-double-left"/></span>
+        <span><Icon iconType="arrow-right" style={{
+          rotate: '180deg'
+        }}/></span>
+        <span style={{
+          fontWeight: 'bold'
+        }}>{year} - {month}</span>
+        <span><Icon iconType="arrow-right" /></span>
+        <span><Icon iconType="arrow-double-right" /></span>
+      </div>
+      <div></div>
+    </div>
+  )
+}
+
 export default function Calendar({
   year, month, date
 }){
@@ -272,6 +300,7 @@ export default function Calendar({
 
   return (
     <div className='x-calendar'>
+      <Head year={currentRef.current.year} month={currentRef.current.month}/>
       <Week />
       <Day 
         year={currentRef.current.year}

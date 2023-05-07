@@ -1,11 +1,31 @@
-import '../css/x.css'
+import '../css/input.css'
 
-export default function Input(props){
-  const _props = {...props};
-  if(!_props.type){
-    _props.type = 'text';
+function Textarea(props){
+  const _classList = ['x-input', 'multiline'];
+  if(props.borderClear === 1){
+    _classList.push('border-clear');
   }
   return (
-    <input className="x-input" {..._props}/>
+    <textarea className={_classList.join(' ')} {...props}></textarea>
   )
+}
+
+export default function Input(props){
+  if(props.multiline === 1){
+    return (
+      <Textarea {...props}/>
+    )
+  }else{
+    const _props = {...props};
+    if(!_props.type){
+      _props.type = 'text';
+    }
+    const _classList = ['x-input']
+    if(props.borderClear === 1){
+      _classList.push('border-clear');
+    }
+    return (
+      <input className={_classList.join(' ')} {..._props}/>
+    )
+  }
 }
