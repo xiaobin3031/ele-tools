@@ -150,7 +150,7 @@ function TodoAdd({year, month, day}){
 }
 
 let reading = 0;
-function Day({dayChange, year, month, day}){
+function Day({year, month, day, isToday}){
   const [todoList, setTodoList] = useState([]);
   if(reading === 0){
     reading = 1;
@@ -168,7 +168,7 @@ function Day({dayChange, year, month, day}){
     {
       day: day,
       thisMonth: true,
-      today: true
+      today: isToday === 1
     }
   );
   for(let i = day - 1;i>=1;i--){
@@ -191,7 +191,7 @@ function Day({dayChange, year, month, day}){
   calendar.setDate(day);
   for(let i = day + 1;;i++){
     calendar.setDate(i);
-    if(calendar.getMonth() === month){
+    if(calendar.getMonth() !== (month - 1)){ // 可能过会跨年
       break;
     }
     dateList.push({
@@ -246,14 +246,8 @@ function Day({dayChange, year, month, day}){
     </div>
   )
 }
-function Month({monthChange}){
 
-}
-function Year({yearChange}){
-  
-}
-
-function Head({year, month}){
+function Head({year, month, _changeYearMonth}){
 
   return (
     <div className='x-calendar-head'>
@@ -261,15 +255,19 @@ function Head({year, month}){
       <div style={{
         textAlign: 'center'
       }}>
-        <span><Icon iconType="arrow-double-left"/></span>
-        <span><Icon iconType="arrow-right" style={{
-          rotate: '180deg'
-        }}/></span>
-        <span style={{
-          fontWeight: 'bold'
-        }}>{year} - {month}</span>
-        <span><Icon iconType="arrow-right" /></span>
-        <span><Icon iconType="arrow-double-right" /></span>
+        <table align='center'>
+          <tr>
+            <th><Icon onClick={() => _changeYearMonth(year - 1, month)} iconType="arrow-double-left"/></th>
+            <th><Icon onClick={() => _changeYearMonth(year, month - 1)} iconType="arrow-right" style={{
+              rotate: '180deg'
+            }}/></th>
+            <th style={{
+              fontSize: '2em'
+            }} onClick={() => _changeYearMonth(new Date().getFullYear(), new Date().getMonth() + 1)}>{year} - {month}</th>
+            <th><Icon onClick={() => _changeYearMonth(year, month + 1)} iconType="arrow-right" /></th>
+            <th><Icon onClick={() => _changeYearMonth(year + 1, month)} iconType="arrow-double-right" /></th>
+          </tr>
+        </table>
       </div>
       <div></div>
     </div>
@@ -282,30 +280,47 @@ export default function Calendar({
 
   const now = new Date();
 
-  const currentRef = useRef({
+  const [currentRef, setCurrentRef] = useState({
     year: year || now.getFullYear(),
     month: month || (now.getMonth() + 1),
     date: date || now.getDate()
   })
 
-  function yearChange(_year){
-
+  function changeYearMonth(_year, _month){
+    if(_month > 12){
+      _month -= 12;
+      _year++;
+    } else if(_month <= 0){
+      _month += 12;
+      _year--
+    }
+    if(_year <= 0 || _year > 9999){
+      return;
+    }
+    setCurrentRef({...currentRef, month: _month, year: _year})
   }
-  function monthChange(_month){
 
-  }
   function dateChange(_date){
 
   }
 
   return (
     <div className='x-calendar'>
-      <Head year={currentRef.current.year} month={currentRef.current.month}/>
+      <Head 
+        _changeYearMonth={changeYearMonth}
+        year={currentRef.year} 
+        month={currentRef.month}/>
       <Week />
       <Day 
-        year={currentRef.current.year}
-        month={currentRef.current.month}
-        day={currentRef.current.date}
+        year={currentRef.year}
+        month={currentRef.month}
+        day={currentRef.date}
+        isToday={
+          now.getFullYear() === currentRef.year 
+            && (now.getMonth() + 1) === currentRef.month 
+            && now.getDate() === currentRef.date
+          ? 1 : 0
+          }
         />
     </div>
   )

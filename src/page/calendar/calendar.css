@@ -82,8 +82,14 @@
   display: grid;
   grid-template-columns: calc(100% / 3) calc(100% / 3) calc(100% / 3);
 }
-.x-calendar-head > div:nth-child(2) {
-  margin: auto;
+
+.x-calendar-head > div:nth-child(2) > table {
+  width: 100%;
+  height: 100%;
+  max-width: 300px;
+}
+.x-calendar-head > div:nth-child(2) > table th {
+  cursor: pointer;
 }
 
 @keyframes hover-day {
