@@ -29,6 +29,9 @@ function TaskGroup({_list = [], _selectGroup}){
   }
   return (
     <div className="task-group">
+      <div className='task-group-create'>
+        <input name='listName' placeholder='新增列表' onKeyDown={createNewGroup}/>
+      </div>
       <div className='task-group-list'>
         {
           groupList.length > 0 &&
@@ -42,20 +45,16 @@ function TaskGroup({_list = [], _selectGroup}){
             })
         }
       </div>
-      <div className='task-group-create'>
-        <input name='listName' placeholder='新增列表' onKeyDown={createNewGroup}/>
-      </div>
-      <hr/>
     </div>
   )
 }
 
-function TaskList({_list = [], _groupId, _groupName}){
+function TaskList({_list = [], _groupId, _groupName, _clickTask}){
 
   const [todoList, setTodoList] = useState([])
   useEffect(() => {
     // 直接用useState无法生效，只能用这种方式
-    setTodoList(window.fileOp.readTask({type: 'task', groupId: _groupId}));
+    setTodoList(window.fileOp.readTaskList({type: 'task', groupId: _groupId}));
   }, [_list]);
 
   function createNewTask(event){
@@ -89,6 +88,7 @@ function TaskList({_list = [], _groupId, _groupName}){
   }
 
   function taskComplete(event, item){
+    event.stopPropagation();
     item.complete = !item.complete;
     setTodoList(todoList.map(a => a._id === item._id ? item : a))
     if(item.complete){
@@ -98,33 +98,71 @@ function TaskList({_list = [], _groupId, _groupName}){
     }
   }
 
+  function clickTask(event, item){
+    // todo 修改点击样式
+    _clickTask(item);
+  }
+
   return (
     <div className="task-list">
+      <div className='task-list-create'>
+        <input name='content' placeholder={groupName} onKeyDown={createNewTask} disabled={!_groupName || !_groupId}/>
+      </div>
       <div className='task-list-list'>
-          {
-            todoList.length > 0 &&
-              todoList.map(a => {
-                return (
-                  <div key={a._id} className='item'>
-                    <div className='checkbox' onClick={(event) => taskComplete(event, a)}></div>
-                    <span>{a.content}</span>
-                  </div>
-                )
-              })
-          }
-        </div>
-        <div className='task-list-create'>
-          <input name='content' placeholder={groupName} onKeyDown={createNewTask} disabled={!_groupName || !_groupId}/>
-        </div>
+        {
+          todoList.length > 0 &&
+            todoList.map(a => {
+              return (
+                <div key={a._id} className='item' onClick={event => clickTask(event, a)}>
+                  <div className='checkbox' onClick={(event) => taskComplete(event, a)}></div>
+                  <span>{a.content}</span>
+                </div>
+              )
+            })
+        }
+      </div>
     </div>
   )
 }
 
-function TaskDetail({}){
+function TaskDetail({_item}){
+
+  const [taskInfo, setTaskInfo] = useState({...(_item.taskInfo || {})});
+
+  function subTaskComplete(event, item){
+    event.stopPropagation();
+    item.complete = !item.complete;
+    const _taskInfo = {...taskInfo};
+    _taskInfo.subTasks = _taskInfo.subTasks.map(a => a._id === item._id ? item : a);
+    setTaskInfo(_taskInfo);
+    if(item.complete){
+      event.target.classList.add('complete')
+    }else{
+      event.target.classList.remove('complete')
+    }
+  }
 
   return (
     <div className="task-detail">
-
+      <div className='title'>
+        {_item.content}
+      </div>
+      <div className='sub-task'>
+        {
+          !!taskInfo.subTasks && taskInfo.subTasks.length > 0 &&
+            taskInfo.subTasks.map(a => {
+              return (
+                <div className='sub-task-list' key={a._id}>
+                  <div className='checkbox' onClick={event => subTaskComplete(event, a)}></div>
+                  <span>{a.content}</span>
+                </div>
+              )
+            })
+        }
+        <input placeholder='添加子任务'/>
+      </div>
+      <div className='dead-time'></div>
+      <div className='description'></div>
     </div>
   )
 }
@@ -132,8 +170,9 @@ function TaskDetail({}){
 export default function Todo({}){
 
   const [selectGroup, setSelectGroup] = useState({});
+  const [task, setTask] = useState({})
   const [taskList, setTaskList] = useState([]);
-  const groupList = window.fileOp.readTask({type: 'group'});
+  const groupList = window.fileOp.readTaskList({type: 'group'});
 
   function clickGroup(item){
     setSelectGroup({
@@ -141,15 +180,21 @@ export default function Todo({}){
       _id: item._id,
       name: item.name
     })
-    const _list = window.fileOp.readTask({type: 'task', groupId: item._id})
+    const _list = window.fileOp.readTaskList({type: 'task', groupId: item._id})
     setTaskList([..._list]);
+  }
+
+  function clickTask(item){
+    setTask({...item})
   }
 
   return (
     <div className="x-todo">
-      <TaskGroup _selectGroup={clickGroup} _list={groupList}/>
-      <TaskList _groupId={selectGroup._id} _groupName={selectGroup.name} _list={taskList}/>
-      {/* <TaskDetail /> */}
+      <div className="x-todo-container">
+        <TaskGroup _selectGroup={clickGroup} _list={groupList}/>
+        <TaskList _groupId={selectGroup._id} _groupName={selectGroup.name} _list={taskList} _clickTask={clickTask}/>
+      </div>
+      <TaskDetail _item={task}/>
     </div>
   )
 }

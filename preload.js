@@ -132,7 +132,7 @@ function saveOrUpdateTask({item, type = 'group', groupId}){
   })
 }
 
-function readTask({type = 'group', groupId}){
+function readTaskList({type = 'group', groupId}){
   if(!groupId && type !== 'group'){
     return [];
   }
@@ -159,5 +159,5 @@ contextBridge.exposeInMainWorld('fileOp', {
   readCalendarTodo: readCalendarTodo,
   updateOrSaveCalendarTodo: updateOrSaveCalendarTodo,
   saveOrUpdateTask: saveOrUpdateTask,
-  readTask: readTask
+  readTaskList: readTaskList
 });

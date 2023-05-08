@@ -1,36 +1,26 @@
 .x-todo {
   --list-width: 200px;
+  --input-height: 25px;
+}
+.x-todo-container {
   display: grid;
   grid-template-columns: var(--list-width) calc(100% - var(--list-width));
   height: 100vh;
 }
 .task-group {
   height: 100%;
-}
-.task-group > hr {
-  width: 5px;
-  height: 100%;
-  position: relative;
-  top: -101vh;
-  float: right;
-  border-style: none;
   border-right: 1px solid var(--color-border-common);
-  /* cursor: ew-resize; */
-}
-.task-group-list {
-  height: calc(100% - 30px);
-  max-height: calc(100% - 30px);
-  overflow-y: scroll;
 }
 .task-group-create {
   height: 30px;
-  border-top: 1px solid var(--color-border-common);
+  /* border-bottom: 1px solid var(--color-border-common); */
 }
 .task-group-create input {
-  height: 25px;
+  height: var(--input-height);
   width: 100%;
   box-sizing: border-box;
   border-style: none;
+  border-bottom: 1px solid var(--color-border-common);
 }
 .task-group-list .item {
   padding: 5px;
@@ -41,21 +31,15 @@
 .task-group-list .item > img {
   margin-right: 5px;
 }
-
-.task-list-list {
-  height: calc(100% - 30px);
-  max-height: calc(100% - 30px);
-  overflow-y: scroll;
-}
 .task-list-create {
   height: 30px;
-  border-top: 1px solid var(--color-border-common);
 }
 .task-list-create input {
-  height: 25px;
+  height: var(--input-height);
   width: 100%;
   box-sizing: border-box;
   border-style: none;
+  border-bottom: 1px solid var(--color-border-common);
 }
 .task-list-list .item {
   padding: 10px 8px;
@@ -72,9 +56,24 @@
   border: 1px solid var(--color-border-common);
   margin-right: 10px;
 }
-.task-list-list .item > .checkbox.complete {
+.x-todo .checkbox.complete {
   animation: complete-animation .5s;
   animation-fill-mode: forwards;
+}
+.task-detail {
+  position: absolute;
+  right: 0px;
+  height: calc(100% - var(--input-height));
+  top: var(--input-height);
+  width: calc(100% - var(--list-width) - 200px);
+  left: calc(var(--list-width) + 200px);
+  background-color: rgba(202, 202, 255, 0.5);
+}
+.sub-task input {
+  height: var(--input-height);
+  width: 80%;
+  box-sizing: border-box;
+  border-style: none;
 }
 
 
