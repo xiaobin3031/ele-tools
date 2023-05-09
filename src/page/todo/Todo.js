@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Icon from '../../component/Icon';
 import './todo.css'
 import globalId from '../../util/globalId';
+import DateTimePicker from '../../component/DateTimePicker';
 
 function TaskGroup({_list = [], _selectGroup}){
 
@@ -125,9 +126,13 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
   )
 }
 
-function TaskDetail({_item}){
+function TaskDetail({_item, _saveOrUpdateTask}){
 
-  const [taskInfo, setTaskInfo] = useState({...(_item.taskInfo || {})});
+  const [taskInfo, setTaskInfo] = useState({});
+  useEffect(() => {
+    const _taskInfo = _item.taskInfo || {};
+    setTaskInfo(_taskInfo);
+  }, [_item])
 
   function subTaskComplete(event, item){
     event.stopPropagation();
@@ -140,6 +145,32 @@ function TaskDetail({_item}){
     }else{
       event.target.classList.remove('complete')
     }
+    updateTask({..._item, taskInfo: _taskInfo});
+  }
+
+  function createNewSubTask(event){
+    if(event.keyCode === 13){
+      const _val = event.target.value;
+      if(!_val){
+        return;
+      }
+      const _taskInfo = {...taskInfo}
+      const _newItem = {_id: globalId(), content: _val}
+      if(!_taskInfo.subTasks){
+        _taskInfo.subTasks = [_newItem]
+      }else{
+        _taskInfo.subTasks.push(_newItem);
+      }
+      event.target.value = '';
+      setTaskInfo(_taskInfo)
+      updateTask({..._item, taskInfo: _taskInfo});
+    }
+  }
+
+  function updateTask(item){
+    window.fileOp.saveOrUpdateTask({
+      item: item, type: 'task', groupId: item.pId
+    })
   }
 
   return (
@@ -159,9 +190,11 @@ function TaskDetail({_item}){
               )
             })
         }
-        <input placeholder='添加子任务'/>
+        <input placeholder='添加子任务' onKeyDown={createNewSubTask}/>
       </div>
-      <div className='dead-time'></div>
+      <div className='dead-time'>
+        <DateTimePicker />
+      </div>
       <div className='description'></div>
     </div>
   )
