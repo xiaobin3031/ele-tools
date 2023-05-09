@@ -3,6 +3,7 @@ import Icon from '../../component/Icon';
 import './todo.css'
 import globalId from '../../util/globalId';
 import DateTimePicker from '../../component/DateTimePicker';
+import Input from '../../component/Input'
 
 function TaskGroup({_list = [], _selectGroup}){
 
@@ -173,29 +174,47 @@ function TaskDetail({_item, _saveOrUpdateTask}){
     })
   }
 
+  function taskInfoChange(event){
+
+  }
+
   return (
     <div className="task-detail">
-      <div className='title'>
-        {_item.content}
-      </div>
-      <div className='sub-task'>
-        {
-          !!taskInfo.subTasks && taskInfo.subTasks.length > 0 &&
-            taskInfo.subTasks.map(a => {
-              return (
-                <div className='sub-task-list' key={a._id}>
-                  <div className='checkbox' onClick={event => subTaskComplete(event, a)}></div>
-                  <span>{a.content}</span>
-                </div>
-              )
-            })
-        }
-        <input placeholder='添加子任务' onKeyDown={createNewSubTask}/>
-      </div>
-      <div className='dead-time'>
-        <DateTimePicker />
-      </div>
-      <div className='description'></div>
+      <form disabled>
+        <div className='title'>
+          {_item.content}
+        </div>
+        <div className='sub-task'>
+          {
+            !!taskInfo.subTasks && taskInfo.subTasks.length > 0 &&
+              taskInfo.subTasks.map(a => {
+                return (
+                  <div className='sub-task-list' key={a._id}>
+                    <div className='checkbox' onClick={event => subTaskComplete(event, a)}></div>
+                    <span>{a.content}</span>
+                  </div>
+                )
+              })
+          }
+          <input placeholder='添加子任务' onKeyDown={createNewSubTask}/>
+        </div>
+        <div className='dead-time'>
+          <DateTimePicker />
+        </div>
+        <div className='description'>
+          <Input 
+            value={!taskInfo.description ? '' : taskInfo.description}
+            multiline={1}
+            rows={10}
+            onChange={taskInfoChange}
+            placeholder='请输入描述'
+            style={{
+              width: '100%',
+              resize: 'none'
+            }}
+          />
+        </div>
+      </form>
     </div>
   )
 }
