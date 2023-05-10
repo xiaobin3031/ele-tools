@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import '../css/dateTimePicker.css'
+import { Button } from './Button';
 import Icon from './Icon';
 import SvgIcon from './SvgIcon'
 
@@ -8,8 +9,8 @@ let dayId = 1;
 const weekPrefix = "周";
 const weekContentList = ['日', '一', '二', '三', '四', '五', '六'];
 
-function getDayData(year, month ,day, isToday){
-  const calendar = new Date();
+function getDayData(year, month, day){
+  let calendar = new Date();
   calendar.setFullYear(year);
   calendar.setMonth(month - 1);
   calendar.setDate(day);
@@ -18,8 +19,7 @@ function getDayData(year, month ,day, isToday){
   dateList.push(
     {
       day: day,
-      thisMonth: true,
-      today: isToday
+      thisMonth: true
     }
   );
   for(let i = day - 1;i>=1;i--){
@@ -37,9 +37,9 @@ function getDayData(year, month ,day, isToday){
       thisMonth: false
     })
   }
+  calendar.setDate(day);
   calendar.setFullYear(year);
   calendar.setMonth(month - 1);
-  calendar.setDate(day);
   for(let i = day + 1;;i++){
     calendar.setDate(i);
     if(calendar.getMonth() !== (month - 1)){ // 可能过会跨年
@@ -50,17 +50,19 @@ function getDayData(year, month ,day, isToday){
       thisMonth: true
     })
   }
-  let i = 0;
-  while(i++ < 31){
-    // 说明不是周六，继续加
-    dateList.push({
-      day: calendar.getDate(),
-      thisMonth: false
-    })
-    if(calendar.getDay() === 6){
-      break;
+  if(calendar.getDay() != 0){
+    let i = 0;
+    while(i++ < 31){
+      // 说明不是周六，继续加
+      dateList.push({
+        day: calendar.getDate(),
+        thisMonth: false
+      })
+      if(calendar.getDay() === 6){
+        break;
+      }
+      calendar.setDate(calendar.getDate() + 1);
     }
-    calendar.setDate(calendar.getDate() + 1);
   }
   const trDataList = [];
   dateList.forEach((a, index) => {
@@ -73,15 +75,93 @@ function getDayData(year, month ,day, isToday){
   return trDataList;
 }
 
-function CalendarSelect({year, month, date}){
+function formatDateValue(_dateFormat, year, month, day){
+  let _value = '';
+  for(let i=0;i<_dateFormat.length;i++){
+    let _c = _dateFormat.charAt(i);
+    if(_c === 'y'){
+      let _len = 1;
+      while(_dateFormat.charAt(i + 1) === 'y'){
+        _len++;
+        i++;
+      }
+      _len = Math.min(_len, 4);
+      _value += (year + '').substring(-_len);
+    }else if(_c === 'M'){
+      if(_dateFormat.charAt(i + 1) === 'M'){
+        if(month < 10){
+          _value += '0';
+        }
+        i++;
+      }
+      _value += month;
+    }else if(_c === 'd'){
+      if(_dateFormat.charAt(i + 1) === 'd'){
+        if(day < 10){
+          _value += '0';
+        }
+        i++;
+      }
+      _value += day;
+    }else{
+      _value += _c;
+    }
+  }
+  return _value;
+}
+
+function getDateValue(_dateFormat, _defaultValue){
+  const dateValue = {};
+  let index;
+  for(let i=0;i<_dateFormat.length;i++){
+    let _c = _dateFormat.charAt(i);
+    if(_c === 'y'){
+      index = i;
+      let _len = 1;
+      while(_dateFormat.charAt(i + 1) === 'y'){
+        _len++;
+        i++;
+      }
+      _len = Math.min(_len, 4);
+      dateValue.year = +_defaultValue.substring(index, index + _len);
+    }else if(_c === 'M'){
+      index = i;
+      if(_dateFormat.charAt(i + 1) === 'M'){
+        dateValue.month = +_defaultValue.substring(index, 2 + index);
+        i++;
+      }else{
+        dateValue.month = +_defaultValue.substring(index, 1 + index);
+      }
+    }else if(_c === 'd'){
+      index = i;
+      if(_dateFormat.charAt(i + 1) === 'd'){
+        dateValue.date = +_defaultValue.substring(index, 2 + index);
+        i++;
+      }else{
+        dateValue.date = +_defaultValue.substring(index, 1 + index);
+      }
+    }
+  }
+  return dateValue;
+}
+
+function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue}){
 
   const now = new Date();
+  const dateVal = {
+    year: now.getFullYear(),
+    month: (now.getMonth() + 1),
+    date: now.getDate(),
+    currentValue: _defaultValue
+  };
+  if(!!_defaultValue){
+    const dateValue = getDateValue(_dateFormat, _defaultValue);
+    dateVal.year = dateValue.year;
+    dateVal.month = dateValue.month;
+    dateVal.date = dateValue.date;
+  }
 
-  const [currentRef, setCurrentRef] = useState({
-    year: year || now.getFullYear(),
-    month: month || (now.getMonth() + 1),
-    date: date || now.getDate()
-  })
+  const [currentRef, setCurrentRef] = useState(dateVal)
 
   function changeYearMonth(_year, _month){
     if(_month > 12){
@@ -98,12 +178,12 @@ function CalendarSelect({year, month, date}){
   }
 
   const weekData = weekContentList.map(a => weekPrefix + a);
-  const trDataList = getDayData(currentRef.year, currentRef.month, currentRef.date, 
-    now.getFullYear() === currentRef.year && (now.getMonth() + 1) === currentRef.month && now.getDate() === currentRef.date);
+  const trDataList = getDayData(currentRef.year, currentRef.month, currentRef.date);
 
-    console.log('trDataList', trDataList);
-  function selectDayDiv(){
-
+  function selectDayDiv(event, item, year, month){
+    const _value = formatDateValue(_dateFormat, year, month, item.day);
+    _valueChange(_value);
+    setCurrentRef({...currentRef, currentValue: _value, date: item.day, month: month, year: year})
   }
 
   return (
@@ -113,11 +193,11 @@ function CalendarSelect({year, month, date}){
           <tr>
             <th colSpan={7}>
               <div className='year-month-ctrl'>
-                <span><Icon onClick={() => changeYearMonth(year - 1, month)} iconType="arrow-double-left" style={{width: '15px', height: '15px'}}/></span>
-                <span><Icon onClick={() => changeYearMonth(year, month - 1)} iconType="arrow-right" style={{ rotate: '180deg',width: '15px', height: '15px' }}/></span>
+                <span><Icon onClick={() => changeYearMonth(currentRef.year - 1, currentRef.month)} iconType="arrow-double-left" style={{width: '15px', height: '15px'}}/></span>
+                <span><Icon onClick={() => changeYearMonth(currentRef.year, currentRef.month - 1)} iconType="arrow-right" style={{ rotate: '180deg',width: '15px', height: '15px' }}/></span>
                 <span onClick={() => changeYearMonth(now.getFullYear(), now.getMonth() + 1)}>{currentRef.year} - {currentRef.month}</span>
-                <span><Icon onClick={() => changeYearMonth(year, month + 1)} iconType="arrow-right" style={{width: '15px', height: '15px'}}/></span>
-                <span><Icon onClick={() => changeYearMonth(year + 1, month)} iconType="arrow-double-right" style={{width: '15px', height: '15px'}}/></span>
+                <span><Icon onClick={() => changeYearMonth(currentRef.year, currentRef.month + 1)} iconType="arrow-right" style={{width: '15px', height: '15px'}}/></span>
+                <span><Icon onClick={() => changeYearMonth(currentRef.year + 1, currentRef.month)} iconType="arrow-double-right" style={{width: '15px', height: '15px'}}/></span>
               </div>
             </th>
           </tr>
@@ -147,7 +227,7 @@ function CalendarSelect({year, month, date}){
                         _class.push('not-current-month')
                       }
                       return (
-                        <td onClick={event => selectDayDiv(event, a, year, month)} className={_class}>{b.day}</td>
+                        <td onClick={event => selectDayDiv(event, b, currentRef.year, currentRef.month)} className={_class}>{b.day}</td>
                       )
                     })
                   }
@@ -156,31 +236,52 @@ function CalendarSelect({year, month, date}){
             })
           }
         </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={7}>
+              <Button size='sm' onClick={event => selectDayDiv(event, {day: now.getDate()}, now.getFullYear(), now.getMonth() + 1)}>今天</Button>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   )
 }
 
-export default function DateTimePicker({showOnFocus=false}){
+export default function DateTimePicker({showOnFocus=false, dateFormat, defaultValue}){
 
   const pickerRef = useRef(null);
+  const dateInputRef = useRef(null);
 
   function showPicker(){
-    const height = pickerRef.current.offsetHeight;
-    const left = pickerRef.current.offsetLeft;
-    const top = pickerRef.current.offsetTop;
-    pickerRef.current.classList.add('show');
-    pickerRef.current.getElementsByClassName('picker-region')[0].style.left = `${left}px`
-    pickerRef.current.getElementsByClassName('picker-region')[0].style.top = `${top + height}px`
+    if(pickerRef.current.classList.contains('show')){
+      pickerRef.current.classList.remove('show');
+    }else{
+      const height = pickerRef.current.offsetHeight;
+      const left = pickerRef.current.offsetLeft;
+      const top = pickerRef.current.offsetTop;
+      pickerRef.current.classList.add('show');
+      pickerRef.current.getElementsByClassName('picker-region')[0].style.left = `${left}px`
+      pickerRef.current.getElementsByClassName('picker-region')[0].style.top = `${top + height}px`
+    }
+  }
+
+  function selectDate(_value){
+    dateInputRef.current.value = _value;
+    pickerRef.current.classList.remove('show');
+  }
+
+  function getDefaultValue(){
+    return !!dateInputRef.current ? dateInputRef.current.value : defaultValue;
   }
 
   return (
     <div className='x-date-time-picker' ref={pickerRef}>
-      <input className='date-time' type='text' onClick={event => showOnFocus ? showPicker(event) : ''}/>
+      <input className='date-time' type='text' onClick={event => showOnFocus ? showPicker(event) : ''} ref={dateInputRef} defaultValue={defaultValue}/>
       <span className='icon' onClick={showPicker}>
         <SvgIcon iconType='calendar' />
       </span>
-      <CalendarSelect/>
+      <CalendarSelect _valueChange={selectDate} _dateFormat={dateFormat} _defaultValue={getDefaultValue()}/>
     </div>
   )
 }

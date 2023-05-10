@@ -38,6 +38,9 @@
 .picker-region .year-month-ctrl {
   display: inline-flex;
 }
+.picker-region .year-month-ctrl > span {
+  cursor: pointer;
+}
 .picker-region .year-month-ctrl span:not(:last-child) {
   margin-right: 10px;
 }
@@ -76,10 +79,11 @@
 .picker-region .day:not(.last-day-in-line) {
   border-right: 1px solid #c3c3c3c3
 }
-.picker-region .day.not-current-month {
+.picker-region .day .not-current-month {
   color: #c3c3c3c3;
+  cursor: not-allowed;
 }
-.picker-region .day:not(.not-current-month) {
+.picker-region .day :not(.not-current-month) {
   cursor: pointer;
 }
 .picker-region .head {

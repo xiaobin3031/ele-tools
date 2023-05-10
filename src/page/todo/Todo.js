@@ -199,7 +199,7 @@ function TaskDetail({_item, _saveOrUpdateTask}){
           <input placeholder='添加子任务' onKeyDown={createNewSubTask}/>
         </div>
         <div className='dead-time'>
-          <DateTimePicker />
+          <DateTimePicker defaultValue='2023-04-11'/>
         </div>
         <div className='description'>
           <Input 
@@ -245,8 +245,8 @@ export default function Todo({}){
       <div className="x-todo-container">
         <TaskGroup _selectGroup={clickGroup} _list={groupList}/>
         <TaskList _groupId={selectGroup._id} _groupName={selectGroup.name} _list={taskList} _clickTask={clickTask}/>
+        <TaskDetail _item={task}/>
       </div>
-      <TaskDetail _item={task}/>
     </div>
   )
 }

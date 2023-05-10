@@ -4,7 +4,7 @@
 }
 .x-todo-container {
   display: grid;
-  grid-template-columns: var(--list-width) calc(100% - var(--list-width));
+  grid-template-columns: var(--list-width) calc((100% - var(--list-width)) * 2 / 5) calc((100% - var(--list-width)) * 3 / 5);
   height: 100vh;
 }
 .task-group {
@@ -29,6 +29,9 @@
 }
 .task-group-list .item > img {
   margin-right: 5px;
+}
+.task-list {
+  border-right: 1px solid var(--color-border-common);
 }
 .task-list-create {
   height: 30px;
@@ -58,15 +61,6 @@
 .x-todo .checkbox.complete {
   animation: complete-animation .5s;
   animation-fill-mode: forwards;
-}
-.task-detail {
-  position: absolute;
-  right: 0px;
-  height: calc(100% - var(--input-height));
-  top: var(--input-height);
-  width: calc(100% - var(--list-width) - 200px);
-  left: calc(var(--list-width) + 200px);
-  background-color: rgba(202, 202, 255, 0.5);
 }
 .sub-task input {
   height: var(--input-height);
