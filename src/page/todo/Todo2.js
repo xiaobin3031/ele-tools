@@ -1,24 +1,46 @@
 import { useState } from 'react'
 import SvgIcon from '../../component/SvgIcon';
 import globalId from '../../util/globalId';
-import './todo2.css'
+// import './todo2.css'
+import Input from '../../component/Input';
+import Row from '../../component/Row';
+import DateTimePicker from '../../component/DateTimePicker';
 
 function ViewCard({item}){
+
+  function valueChange(event){
+    
+  }
 
   const showCount = !!item.completeCount && !!item.totalCount;
   return (
     <div className='card'>
       <div className='head'>
-        <div>{item.title}</div>
-        {
-          !!item.endTime && <div>{item.endTime}</div>
-        }
+        <Row>
+          <Input name='title' 
+            placeholder='请输入标题'
+            onChange={valueChange} 
+            value={!!item.title ? item.title : ''} style={{ width: '100%' }}/>
+        </Row>
+        <Row>
+          <DateTimePicker name='endTime' defaultValue={!item.endTime ? '' : item.endTime} style={{width: '100%'}}/>
+        </Row>
       </div>
-      <div className='content'>
-        {item.description}
-      </div>
-      <div className='foot'>
-        <span>
+      <Row className='content'>
+        <Input 
+          name="description"
+          multiline={1}
+          placeholder="请输入描述"
+          onChange={valueChange}
+          value={!!item.content ? item.content: ''}
+          style={{
+            width: '100%',
+            resize: 'none'
+          }}
+        />
+      </Row>
+      <Row className='foot'>
+        <span style={{display: 'flex'}}>
           <SvgIcon iconType='check'/>
           {
             showCount && 
@@ -30,7 +52,7 @@ function ViewCard({item}){
           }
         </span>
         <SvgIcon iconType='menu' />
-      </div>
+      </Row>
     </div>
   )
 }

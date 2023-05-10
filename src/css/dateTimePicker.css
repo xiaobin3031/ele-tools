@@ -98,3 +98,7 @@
 .picker-region .head > div:nth-child(2) > table th {
   cursor: pointer;
 }
+.picker-region tfoot > tr:first-child > td > div {
+  display: grid;
+  grid-template-columns: auto auto auto;
+}

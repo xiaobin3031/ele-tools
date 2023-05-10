@@ -11,6 +11,10 @@ select:focus {
   box-shadow: 0 0 8px var(--color-primary);
   -webkit-border-color: var(--color-primary);
 }
+.flex {
+  display: flex;
+  align-items: center;
+}
 
 
 @keyframes scale-disappear {

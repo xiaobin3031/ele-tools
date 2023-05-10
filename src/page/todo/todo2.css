@@ -16,3 +16,6 @@
 .x-todo .card .foot {
   display: flex;
 }
+.x-todo .card .foot > span {
+  margin-right: 10px;
+}

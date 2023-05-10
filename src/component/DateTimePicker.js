@@ -145,7 +145,7 @@ function getDateValue(_dateFormat, _defaultValue){
   return dateValue;
 }
 
-function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue}){
+function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue, _closeSelect}){
 
   const now = new Date();
   const dateVal = {
@@ -239,7 +239,18 @@ function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue
         <tfoot>
           <tr>
             <td colSpan={7}>
-              <Button size='sm' onClick={event => selectDayDiv(event, {day: now.getDate()}, now.getFullYear(), now.getMonth() + 1)}>今天</Button>
+              <div>
+                <div>
+                  <Button size='sm' onClick={_closeSelect}>关闭</Button>
+                </div>
+                <div>
+                  <Button size='sm' color='primary' 
+                    onClick={event => selectDayDiv(event, {day: now.getDate()}, now.getFullYear(), now.getMonth() + 1)}>
+                      今天
+                  </Button>
+                </div>
+                <div></div>
+              </div>
             </td>
           </tr>
         </tfoot>
@@ -248,7 +259,7 @@ function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue
   )
 }
 
-export default function DateTimePicker({showOnFocus=false, dateFormat, defaultValue}){
+export default function DateTimePicker({showOnFocus=false, dateFormat, defaultValue, ...props}){
 
   const pickerRef = useRef(null);
   const dateInputRef = useRef(null);
@@ -268,6 +279,9 @@ export default function DateTimePicker({showOnFocus=false, dateFormat, defaultVa
 
   function selectDate(_value){
     dateInputRef.current.value = _value;
+    closeSelect();
+  }
+  function closeSelect(){
     pickerRef.current.classList.remove('show');
   }
 
@@ -277,11 +291,11 @@ export default function DateTimePicker({showOnFocus=false, dateFormat, defaultVa
 
   return (
     <div className='x-date-time-picker' ref={pickerRef}>
-      <input className='date-time' type='text' onClick={event => showOnFocus ? showPicker(event) : ''} ref={dateInputRef} defaultValue={defaultValue}/>
+      <input className='date-time' type='text' name={props.name} onClick={event => showOnFocus ? showPicker(event) : ''} ref={dateInputRef} defaultValue={defaultValue}/>
       <span className='icon' onClick={showPicker}>
         <SvgIcon iconType='calendar' />
       </span>
-      <CalendarSelect _valueChange={selectDate} _dateFormat={dateFormat} _defaultValue={getDefaultValue()}/>
+      <CalendarSelect _valueChange={selectDate} _dateFormat={dateFormat} _defaultValue={getDefaultValue()} _closeSelect={closeSelect}/>
     </div>
   )
 }

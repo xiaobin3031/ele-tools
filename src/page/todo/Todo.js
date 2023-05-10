@@ -1,9 +1,33 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Icon from '../../component/Icon';
 import './todo.css'
 import globalId from '../../util/globalId';
 import DateTimePicker from '../../component/DateTimePicker';
 import Input from '../../component/Input'
+import Container from '../../component/Container';
+import SvgIcon from '../../component/SvgIcon';
+import Row from '../../component/Row';
+
+function prepareAddGroup(event){
+  let $target;
+  if(event.target.tagName === 'INPUT'){
+    $target = event.target.previousElementSibling;
+  }else{
+    $target = event.currentTarget;
+    event.currentTarget.nextElementSibling.focus();
+  }
+  $target.style.display = 'none';
+}
+
+function finishAddGroup(event){
+  let $target;
+  if(event.target.tagName === 'INPUT'){
+    $target = event.target.previousElementSibling;
+  }else{
+    $target = event.target;
+  }
+  $target.style.display = 'inline';
+}
 
 function TaskGroup({_list = [], _selectGroup}){
 
@@ -27,13 +51,12 @@ function TaskGroup({_list = [], _selectGroup}){
         item: newItem,
         type: 'group'
       })
+      event.target.blur();
     }
   }
+
   return (
     <div className="task-group">
-      <div className='task-group-create'>
-        <input name='listName' placeholder='新增列表' onKeyDown={createNewGroup}/>
-      </div>
       <div className='task-group-list'>
         {
           groupList.length > 0 &&
@@ -47,6 +70,15 @@ function TaskGroup({_list = [], _selectGroup}){
             })
         }
       </div>
+      <div className='task-group-create'>
+        <span className='flex'>
+          <SvgIcon iconType='add' onClick={prepareAddGroup}/>
+          <input className='input' placeholder='新建清单' 
+            onKeyDown={createNewGroup}
+            onFocus={prepareAddGroup} 
+            onBlur={finishAddGroup}/>
+        </span>
+     </div>
     </div>
   )
 }
@@ -79,6 +111,7 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
         type: 'task',
         groupId: _groupId
       })
+      event.target.blur();
     }
   }
 
@@ -107,9 +140,6 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
 
   return (
     <div className="task-list">
-      <div className='task-list-create'>
-        <input name='content' placeholder={groupName} onKeyDown={createNewTask} disabled={!_groupName || !_groupId}/>
-      </div>
       <div className='task-list-list'>
         {
           todoList.length > 0 &&
@@ -122,6 +152,13 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
               )
             })
         }
+      </div>
+      <div className='task-list-create'>
+        <SvgIcon iconType='add' onClick={prepareAddGroup} style={{cursor: 'pointer'}}/>
+        <input name='content' placeholder={groupName} 
+          onKeyDown={createNewTask}
+          onFocus={prepareAddGroup} 
+          onBlur={finishAddGroup}/>
       </div>
     </div>
   )
@@ -165,6 +202,7 @@ function TaskDetail({_item, _saveOrUpdateTask}){
       event.target.value = '';
       setTaskInfo(_taskInfo)
       updateTask({..._item, taskInfo: _taskInfo});
+      event.target.blur();
     }
   }
 
@@ -181,27 +219,34 @@ function TaskDetail({_item, _saveOrUpdateTask}){
   return (
     <div className="task-detail">
       <form disabled>
-        <div className='title'>
+        <Row className='title'>
           {_item.content}
-        </div>
-        <div className='sub-task'>
+        </Row>
+        <Row className='sub-task'>
           {
             !!taskInfo.subTasks && taskInfo.subTasks.length > 0 &&
               taskInfo.subTasks.map(a => {
                 return (
-                  <div className='sub-task-list' key={a._id}>
-                    <div className='checkbox' onClick={event => subTaskComplete(event, a)}></div>
+                  <div className='sub-task-list flex' key={a._id}>
+                    <div className='checkbox sm' onClick={event => subTaskComplete(event, a)}></div>
                     <span>{a.content}</span>
                   </div>
                 )
               })
           }
-          <input placeholder='添加子任务' onKeyDown={createNewSubTask}/>
-        </div>
-        <div className='dead-time'>
+          <div className='flex'>
+            <SvgIcon iconType='add' onClick={prepareAddGroup}/>
+            <input placeholder='添加子任务' 
+              onKeyDown={createNewSubTask}
+              onFocus={prepareAddGroup}
+              onBlur={finishAddGroup}
+              />
+          </div>
+        </Row>
+        <Row className='dead-time'>
           <DateTimePicker defaultValue='2023-04-11'/>
-        </div>
-        <div className='description'>
+        </Row>
+        <Row className='description'>
           <Input 
             value={!taskInfo.description ? '' : taskInfo.description}
             multiline={1}
@@ -209,11 +254,11 @@ function TaskDetail({_item, _saveOrUpdateTask}){
             onChange={taskInfoChange}
             placeholder='请输入描述'
             style={{
-              width: '100%',
+              width: '90%',
               resize: 'none'
             }}
           />
-        </div>
+        </Row>
       </form>
     </div>
   )

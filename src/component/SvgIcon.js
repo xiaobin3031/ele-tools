@@ -20,7 +20,7 @@ function AddIcon({width, height, color}){
 }
 function CheckIcon({width, height, color}){
   return (
-    <svg t="1683711735985" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3672" width={width} height={height}><path d="M853.333333 96H170.666667C130.133333 96 96 130.133333 96 170.666667v682.666666c0 40.533333 34.133333 74.666667 74.666667 74.666667h682.666666c40.533333 0 74.666667-34.133333 74.666667-74.666667V170.666667c0-40.533333-34.133333-74.666667-74.666667-74.666667z m10.666667 757.333333c0 6.4-4.266667 10.666667-10.666667 10.666667H170.666667c-6.4 0-10.666667-4.266667-10.666667-10.666667V170.666667c0-6.4 4.266667-10.666667 10.666667-10.666667h682.666666c6.4 0 10.666667 4.266667 10.666667 10.666667v682.666666z" fill={color} p-id="3673"></path><path d="M704 381.866667l-243.2 234.666666-117.333333-125.866666c-12.8-12.8-32-12.8-44.8-2.133334-12.8 12.8-12.8 32-2.133334 44.8l140.8 149.333334c6.4 6.4 14.933333 10.666667 23.466667 10.666666 8.533333 0 17.066667-4.266667 21.333333-8.533333l264.533334-256c12.8-12.8 12.8-32 0-44.8-10.666667-12.8-29.866667-14.933333-42.666667-2.133333z" fill={color} p-id="3674"></path></svg>
+    <svg t="1683711735985" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3672" width={width} height={height}><path d="M853.333333 96H170.666667C130.133333 96 96 130.133333 96 170.666667v682.666666c0 40.533333 34.133333 74.666667 74.666667 74.666667h682.666666c40.533333 0 74.666667-34.133333 74.666667-74.666667V170.666667c0-40.533333-34.133333-74.666667-74.666667-74.666667z m10.666667 757.333333c0 6.4-4.266667 10.666667-10.666667 10.666667H170.666667c-6.4 0-10.666667-4.266667-10.666667-10.666667V170.666667c0-6.4 4.266667-10.666667 10.666667-10.666667h682.666666c6.4 0 10.666667 4.266667 10.666667 10.666667v682.666666z" fill={color} p-id="3673"></path><path d="M704 381.866667l-243.2 234.666666-117.333333-125.866666c-12.8-12.8-32-12.8-44.8-2.133334-12.8 12.8-12.8 32-2.133334 44.8l140.8 149.333334c6.4 6.4 14.933333 10.666667 23.466667 10.666666 8.533333 0 17.066667-4.266667 21.333333-8.533333l264.533334-256c12.8-12.8 12.8-32 0-44.8-10.666667-12.8-29.866667-14.933333-42.666667-2.133333z" fill={color} p-id="3674"></path></svg>
   )
 }
 function DefaultIcon({width, height, color}){
@@ -45,9 +45,9 @@ function GetIcon({iconType, width, height, color}){
 }
 
 const _initSize = 20;
-export default function SvgIcon({iconType='default', size='sm', color}){
+export default function SvgIcon({iconType='default', size='sm', color, ...props}){
 
-  const _style = {};
+  let _style = {};
   switch(size){
     case 'md':
       _style.width = `${_initSize * 1.5}`;
@@ -62,14 +62,12 @@ export default function SvgIcon({iconType='default', size='sm', color}){
       _style.height = `${_initSize}`;
       break;
   }
+  _style = {..._style, ...(props.style || {})}
 
   const _color = color || defaultVal.color;
 
   return (
-    <span style={{
-      width: `${_style.width}px`,
-      height: `${_style.height}px`
-    }}>
+    <span style={_style} {...props}>
       <GetIcon iconType={iconType} width={_style.width} height={_style.height} color={_color} />
     </span>
   )
