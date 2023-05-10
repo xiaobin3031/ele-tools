@@ -5,6 +5,7 @@ import Calendar from './page/calendar/Calendar';
 import Scene from './page/flow/Scene';
 import HttpReqCompare from './page/hankyu/HttpReqCompare';
 import Todo from './page/todo/Todo';
+import Todo2 from './page/todo/Todo2';
 
 function App() {
   // return (
@@ -28,7 +29,7 @@ function App() {
       //<Scene />
   return (
     <div>
-      <Todo />
+      <Todo2 />
       {/* <Calendar props={{calendar: {}}}/> */}
       {/* <Order /> */}
       {/* <HttpReqCompare /> */}
