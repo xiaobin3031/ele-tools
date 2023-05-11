@@ -1,10 +1,15 @@
 import '../css/input.css'
 
-function Textarea(props){
-  const _classList = ['x-input', 'multiline'];
+function formatClass(props, _classList){
   if(props.borderclear === 1){
     _classList.push('border-clear');
   }
+}
+
+function Textarea(props){
+  const _classList = ['x-input', 'multiline'];
+  formatClass(props, _classList);
+
   return (
     <textarea className={_classList.join(' ')} {...props}></textarea>
   )
@@ -21,9 +26,7 @@ export default function Input(props){
       _props.type = 'text';
     }
     const _classList = ['x-input']
-    if(props.borderclear === 1){
-      _classList.push('border-clear');
-    }
+    formatClass(props, _classList);
     return (
       <input className={_classList.join(' ')} {..._props}/>
     )

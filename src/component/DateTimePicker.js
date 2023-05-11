@@ -227,7 +227,7 @@ function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue
                         _class.push('not-current-month')
                       }
                       return (
-                        <td onClick={event => selectDayDiv(event, b, currentRef.year, currentRef.month)} className={_class}>{b.day}</td>
+                        <td key={`day-id-${b.day}`} onClick={event => selectDayDiv(event, b, currentRef.year, currentRef.month)} className={_class}>{b.day}</td>
                       )
                     })
                   }
@@ -289,9 +289,19 @@ export default function DateTimePicker({showOnFocus=false, dateFormat, defaultVa
     return !!dateInputRef.current ? dateInputRef.current.value : defaultValue;
   }
 
+  const _inputClass = ['date-time'];
+  if(props.borderclear === 1){
+    _inputClass.push('border-less')
+  }
+
   return (
     <div className='x-date-time-picker' ref={pickerRef}>
-      <input className='date-time' type='text' name={props.name} onClick={event => showOnFocus ? showPicker(event) : ''} ref={dateInputRef} defaultValue={defaultValue}/>
+      <input className={_inputClass.join(' ')} type='text' name={props.name} 
+        onClick={showPicker} 
+        ref={dateInputRef} 
+        onBlur={closeSelect}
+        placeholder={props.placeholder || ''}
+        defaultValue={defaultValue}/>
       <span className='icon' onClick={showPicker}>
         <SvgIcon iconType='calendar' />
       </span>

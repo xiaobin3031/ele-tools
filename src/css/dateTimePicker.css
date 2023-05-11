@@ -1,6 +1,5 @@
 .x-date-time-picker {
   display: flex;
-  margin: auto;
 }
 .x-date-time-picker > .date-time {
   padding: 5px;
@@ -8,6 +7,12 @@
   border-bottom-left-radius: 5px;
   border-style: none;
   border: 1px solid var(--color-border-common);
+}
+.x-date-time-picker > .date-time.border-less {
+  border-style: none;
+}
+.x-date-time-picker > .date-time.border-less + span {
+  display: none;
 }
 .x-date-time-picker > .icon {
   display: inline-block;

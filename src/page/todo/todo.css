@@ -90,6 +90,13 @@
   box-sizing: border-box;
   border-style: none;
 }
+.dead-time {
+  display: flex;
+}
+.task-detail .title > input:not(:focus),
+.task-detail .description > textarea:not(:focus) {
+  cursor: pointer;
+}
 
 
 @keyframes complete-animation {

@@ -29,6 +29,27 @@ function finishAddGroup(event){
   $target.style.display = 'inline';
 }
 
+function subPrepareAddGroup(event){
+  let $target;
+  if(event.target.tagName === 'INPUT'){
+    $target = event.target.previousElementSibling;
+  }else{
+    $target = event.currentTarget;
+    event.currentTarget.nextElementSibling.focus();
+  }
+  $target.style.opacity = 0;
+}
+
+function subFinishAddGroup(event){
+  let $target;
+  if(event.target.tagName === 'INPUT'){
+    $target = event.target.previousElementSibling;
+  }else{
+    $target = event.target;
+  }
+  $target.style.opacity = 1;
+}
+
 function TaskGroup({_list = [], _selectGroup}){
 
   const [groupList, setGroupList] = useState(_list.concat());
@@ -145,7 +166,7 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
           todoList.length > 0 &&
             todoList.map(a => {
               return (
-                <div key={a._id} className='item' onClick={event => clickTask(event, a)}>
+                <div att={a._id} key={a._id} className='item' onClick={event => clickTask(event, a)}>
                   <div className='checkbox' onClick={(event) => taskComplete(event, a)}></div>
                   <span>{a.content}</span>
                 </div>
@@ -166,8 +187,11 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
 
 function TaskDetail({_item, _saveOrUpdateTask}){
 
+  const [task, setTask] = useState({});
+
   const [taskInfo, setTaskInfo] = useState({});
   useEffect(() => {
+    setTask(_item);
     const _taskInfo = _item.taskInfo || {};
     setTaskInfo(_taskInfo);
   }, [_item])
@@ -183,7 +207,7 @@ function TaskDetail({_item, _saveOrUpdateTask}){
     }else{
       event.target.classList.remove('complete')
     }
-    updateTask({..._item, taskInfo: _taskInfo});
+    updateTask({...task, taskInfo: _taskInfo});
   }
 
   function createNewSubTask(event){
@@ -201,7 +225,7 @@ function TaskDetail({_item, _saveOrUpdateTask}){
       }
       event.target.value = '';
       setTaskInfo(_taskInfo)
-      updateTask({..._item, taskInfo: _taskInfo});
+      updateTask({...task, taskInfo: _taskInfo});
       event.target.blur();
     }
   }
@@ -213,45 +237,79 @@ function TaskDetail({_item, _saveOrUpdateTask}){
   }
 
   function taskInfoChange(event){
+    setTaskInfo({
+      ...taskInfo,
+      [event.target.name]: event.target.value
+    })
+    updateTask({...task, taskInfo: taskInfo});
+  }
 
+  function taskChange(event){
+    setTask({
+      ...task, 
+      [event.target.name]: event.target.value
+    })
+  }
+
+  function updateTask(event){
+    if(event.type === 'blur'){
+      _saveOrUpdateTask(task);
+      console.log('blur');
+    }else if(event.type === 'keydown' && event.keyCode === 13){
+      _saveOrUpdateTask(task);
+      event.target.blur();
+    }
   }
 
   return (
     <div className="task-detail">
       <form disabled>
         <Row className='title'>
-          {_item.content}
+          <Input
+            borderclear={1}
+            value={!!task.content ? task.content: ''}
+            name='content'
+            onChange={taskChange}
+            onKeyDown={updateTask}
+            onBlur={updateTask}
+            style={{
+              width: '80%'
+            }}
+           />
         </Row>
         <Row className='sub-task'>
           {
             !!taskInfo.subTasks && taskInfo.subTasks.length > 0 &&
               taskInfo.subTasks.map(a => {
                 return (
-                  <div className='sub-task-list flex' key={a._id}>
+                  <Row className='sub-task-list flex' key={a._id}>
                     <div className='checkbox sm' onClick={event => subTaskComplete(event, a)}></div>
                     <span>{a.content}</span>
-                  </div>
+                  </Row>
                 )
               })
           }
-          <div className='flex'>
-            <SvgIcon iconType='add' onClick={prepareAddGroup}/>
+          <Row className='flex'>
+            <SvgIcon iconType='add' onClick={subPrepareAddGroup}/>
             <input placeholder='添加子任务' 
               onKeyDown={createNewSubTask}
-              onFocus={prepareAddGroup}
-              onBlur={finishAddGroup}
+              onFocus={subPrepareAddGroup}
+              onBlur={subFinishAddGroup}
               />
-          </div>
+          </Row>
         </Row>
         <Row className='dead-time'>
-          <DateTimePicker defaultValue='2023-04-11'/>
+          <SvgIcon iconType='notification'/>
+          <DateTimePicker placeholder='提醒我' borderclear/>
         </Row>
         <Row className='description'>
           <Input 
             value={!taskInfo.description ? '' : taskInfo.description}
             multiline={1}
+            borderclear={1}
             rows={10}
             onChange={taskInfoChange}
+            name="description"
             placeholder='请输入描述'
             style={{
               width: '90%',
@@ -285,12 +343,21 @@ export default function Todo({}){
     setTask({...item})
   }
 
+  function saveOrUpdateTask(item){
+    if(!item._id){
+      item._id = globalId();
+    }
+    setTask(item);
+    setTaskList(taskList.map(a => a._id === item._id ? item : a))
+    window.fileOp.saveOrUpdateTask({item: item, type: 'task', groupId: selectGroup._id})
+  }
+
   return (
     <div className="x-todo">
       <div className="x-todo-container">
         <TaskGroup _selectGroup={clickGroup} _list={groupList}/>
-        <TaskList _groupId={selectGroup._id} _groupName={selectGroup.name} _list={taskList} _clickTask={clickTask}/>
-        <TaskDetail _item={task}/>
+        <TaskList key={selectGroup._id} _groupId={selectGroup._id} _groupName={selectGroup.name} _list={taskList} _clickTask={clickTask}/>
+        <TaskDetail _item={task} _saveOrUpdateTask={saveOrUpdateTask}/>
       </div>
     </div>
   )
