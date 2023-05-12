@@ -211,26 +211,16 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
 
 function TaskDetail({_item, _saveOrUpdateTask}){
 
-  let item = {..._item}
-  if(!item.taskInfo){
-    item.taskInfo = {};
-  }
-  if(!item.taskInfo.subTasks){
-    item.taskInfo.subTasks = [];
-  }
-  const [task, setTask] = useState(item);
-  console.log('item', item);
-  useEffect(() => {
-    item = {..._item}
+  const [task, setTask] = useState(() => {
+    let item = {..._item}
     if(!item.taskInfo){
       item.taskInfo = {};
     }
     if(!item.taskInfo.subTasks){
       item.taskInfo.subTasks = [];
     }
-    setTask(item)
-    console.log('item 2', item);
-  }, [_item])
+    return item;
+  });
 
   function subTaskComplete(event, item){
     event.stopPropagation();
@@ -366,10 +356,6 @@ export default function Todo({}){
     setTaskList([..._list]);
   }
 
-  function clickTask(item){
-    setTask({...item})
-  }
-
   function saveOrUpdateTask(item){
     if(!item._id){
       item._id = globalId();
@@ -383,8 +369,10 @@ export default function Todo({}){
     <div className="x-todo">
       <div className="x-todo-container">
         <TaskGroup _selectGroup={clickGroup} _list={groupList}/>
-        <TaskList key={selectGroup._id} _groupId={selectGroup._id} _groupName={selectGroup.name} _list={taskList} _clickTask={clickTask}/>
-        <TaskDetail _item={task} _saveOrUpdateTask={saveOrUpdateTask}/>
+        <TaskList key={selectGroup._id} _groupId={selectGroup._id} 
+          _groupName={selectGroup.name} _list={taskList} 
+          _clickTask={item => setTask({...item})}/>
+        <TaskDetail key={task._id} _item={task} _saveOrUpdateTask={saveOrUpdateTask}/>
       </div>
     </div>
   )
