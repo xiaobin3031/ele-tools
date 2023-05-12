@@ -176,8 +176,7 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
           item: _item, type: 'task', groupId: _groupId
         })
       }
-      todoList.splice(index, 1);
-      setTodoList(todoList);
+      setTodoList(todoList.filter((a, i) => index !== i));
     }
   }
 
@@ -212,27 +211,37 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
 
 function TaskDetail({_item, _saveOrUpdateTask}){
 
-  const [task, setTask] = useState({});
-
-  const [taskInfo, setTaskInfo] = useState({});
+  let item = {..._item}
+  if(!item.taskInfo){
+    item.taskInfo = {};
+  }
+  if(!item.taskInfo.subTasks){
+    item.taskInfo.subTasks = [];
+  }
+  const [task, setTask] = useState(item);
+  console.log('item', item);
   useEffect(() => {
-    setTask(_item);
-    const _taskInfo = _item.taskInfo || {};
-    setTaskInfo(_taskInfo);
+    item = {..._item}
+    if(!item.taskInfo){
+      item.taskInfo = {};
+    }
+    if(!item.taskInfo.subTasks){
+      item.taskInfo.subTasks = [];
+    }
+    setTask(item)
+    console.log('item 2', item);
   }, [_item])
 
   function subTaskComplete(event, item){
     event.stopPropagation();
     item.complete = !item.complete;
-    const _taskInfo = {...taskInfo};
-    _taskInfo.subTasks = _taskInfo.subTasks.map(a => a._id === item._id ? item : a);
-    setTaskInfo(_taskInfo);
+    task.taskInfo.subTasks = task.taskInfo.subTasks.map(a => a._id === item._id ? item : a);
     if(item.complete){
       event.target.classList.add('complete')
     }else{
       event.target.classList.remove('complete')
     }
-    updateTask({...task, taskInfo: _taskInfo});
+    updateTask({...task});
   }
 
   function createNewSubTask(event){
@@ -241,32 +250,25 @@ function TaskDetail({_item, _saveOrUpdateTask}){
       if(!_val){
         return;
       }
-      const _taskInfo = {...taskInfo}
       const _newItem = {_id: globalId(), content: _val}
-      if(!_taskInfo.subTasks){
-        _taskInfo.subTasks = [_newItem]
-      }else{
-        _taskInfo.subTasks.push(_newItem);
-      }
+      task.taskInfo.subTasks.push(_newItem);
       event.target.value = '';
-      setTaskInfo(_taskInfo)
-      updateTask({...task, taskInfo: _taskInfo});
+      updateTask({...task});
       event.target.blur();
     }
   }
 
   function updateTask(item){
+    setTask(item)
     window.fileOp.saveOrUpdateTask({
       item: item, type: 'task', groupId: item.pId
     })
   }
 
   function taskInfoChange(event){
-    setTaskInfo({
-      ...taskInfo,
-      [event.target.name]: event.target.value
-    })
-    updateTask({...task, taskInfo: taskInfo});
+    const _task = {...task}
+    _task.taskInfo[event.target.name] = event.target.value;
+    updateTask(_task);
   }
 
   function taskChange(event){
@@ -276,7 +278,7 @@ function TaskDetail({_item, _saveOrUpdateTask}){
     })
   }
 
-  function updateTask(event){
+  function updateTaskInfo(event){
     if(event.type === 'blur'){
       _saveOrUpdateTask(task);
       console.log('blur');
@@ -295,8 +297,8 @@ function TaskDetail({_item, _saveOrUpdateTask}){
             value={!!task.content ? task.content: ''}
             name='content'
             onChange={taskChange}
-            onKeyDown={updateTask}
-            onBlur={updateTask}
+            onKeyDown={updateTaskInfo}
+            onBlur={updateTaskInfo}
             style={{
               width: '80%'
             }}
@@ -304,8 +306,8 @@ function TaskDetail({_item, _saveOrUpdateTask}){
         </Row>
         <Row className='sub-task'>
           {
-            !!taskInfo.subTasks && taskInfo.subTasks.length > 0 &&
-              taskInfo.subTasks.map(a => {
+            !!task.taskInfo.subTasks && task.taskInfo.subTasks.length > 0 &&
+              task.taskInfo.subTasks.map(a => {
                 return (
                   <Row className='sub-task-list flex' key={a._id}>
                     <div className='checkbox sm' onClick={event => subTaskComplete(event, a)}></div>
@@ -329,7 +331,7 @@ function TaskDetail({_item, _saveOrUpdateTask}){
         </Row>
         <Row className='description'>
           <Input 
-            value={!taskInfo.description ? '' : taskInfo.description}
+            value={!task.taskInfo.description ? '' : task.taskInfo.description}
             multiline={1}
             borderclear={1}
             rows={10}
