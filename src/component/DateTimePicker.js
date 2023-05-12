@@ -19,7 +19,8 @@ function getDayData(year, month, day){
   dateList.push(
     {
       day: day,
-      thisMonth: true
+      thisMonth: true,
+      selected: true
     }
   );
   for(let i = day - 1;i>=1;i--){
@@ -145,7 +146,7 @@ function getDateValue(_dateFormat, _defaultValue){
   return dateValue;
 }
 
-function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue, _closeSelect}){
+function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue, _closeSelect, ...props}){
 
   const now = new Date();
   const dateVal = {
@@ -163,7 +164,7 @@ function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue
 
   const [currentRef, setCurrentRef] = useState(dateVal)
 
-  function changeYearMonth(_year, _month){
+  function changeYearMonth(_year, _month, date){
     if(_month > 12){
       _month -= 12;
       _year++;
@@ -174,30 +175,43 @@ function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue
     if(_year <= 0 || _year > 9999){
       return;
     }
-    setCurrentRef({...currentRef, month: _month, year: _year})
+    setCurrentRef({...currentRef, month: _month, year: _year, date: date})
   }
 
   const weekData = weekContentList.map(a => weekPrefix + a);
   const trDataList = getDayData(currentRef.year, currentRef.month, currentRef.date);
 
   function selectDayDiv(event, item, year, month){
-    const _value = formatDateValue(_dateFormat, year, month, item.day);
+    // 是否是本月
+    let _value = formatDateValue(_dateFormat, year, month, item.day);
+    if(item.thisMonth){
+      _value = formatDateValue(_dateFormat, year, month, item.day);
+      setCurrentRef({...currentRef, currentValue: _value, date: item.day, month: month, year: year, date: item.day})
+    }else{
+      let _month;
+      if(item.day <= 7){
+        _month = month + 1;
+      }else{
+        _month = month - 1;
+      }
+      _value = formatDateValue(_dateFormat, year, _month, item.day);
+      changeYearMonth(year, _month, item.day);
+    }
     _valueChange(_value);
-    setCurrentRef({...currentRef, currentValue: _value, date: item.day, month: month, year: year})
   }
 
   return (
-    <div className='picker-region'>
+    <div className='picker-region' {...props}>
       <table>
         <thead>
           <tr>
             <th colSpan={7}>
               <div className='year-month-ctrl'>
-                <span><Icon onClick={() => changeYearMonth(currentRef.year - 1, currentRef.month)} iconType="arrow-double-left" style={{width: '15px', height: '15px'}}/></span>
-                <span><Icon onClick={() => changeYearMonth(currentRef.year, currentRef.month - 1)} iconType="arrow-right" style={{ rotate: '180deg',width: '15px', height: '15px' }}/></span>
-                <span onClick={() => changeYearMonth(now.getFullYear(), now.getMonth() + 1)}>{currentRef.year} - {currentRef.month}</span>
-                <span><Icon onClick={() => changeYearMonth(currentRef.year, currentRef.month + 1)} iconType="arrow-right" style={{width: '15px', height: '15px'}}/></span>
-                <span><Icon onClick={() => changeYearMonth(currentRef.year + 1, currentRef.month)} iconType="arrow-double-right" style={{width: '15px', height: '15px'}}/></span>
+                <span><Icon onClick={() => changeYearMonth(currentRef.year - 1, currentRef.month, currentRef.date)} iconType="arrow-double-left" style={{width: '15px', height: '15px'}}/></span>
+                <span><Icon onClick={() => changeYearMonth(currentRef.year, currentRef.month - 1, currentRef.date)} iconType="arrow-right" style={{ rotate: '180deg',width: '15px', height: '15px' }}/></span>
+                <span onClick={() => changeYearMonth(now.getFullYear(), now.getMonth() + 1, now.getDate())}>{currentRef.year} - {currentRef.month}</span>
+                <span><Icon onClick={() => changeYearMonth(currentRef.year, currentRef.month + 1, currentRef.date)} iconType="arrow-right" style={{width: '15px', height: '15px'}}/></span>
+                <span><Icon onClick={() => changeYearMonth(currentRef.year + 1, currentRef.month, currentRef.date)} iconType="arrow-double-right" style={{width: '15px', height: '15px'}}/></span>
               </div>
             </th>
           </tr>
@@ -226,8 +240,15 @@ function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue
                       if(_notInMonth){
                         _class.push('not-current-month')
                       }
+                      if(b.selected){
+                        _class.push('selected')
+                      }
                       return (
-                        <td key={`day-id-${b.day}`} onClick={event => selectDayDiv(event, b, currentRef.year, currentRef.month)} className={_class}>{b.day}</td>
+                        <td key={`day-id-${b.day}`} onClick={event => selectDayDiv(event, b, currentRef.year, currentRef.month)} className={_class.join(' ')}>
+                          <div>
+                            {b.day}
+                          </div>
+                        </td>
                       )
                     })
                   }
@@ -263,10 +284,24 @@ export default function DateTimePicker({showOnFocus=false, dateFormat, defaultVa
 
   const pickerRef = useRef(null);
   const dateInputRef = useRef(null);
+  const blurOnCloseSelect = useRef(true);
 
   function showPicker(){
     if(pickerRef.current.classList.contains('show')){
       pickerRef.current.classList.remove('show');
+    }else{
+      const height = pickerRef.current.offsetHeight;
+      const left = pickerRef.current.offsetLeft;
+      const top = pickerRef.current.offsetTop;
+      pickerRef.current.classList.add('show');
+      pickerRef.current.getElementsByClassName('picker-region')[0].style.left = `${left}px`
+      pickerRef.current.getElementsByClassName('picker-region')[0].style.top = `${top + height}px`
+    }
+  }
+
+  function showPickerAlways(){
+    if(pickerRef.current.classList.contains('show')){
+      return;
     }else{
       const height = pickerRef.current.offsetHeight;
       const left = pickerRef.current.offsetLeft;
@@ -284,6 +319,11 @@ export default function DateTimePicker({showOnFocus=false, dateFormat, defaultVa
   function closeSelect(){
     pickerRef.current.classList.remove('show');
   }
+  function inputBlur(){
+    if(blurOnCloseSelect.current){
+      closeSelect();
+    }
+  }
 
   function getDefaultValue(){
     return !!dateInputRef.current ? dateInputRef.current.value : defaultValue;
@@ -297,15 +337,18 @@ export default function DateTimePicker({showOnFocus=false, dateFormat, defaultVa
   return (
     <div className='x-date-time-picker' ref={pickerRef}>
       <input className={_inputClass.join(' ')} type='text' name={props.name} 
-        onClick={showPicker} 
+        onClick={showPickerAlways} 
         ref={dateInputRef} 
-        onBlur={closeSelect}
+        onBlur={inputBlur}
         placeholder={props.placeholder || ''}
         defaultValue={defaultValue}/>
       <span className='icon' onClick={showPicker}>
         <SvgIcon iconType='calendar' />
       </span>
-      <CalendarSelect _valueChange={selectDate} _dateFormat={dateFormat} _defaultValue={getDefaultValue()} _closeSelect={closeSelect}/>
+      <CalendarSelect 
+        onMouseEnter={() => blurOnCloseSelect.current = false}
+        onMouseLeave={() => blurOnCloseSelect.current = true}
+        _valueChange={selectDate} _dateFormat={dateFormat} _defaultValue={getDefaultValue()} _closeSelect={closeSelect}/>
     </div>
   )
 }

@@ -120,16 +120,21 @@ function saveOrUpdateTask({item, type = 'group', groupId}){
             _data.push(item);
           }
           fs.writeFile(path, new Uint8Array(Buffer.from(JSON.stringify(_data))), (err) => {
-            console.log('write todo', err);
           })
         }
       })
     }else{
       fs.writeFile(path, new Uint8Array(Buffer.from(JSON.stringify([item]))), (err) => {
-        console.log('write todo', err);
       })
     }
   })
+}
+
+function refreshTaskList({list, groupId}){
+  const path = getTodoFileAndPath('task', groupId);
+  fs.writeFile(path, new Uint8Array(Buffer.from(JSON.stringify(list))), err => {
+    // log
+  });
 }
 
 function readTaskList({type = 'group', groupId}){
@@ -140,7 +145,8 @@ function readTaskList({type = 'group', groupId}){
   if(fs.existsSync(path)){
     const _data = fs.readFileSync(path, {encoding: 'utf-8'});
     if(!!_data){
-      return JSON.parse(_data);
+      const list = JSON.parse(_data);
+      return list.filter(a => !a.deleted);
     }
   }
   return [];
@@ -159,5 +165,6 @@ contextBridge.exposeInMainWorld('fileOp', {
   readCalendarTodo: readCalendarTodo,
   updateOrSaveCalendarTodo: updateOrSaveCalendarTodo,
   saveOrUpdateTask: saveOrUpdateTask,
-  readTaskList: readTaskList
+  readTaskList: readTaskList,
+  refreshTaskList: refreshTaskList
 });

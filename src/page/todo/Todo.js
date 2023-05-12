@@ -156,7 +156,29 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
 
   function clickTask(event, item){
     // todo 修改点击样式
+    if(!event.currentTarget.classList.contains("select")){
+      Array.from(event.currentTarget.parentElement.children).filter(a => a.classList.contains('select')).forEach(a => a.classList.remove('select'))
+      event.currentTarget.classList.add('select');
+    }
     _clickTask(item);
+  }
+
+  function removeTask(event, item, index){
+    event.stopPropagation();
+    if(window.confirm(`是否删除该任务?`)){
+      if(!item._id){
+        todoList[index]._id = globalId();
+        todoList[index].deleted = 1;
+        window.fileOp.refreshTaskList({list: todoList, groupId: _groupId})
+      }else{
+        const _item = {...item, deleted: 1}
+        window.fileOp.saveOrUpdateTask({
+          item: _item, type: 'task', groupId: _groupId
+        })
+      }
+      todoList.splice(index, 1);
+      setTodoList(todoList);
+    }
   }
 
   return (
@@ -164,11 +186,14 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
       <div className='task-list-list'>
         {
           todoList.length > 0 &&
-            todoList.map(a => {
+            todoList.map((a, index) => {
               return (
                 <div att={a._id} key={a._id} className='item' onClick={event => clickTask(event, a)}>
                   <div className='checkbox' onClick={(event) => taskComplete(event, a)}></div>
                   <span>{a.content}</span>
+                  {
+                    !a.complete && <SvgIcon iconType='ashbin' color='rgba(255, 127, 88, 0.8)' onClick={event => removeTask(event, a, index)} className='remove'/>
+                  }
                 </div>
               )
             })
@@ -300,7 +325,7 @@ function TaskDetail({_item, _saveOrUpdateTask}){
         </Row>
         <Row className='dead-time'>
           <SvgIcon iconType='notification'/>
-          <DateTimePicker placeholder='提醒我' borderclear/>
+          <DateTimePicker placeholder='提醒我' borderclear={1}/>
         </Row>
         <Row className='description'>
           <Input 
