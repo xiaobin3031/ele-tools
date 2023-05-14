@@ -4,7 +4,8 @@
 }
 .x-todo-container {
   display: grid;
-  grid-template-columns: var(--list-width) calc((100% - var(--list-width)) * 2 / 5) calc((100% - var(--list-width)) * 3 / 5);
+  /* grid-template-columns: var(--list-width) calc((100% - var(--list-width)) * 2 / 5) calc((100% - var(--list-width)) * 3 / 5); */
+  grid-template-columns: var(--list-width) calc(100% - var(--list-width));
   height: 100vh;
   overflow-y: scroll;
 }
@@ -23,13 +24,16 @@
 .task-group-list {
   height: calc(100vh - 40px);
 }
-.task-group-list .item {
+.task-group-list .group-item {
   padding: 5px;
   margin: 0;
   display: flex;
   cursor: pointer;
 }
-.task-group-list .item > img {
+.task-group-list .group-item.select {
+  background-color: rgba(162, 162, 255, 0.3)
+}
+.task-group-list .group-item > img {
   margin-right: 5px;
 }
 .task-list {
@@ -87,9 +91,12 @@
   width: 15px;
   height: 15px;
 }
-.x-todo .checkbox.complete {
+.x-todo .checkbox.completing {
   animation: complete-animation .5s;
   animation-fill-mode: forwards;
+}
+.x-todo .checkbox.complete {
+  background-color: rgb(107, 107, 255, 0.5);
 }
 .x-todo .checkbox.complete + span{
   text-decoration: line-through;
@@ -104,9 +111,37 @@
 .dead-time {
   display: flex;
 }
+.task-detail-container {
+  position: absolute;
+  height: 100%;
+  width: 0px;
+  top: 0;
+  right: 0;
+  background-color: white;
+  border-left: 1px solid black;
+}
+.task-detail-container.show {
+  animation: task-detail-show-animation .3s ease;
+  animation-fill-mode: forwards;
+}
+.task-detail-container.hide {
+  animation: task-detail-hide-animation .3s ease;
+  animation-fill-mode: forwards;
+}
 .task-detail .title > input:not(:focus),
 .task-detail .description > textarea:not(:focus) {
   cursor: pointer;
+}
+
+.todo-context-menu {
+  position: absolute;
+  height: 0;
+  width: 0;
+}
+.todo-context-menu.show {
+  display: block;
+  width: 100px;
+  height: auto;
 }
 
 
@@ -115,5 +150,21 @@
 
   100%{
     background-color: rgb(107, 107, 255, 0.5);
+  }
+}
+@keyframes task-detail-show-animation {
+  0% {
+    width: 0px;
+  }
+  100% {
+    width: 60%;
+  }
+}
+@keyframes task-detail-hide-animation {
+  0% {
+    width: 60px;
+  }
+  100% {
+    width: 0px;
   }
 }

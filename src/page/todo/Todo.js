@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Icon from '../../component/Icon';
 import './todo.css'
 import globalId from '../../util/globalId';
@@ -7,6 +7,7 @@ import Input from '../../component/Input'
 import Container from '../../component/Container';
 import SvgIcon from '../../component/SvgIcon';
 import Row from '../../component/Row';
+import ReactDOM from 'react-dom/client';
 
 function prepareAddGroup(event){
   let $target;
@@ -76,6 +77,16 @@ function TaskGroup({_list = [], _selectGroup}){
     }
   }
 
+  function selectGroup(event, item){
+    event.stopPropagation();
+    Array.from(event.currentTarget.parentElement.children)
+      .filter(a => a.classList.contains("select")).forEach(a => a.classList.remove('select'))
+    if(!event.currentTarget.classList.contains('select')){
+      event.currentTarget.classList.add('select')
+      _selectGroup(item);
+    }
+  }
+
   return (
     <div className="task-group">
       <div className='task-group-list'>
@@ -83,7 +94,7 @@ function TaskGroup({_list = [], _selectGroup}){
           groupList.length > 0 &&
             groupList.map(a => {
               return (
-                <div key={a._id} className='item' onClick={() => _selectGroup(a)}>
+                <div key={a._id} className='group-item' onClick={event => selectGroup(event, a)}>
                   <Icon iconType='menu' />
                   <span>{a.name}</span>
                 </div>
@@ -104,7 +115,7 @@ function TaskGroup({_list = [], _selectGroup}){
   )
 }
 
-function TaskList({_list = [], _groupId, _groupName, _clickTask}){
+function TaskList({_list = [], _groupId, _groupName, _clickTask, _hideTaskDetail}){
 
   const [todoList, setTodoList] = useState([])
   useEffect(() => {
@@ -155,6 +166,7 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
   }
 
   function clickTask(event, item){
+    event.stopPropagation();
     // todo 修改点击样式
     if(!event.currentTarget.classList.contains("select")){
       Array.from(event.currentTarget.parentElement.children).filter(a => a.classList.contains('select')).forEach(a => a.classList.remove('select'))
@@ -180,8 +192,12 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
     }
   }
 
+  function clickTaskList(){
+    _hideTaskDetail();
+  }
+
   return (
-    <div className="task-list">
+    <div className="task-list" onClick={clickTaskList}>
       <div className='task-list-list'>
         {
           todoList.length > 0 &&
@@ -200,7 +216,7 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask}){
       </div>
       <div className='task-list-create'>
         <SvgIcon iconType='add' onClick={prepareAddGroup} style={{cursor: 'pointer'}}/>
-        <input name='content' placeholder={groupName} 
+        <input name='content' placeholder="添加任务" 
           onKeyDown={createNewTask}
           onFocus={prepareAddGroup} 
           onBlur={finishAddGroup}/>
@@ -339,13 +355,53 @@ function TaskDetail({_item, _saveOrUpdateTask}){
   )
 }
 
+function GroupListContextMenu({}){
+
+}
+
 export default function Todo({}){
 
   const [selectGroup, setSelectGroup] = useState({});
   const [task, setTask] = useState({})
   const [taskList, setTaskList] = useState([]);
+  const taskDetailRef = useRef(null);
   const groupList = window.fileOp.readTaskList({type: 'group'});
 
+  useEffect(() => {
+    const contextMenuClick = (event) => {
+      let $target = event.target;
+      if($target.tagName !== 'DIV' || !$target.classList.contains('group-item')){
+        $target = $target.parentElement;
+      }
+      if($target.tagName !== 'DIV' || !$target.classList.contains('group-item')){
+        // 不是目标
+        return;
+      }
+      console.log('group.key', $target.getAttribute('key'));
+
+      let $todoContextMenu = document.getElementById('todo-context-menu');
+      if(!$todoContextMenu){
+        $todoContextMenu = document.createElement('div');
+        $todoContextMenu.id = 'todo-context-menu'
+        document.body.appendChild($todoContextMenu);
+        const $reactDom = ReactDOM.createRoot($todoContextMenu);
+        $reactDom.render(
+          <GroupListContextMenu />
+        )
+      }
+      if(!$todoContextMenu.classList.contains('show')){
+        $todoContextMenu.classList.add('show');
+      }
+      $todoContextMenu.style.left = `${event.clientX}px`
+      $todoContextMenu.style.top = `${event.clientY}px`
+
+    }
+    window.addEventListener('contextmenu', contextMenuClick);
+
+    return () => {
+      window.removeEventListener('contextmenu', contextMenuClick);
+    }
+  }, []);
   function clickGroup(item){
     setSelectGroup({
       ...selectGroup,
@@ -354,6 +410,7 @@ export default function Todo({}){
     })
     const _list = window.fileOp.readTaskList({type: 'task', groupId: item._id})
     setTaskList([..._list]);
+    hideTaskDetail();
   }
 
   function saveOrUpdateTask(item){
@@ -365,13 +422,33 @@ export default function Todo({}){
     window.fileOp.saveOrUpdateTask({item: item, type: 'task', groupId: selectGroup._id})
   }
 
+  function clickTask(item){
+    setTask({...item});
+    if(taskDetailRef.current.classList.contains('show')) return;
+    taskDetailRef.current.classList.add('show')
+  }
+
+  function hideTaskDetail(){
+    if(!taskDetailRef.current.classList.contains('show')) return;
+    const animationEnd = (event) => {
+      event.target.classList.remove('hide');
+      event.target.removeEventListener('animationend', animationEnd);
+    }
+    taskDetailRef.current.addEventListener('animationend', animationEnd);
+    taskDetailRef.current.classList.remove('show');
+    taskDetailRef.current.classList.add('hide');
+  }
+
   return (
     <div className="x-todo">
       <div className="x-todo-container">
         <TaskGroup _selectGroup={clickGroup} _list={groupList}/>
         <TaskList key={selectGroup._id} _groupId={selectGroup._id} 
           _groupName={selectGroup.name} _list={taskList} 
-          _clickTask={item => setTask({...item})}/>
+          _hideTaskDetail={hideTaskDetail}
+          _clickTask={clickTask}/>
+      </div>
+      <div ref={taskDetailRef} className='task-detail-container'>
         <TaskDetail key={task._id} _item={task} _saveOrUpdateTask={saveOrUpdateTask}/>
       </div>
     </div>
