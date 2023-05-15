@@ -4,13 +4,11 @@
 }
 .x-todo-container {
   display: grid;
-  /* grid-template-columns: var(--list-width) calc((100% - var(--list-width)) * 2 / 5) calc((100% - var(--list-width)) * 3 / 5); */
   grid-template-columns: var(--list-width) calc(100% - var(--list-width));
   height: 100vh;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
 }
 .task-group {
-  height: 100%;
   border-right: 1px solid var(--color-border-common);
 }
 .task-group-create {
@@ -112,20 +110,19 @@
   display: flex;
 }
 .task-detail-container {
-  position: absolute;
+  position: fixed;
   height: 100%;
   width: 0px;
   top: 0;
   right: 0;
   background-color: white;
-  border-left: 1px solid black;
 }
 .task-detail-container.show {
   animation: task-detail-show-animation .3s ease;
   animation-fill-mode: forwards;
 }
 .task-detail-container.hide {
-  animation: task-detail-hide-animation .3s ease;
+  animation: task-detail-hide-animation .5s ease;
   animation-fill-mode: forwards;
 }
 .task-detail .title > input:not(:focus),
@@ -133,15 +130,35 @@
   cursor: pointer;
 }
 
-.todo-context-menu {
+#todo-context-menu {
   position: absolute;
+  display: none;
   height: 0;
   width: 0;
+  border-radius: 5px;
+  padding: 0px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
 }
-.todo-context-menu.show {
+#todo-context-menu.show {
   display: block;
-  width: 100px;
+  width: 85px;
   height: auto;
+}
+#todo-context-menu ul {
+  list-style: none;
+  padding-left: 10px;
+  margin: 5px;
+  padding-left: 3px;
+}
+#todo-context-menu ul > li {
+  font-size: .8em;
+}
+#todo-context-menu ul >li:not(:last-child) {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-border-common);
+}
+#todo-context-menu ul >li:not(:first-child) {
+  padding-top: 10px;
 }
 
 
@@ -155,14 +172,17 @@
 @keyframes task-detail-show-animation {
   0% {
     width: 0px;
+    border-left: 1px solid black;
   }
   100% {
     width: 60%;
+    border-left: 1px solid black;
   }
 }
 @keyframes task-detail-hide-animation {
   0% {
-    width: 60px;
+    width: 60%;
+    border-left: 1px solid black;
   }
   100% {
     width: 0px;

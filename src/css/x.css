@@ -15,6 +15,9 @@ select:focus {
   display: flex;
   align-items: center;
 }
+.pointer {
+  cursor: pointer;
+}
 
 
 @keyframes scale-disappear {

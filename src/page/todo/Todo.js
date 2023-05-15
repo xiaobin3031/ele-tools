@@ -94,7 +94,7 @@ function TaskGroup({_list = [], _selectGroup}){
           groupList.length > 0 &&
             groupList.map(a => {
               return (
-                <div key={a._id} className='group-item' onClick={event => selectGroup(event, a)}>
+                <div groupid={a._id} key={a._id} className='group-item' onClick={event => selectGroup(event, a)}>
                   <Icon iconType='menu' />
                   <span>{a.name}</span>
                 </div>
@@ -355,8 +355,44 @@ function TaskDetail({_item, _saveOrUpdateTask}){
   )
 }
 
-function GroupListContextMenu({}){
+function GroupListContextMenu({_renameGroup, _removeGroup}){
 
+  function renameGroup(event){
+    const groupId = document.getElementById('todo-context-menu')?.getAttribute('groupid');
+    if(!groupId){
+      return;
+    }
+  }
+
+  function removeGroup(event){
+    const groupId = document.getElementById('todo-context-menu')?.getAttribute('groupid');
+    if(!groupId){
+      return;
+    }
+    if(window.confirm('是否删除')){
+
+    }
+  }
+
+  return (
+    <div>
+      <ul>
+        <li onClick={renameGroup} className='pointer'>
+          <SvgIcon iconType='pen'>
+            <span style={{marginLeft: '5px'}}>重命名</span>
+          </SvgIcon>
+        </li>
+        <li onClick={removeGroup} className='pointer'>
+          <SvgIcon iconType='ashbin' color='rgba(255, 127, 88, 0.8)'>
+            <span style={{
+              color: 'var(--color-danger)',
+              marginLeft: '5px'
+            }}>删除</span>
+          </SvgIcon>
+        </li>
+      </ul>
+    </div>
+  )
 }
 
 export default function Todo({}){
@@ -377,7 +413,7 @@ export default function Todo({}){
         // 不是目标
         return;
       }
-      console.log('group.key', $target.getAttribute('key'));
+      const groupId = $target.getAttribute('groupid');
 
       let $todoContextMenu = document.getElementById('todo-context-menu');
       if(!$todoContextMenu){
@@ -394,6 +430,7 @@ export default function Todo({}){
       }
       $todoContextMenu.style.left = `${event.clientX}px`
       $todoContextMenu.style.top = `${event.clientY}px`
+      $todoContextMenu.setAttribute('groupid', groupId);
 
     }
     window.addEventListener('contextmenu', contextMenuClick);
