@@ -138,6 +138,7 @@
   border-radius: 5px;
   padding: 0px;
   border: 1px solid rgba(0, 0, 0, 0.4);
+  background-color: white;
 }
 #todo-context-menu.show {
   display: block;

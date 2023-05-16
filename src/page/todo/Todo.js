@@ -4,7 +4,6 @@ import './todo.css'
 import globalId from '../../util/globalId';
 import DateTimePicker from '../../component/DateTimePicker';
 import Input from '../../component/Input'
-import Container from '../../component/Container';
 import SvgIcon from '../../component/SvgIcon';
 import Row from '../../component/Row';
 import ReactDOM from 'react-dom/client';
@@ -51,9 +50,18 @@ function subFinishAddGroup(event){
   $target.style.opacity = 1;
 }
 
-function TaskGroup({_list = [], _selectGroup}){
+function hideContextMenu(){
+  document.getElementById('todo-context-menu').classList.remove('show')
+}
 
+function TaskGroup({_list = [], _selectGroup, _renameGroupId, _setGroupList}){
   const [groupList, setGroupList] = useState(_list.concat());
+
+  const [renameGroupId, setRenameGroupId] = useState(-1)
+
+  useEffect(() => {
+    setRenameGroupId(_renameGroupId);
+  }, [_renameGroupId])
 
   function createNewGroup(event){
     if(event.keyCode === 13){
@@ -69,7 +77,7 @@ function TaskGroup({_list = [], _selectGroup}){
       ])
       event.target.value = '';
       _selectGroup(newItem)
-      window.fileOp.saveOrUpdateTask({
+      window.todoDb.saveOrUpdateTask({
         item: newItem,
         type: 'group'
       })
@@ -87,6 +95,21 @@ function TaskGroup({_list = [], _selectGroup}){
     }
   }
 
+  function changeGroupName(event, item){
+    if(!event.target.value){
+      return;
+    }
+    item.name = event.target.value;
+    setGroupList(groupList.map(a => a._id === item._id ? item : a))
+  }
+  
+  function saveToFile(event, item){
+    if(event.keyCode === 13){
+      window.todoDb.saveOrUpdateTask({item: item})
+      setRenameGroupId(-1)
+    }
+  }
+
   return (
     <div className="task-group">
       <div className='task-group-list'>
@@ -95,8 +118,17 @@ function TaskGroup({_list = [], _selectGroup}){
             groupList.map(a => {
               return (
                 <div groupid={a._id} key={a._id} className='group-item' onClick={event => selectGroup(event, a)}>
-                  <Icon iconType='menu' />
-                  <span>{a.name}</span>
+                  {
+                    a._id === +renameGroupId && 
+                      <Input value={a.name} onChange={event => changeGroupName(event, a)} onKeyDown={event => saveToFile(event, a)}/>
+                  }
+                  {
+                    a._id !== +renameGroupId && 
+                      <>
+                        <Icon iconType='menu' />
+                        <span>{a.name}</span>
+                      </>
+                  }
                 </div>
               )
             })
@@ -118,9 +150,10 @@ function TaskGroup({_list = [], _selectGroup}){
 function TaskList({_list = [], _groupId, _groupName, _clickTask, _hideTaskDetail}){
 
   const [todoList, setTodoList] = useState([])
+  const taskListsRef = useRef(null)
   useEffect(() => {
     // 直接用useState无法生效，只能用这种方式
-    setTodoList(window.fileOp.readTaskList({type: 'task', groupId: _groupId}));
+    setTodoList(window.todoDb.readTaskList({type: 'task', groupId: _groupId}));
   }, [_list]);
 
   function createNewTask(event){
@@ -138,7 +171,7 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask, _hideTaskDetail
         newItem
       ])
       event.target.value = '';
-      window.fileOp.saveOrUpdateTask({
+      window.todoDb.saveOrUpdateTask({
         item: newItem,
         type: 'task',
         groupId: _groupId
@@ -169,10 +202,14 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask, _hideTaskDetail
     event.stopPropagation();
     // todo 修改点击样式
     if(!event.currentTarget.classList.contains("select")){
-      Array.from(event.currentTarget.parentElement.children).filter(a => a.classList.contains('select')).forEach(a => a.classList.remove('select'))
+      clearTaskSelectStatus();
       event.currentTarget.classList.add('select');
     }
     _clickTask(item);
+  }
+
+  function clearTaskSelectStatus(){
+    Array.from(taskListsRef.current.children).filter(a => a.classList.contains('select')).forEach(a => a.classList.remove('select'))
   }
 
   function removeTask(event, item, index){
@@ -181,10 +218,10 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask, _hideTaskDetail
       if(!item._id){
         todoList[index]._id = globalId();
         todoList[index].deleted = 1;
-        window.fileOp.refreshTaskList({list: todoList, groupId: _groupId})
+        window.todoDb.refreshTaskList({list: todoList, groupId: _groupId})
       }else{
         const _item = {...item, deleted: 1}
-        window.fileOp.saveOrUpdateTask({
+        window.todoDb.saveOrUpdateTask({
           item: _item, type: 'task', groupId: _groupId
         })
       }
@@ -194,11 +231,12 @@ function TaskList({_list = [], _groupId, _groupName, _clickTask, _hideTaskDetail
 
   function clickTaskList(){
     _hideTaskDetail();
+    clearTaskSelectStatus();
   }
 
   return (
     <div className="task-list" onClick={clickTaskList}>
-      <div className='task-list-list'>
+      <div className='task-list-list' ref={taskListsRef}>
         {
           todoList.length > 0 &&
             todoList.map((a, index) => {
@@ -266,7 +304,7 @@ function TaskDetail({_item, _saveOrUpdateTask}){
 
   function updateTask(item){
     setTask(item)
-    window.fileOp.saveOrUpdateTask({
+    window.todoDb.saveOrUpdateTask({
       item: item, type: 'task', groupId: item.pId
     })
   }
@@ -362,6 +400,8 @@ function GroupListContextMenu({_renameGroup, _removeGroup}){
     if(!groupId){
       return;
     }
+    _renameGroup(groupId);
+    hideContextMenu();
   }
 
   function removeGroup(event){
@@ -370,7 +410,8 @@ function GroupListContextMenu({_renameGroup, _removeGroup}){
       return;
     }
     if(window.confirm('是否删除')){
-
+      _removeGroup(groupId)
+      hideContextMenu();
     }
   }
 
@@ -401,10 +442,12 @@ export default function Todo({}){
   const [task, setTask] = useState({})
   const [taskList, setTaskList] = useState([]);
   const taskDetailRef = useRef(null);
-  const groupList = window.fileOp.readTaskList({type: 'group'});
+  const [groupList, setGroupList] = useState(window.todoDb.readTaskList({type: 'group'}));
+  const [renameGroupId, setRenameGroupId] = useState(-1);
 
   useEffect(() => {
     const contextMenuClick = (event) => {
+      event.stopPropagation();
       let $target = event.target;
       if($target.tagName !== 'DIV' || !$target.classList.contains('group-item')){
         $target = $target.parentElement;
@@ -422,7 +465,7 @@ export default function Todo({}){
         document.body.appendChild($todoContextMenu);
         const $reactDom = ReactDOM.createRoot($todoContextMenu);
         $reactDom.render(
-          <GroupListContextMenu />
+          <GroupListContextMenu _removeGroup={removeGroup} _renameGroup={renameGroup}/>
         )
       }
       if(!$todoContextMenu.classList.contains('show')){
@@ -431,12 +474,17 @@ export default function Todo({}){
       $todoContextMenu.style.left = `${event.clientX}px`
       $todoContextMenu.style.top = `${event.clientY}px`
       $todoContextMenu.setAttribute('groupid', groupId);
-
     }
     window.addEventListener('contextmenu', contextMenuClick);
 
+    const bodyClick = () => {
+      hideContextMenu();
+    }
+    document.body.addEventListener('click', bodyClick);
+
     return () => {
       window.removeEventListener('contextmenu', contextMenuClick);
+      document.body.removeEventListener('click', bodyClick);
     }
   }, []);
   function clickGroup(item){
@@ -445,7 +493,7 @@ export default function Todo({}){
       _id: item._id,
       name: item.name
     })
-    const _list = window.fileOp.readTaskList({type: 'task', groupId: item._id})
+    const _list = window.todoDb.readTaskList({type: 'task', groupId: item._id})
     setTaskList([..._list]);
     hideTaskDetail();
   }
@@ -456,7 +504,7 @@ export default function Todo({}){
     }
     setTask(item);
     setTaskList(taskList.map(a => a._id === item._id ? item : a))
-    window.fileOp.saveOrUpdateTask({item: item, type: 'task', groupId: selectGroup._id})
+    window.todoDb.saveOrUpdateTask({item: item, type: 'task', groupId: selectGroup._id})
   }
 
   function clickTask(item){
@@ -476,10 +524,22 @@ export default function Todo({}){
     taskDetailRef.current.classList.add('hide');
   }
 
+  function renameGroup(groupId){
+    setRenameGroupId(groupId);
+  }
+  function removeGroup(groupId){
+    const _group = groupList.filter(a => a._id === +groupId)[0];
+    if(!!_group){
+      _group.deleted = 1;
+      setGroupList(groupList.filter(a => a._id !== +groupId))
+      window.todoDb.saveOrUpdateTask({item: _group});
+    }
+  }
+
   return (
     <div className="x-todo">
       <div className="x-todo-container">
-        <TaskGroup _selectGroup={clickGroup} _list={groupList}/>
+        <TaskGroup _selectGroup={clickGroup} _list={groupList} _renameGroupId={renameGroupId}/>
         <TaskList key={selectGroup._id} _groupId={selectGroup._id} 
           _groupName={selectGroup.name} _list={taskList} 
           _hideTaskDetail={hideTaskDetail}

@@ -100,7 +100,10 @@ contextBridge.exposeInMainWorld('fileOp', {
   saveHttpReq: saveHttpReq,
   readHttpReq: readHttpReq,
   readCalendarTodo: readCalendarTodo,
-  updateOrSaveCalendarTodo: updateOrSaveCalendarTodo,
+  updateOrSaveCalendarTodo: updateOrSaveCalendarTodo
+});
+
+contextBridge.exposeInMainWorld('todoDb', {
   saveOrUpdateTask: todoOp.saveOrUpdateTask,
   readTaskList: todoOp.readGroupList,
   refreshTaskList: todoOp.refreshTaskList,
