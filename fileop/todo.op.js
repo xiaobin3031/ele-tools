@@ -22,8 +22,9 @@ function readGroupList({type = 'task', groupId}){
   return [];
 }
 
-function readGroup({groupId, name}){
-
+function readGroup({_id, type='group', groupId}){
+  const _list = readGroupList({type: type, groupId, groupId})
+  return _list.filter(a => a._id === +_id)[0];
 }
 
 function refreshTaskList({list, groupId}){

@@ -96,6 +96,12 @@ export default function TaskDetail({_item, _saveOrUpdateTask}){
     }
   }
 
+  function timeChange(_value){
+    const _task = {...task}
+    _task.taskInfo.notifyTime = _value;
+    updateTask(_task);
+  }
+
   return (
     <div className="task-detail">
       <form disabled>
@@ -135,7 +141,7 @@ export default function TaskDetail({_item, _saveOrUpdateTask}){
         </Row>
         <Row className='dead-time'>
           <SvgIcon iconType='notification'/>
-          <DateTimePicker placeholder='提醒我' borderclear={1}/>
+          <DateTimePicker placeholder='提醒我' borderclear={1} name='notifyTime' dateChange={timeChange} value={task.taskInfo.notifyTime}/>
         </Row>
         <Row className='description'>
           <Input 

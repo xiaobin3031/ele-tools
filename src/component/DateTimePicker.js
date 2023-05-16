@@ -189,10 +189,14 @@ function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue
       setCurrentRef({...currentRef, currentValue: _value, date: item.day, month: month, year: year, date: item.day})
     }else{
       let _month;
-      if(item.day <= 7){
-        _month = month + 1;
+      if(!!item.thisMonth){
+        _month = month;
       }else{
-        _month = month - 1;
+        if(item.day <= 7){
+          _month = month + 1;
+        }else{
+          _month = month - 1;
+        }
       }
       _value = formatDateValue(_dateFormat, year, _month, item.day);
       changeYearMonth(year, _month, item.day);
@@ -266,7 +270,7 @@ function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue
                 </div>
                 <div>
                   <Button size='sm' color='primary' 
-                    onClick={event => selectDayDiv(event, {day: now.getDate()}, now.getFullYear(), now.getMonth() + 1)}>
+                    onClick={event => selectDayDiv(event, {day: now.getDate(), thisMonth: true}, now.getFullYear(), now.getMonth() + 1)}>
                       今天
                   </Button>
                 </div>
@@ -280,7 +284,7 @@ function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue
   )
 }
 
-export default function DateTimePicker({showOnFocus=false, dateFormat, defaultValue, ...props}){
+export default function DateTimePicker({showOnFocus=false, dateFormat, value, dateChange, ...props}){
 
   const pickerRef = useRef(null);
   const dateInputRef = useRef(null);
@@ -315,6 +319,7 @@ export default function DateTimePicker({showOnFocus=false, dateFormat, defaultVa
   function selectDate(_value){
     dateInputRef.current.value = _value;
     closeSelect();
+    dateChange(_value);
   }
   function closeSelect(){
     pickerRef.current.classList.remove('show');
@@ -326,7 +331,7 @@ export default function DateTimePicker({showOnFocus=false, dateFormat, defaultVa
   }
 
   function getDefaultValue(){
-    return !!dateInputRef.current ? dateInputRef.current.value : defaultValue;
+    return !!dateInputRef.current ? dateInputRef.current.value : value;
   }
 
   const _inputClass = ['date-time'];
@@ -340,8 +345,9 @@ export default function DateTimePicker({showOnFocus=false, dateFormat, defaultVa
         onClick={showPickerAlways} 
         ref={dateInputRef} 
         onBlur={inputBlur}
+        onChange={() => {}}
         placeholder={props.placeholder || ''}
-        defaultValue={defaultValue}/>
+        value={value}/>
       <span className='icon' onClick={showPicker}>
         <SvgIcon iconType='calendar' />
       </span>

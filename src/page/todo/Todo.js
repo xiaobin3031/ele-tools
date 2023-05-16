@@ -27,7 +27,11 @@ function GroupListContextMenu({_renameGroup, _removeGroup}){
     if(!groupId){
       return;
     }
-    if(window.confirm('是否删除')){
+    const _group = window.todoDb.readGroup({_id: groupId});
+    if(!_group){
+      return;
+    }
+    if(window.confirm(`是否删除清单[${_group.name}]`)){
       _removeGroup(groupId)
       hideContextMenu();
     }
