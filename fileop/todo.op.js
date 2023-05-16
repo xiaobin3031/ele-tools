@@ -65,6 +65,16 @@ function saveOrUpdateTask({item, type = 'group', groupId}){
     }
   })
 }
+
+function removeGroupOrTask({_id, type='group', _groupId}){
+  let _list = readGroupList({type: type, groupId: _groupId});
+  if(!_list || _list.length === 0) return;
+  _list = _list.filter(a => a._id !== +_id);
+  fs.writeFileSync(getTodoFileAndPath(type, _groupId), new Uint8Array(Buffer.from(JSON.stringify(_list))));
+}
+
+
+
 function getTodoFileAndPath(type, groupId){
   if(type === 'group'){
     return `${dbPath}/${type}.json`
@@ -74,10 +84,10 @@ function getTodoFileAndPath(type, groupId){
 }
 
 const todoOp = {
-  readGroupList: readGroupList,
+  readTaskList: readGroupList,
   readGroup: readGroup,
   refreshTaskList: refreshTaskList,
   saveOrUpdateTask: saveOrUpdateTask,
-  dbPath: dbPath
+  removeGroupOrTask: removeGroupOrTask
 };
 module.exports = todoOp;

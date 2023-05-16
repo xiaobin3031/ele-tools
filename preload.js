@@ -103,9 +103,4 @@ contextBridge.exposeInMainWorld('fileOp', {
   updateOrSaveCalendarTodo: updateOrSaveCalendarTodo
 });
 
-contextBridge.exposeInMainWorld('todoDb', {
-  saveOrUpdateTask: todoOp.saveOrUpdateTask,
-  readTaskList: todoOp.readGroupList,
-  refreshTaskList: todoOp.refreshTaskList,
-  readGroup: todoOp.readGroup
-});
+contextBridge.exposeInMainWorld('todoDb', todoOp);

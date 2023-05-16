@@ -13,10 +13,15 @@
 }
 .task-group-create {
   height: 30px;
+  display: flex;
+  align-items: center;
   padding-left: 10px;
 }
-.task-group-create .input {
+.task-group-create input {
   border-style: none;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
   width: 90%;
 }
 .task-group-list {
