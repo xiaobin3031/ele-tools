@@ -1,24 +1,8 @@
-const { contextBridge, Notification } = require('electron')
+const { contextBridge } = require('electron')
+// const electron = require('electron')
 const fs = require('fs')
 const path = require('path')
 const todoOp = require('./fileop/todo.op.js')
-// const notify = require('./sys/notification.js')
-
-
-function show({title='提醒', subTitle, body, silent, icon, timeoutType='default'}){
-  const notify = new Notification({
-    title: title,
-    subtitle: subTitle,
-    body: body,
-    silent: silent,
-    icon: icon,
-    timeoutType: timeoutType
-  });
-
-  notify.show();
-}
-
-show({});
 
 const dirPrefix = 'data/';
 const dirObj = {
@@ -120,4 +104,3 @@ contextBridge.exposeInMainWorld('fileOp', {
 });
 
 contextBridge.exposeInMainWorld('todoDb', todoOp);
-contextBridge.exposeInMainWorld('notify', notify);

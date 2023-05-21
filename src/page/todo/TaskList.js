@@ -47,6 +47,7 @@ export default function TaskList({_list = [], _groupId, _groupName, _clickTask, 
     event.stopPropagation();
     item.complete = !item.complete;
     setTodoList(todoList.map(a => a._id === item._id ? item : a))
+    window.todoDb.saveOrUpdateTask({item: item, type: 'task', groupId: item.pId})
     if(item.complete){
       event.target.classList.add('complete')
     }else{
@@ -96,9 +97,13 @@ export default function TaskList({_list = [], _groupId, _groupName, _clickTask, 
         {
           todoList.length > 0 &&
             todoList.map((a, index) => {
+              const _class = ['checkbox'];
+              if(!!a.complete){
+                _class.push('complete')
+              }
               return (
                 <div att={a._id} key={a._id} className='item' onClick={event => clickTask(event, a)}>
-                  <div className='checkbox' onClick={(event) => taskComplete(event, a)}></div>
+                  <div className={_class.join(' ')} onClick={(event) => taskComplete(event, a)}></div>
                   <span>{a.content}</span>
                   {
                     !a.complete && <SvgIcon iconType='ashbin' color='rgba(255, 127, 88, 0.8)' onClick={event => removeTask(event, a, index)} className='remove'/>

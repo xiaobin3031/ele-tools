@@ -6,15 +6,14 @@ import Select from '../../component/Select';
 import { Button } from '../../component/Button';
 import Http from '../../js/Http';
 import globalId from '../../util/globalId';
+import Row from '../../component/Row';
 
 const httpMethods = [
   {desc: 'POST', name: 'POST'},
   {desc: 'GET', name: 'GET'}
 ]
 
-let httpReqCompareId = 1;
-
-const tokenLabel = 'X-Ss-Mall-Token';
+const tokenLabel = 'Satoken';
 
 const ignoreKey = ['orderAnalyses', 'id', 'specialTypeDic', 'shipLogo'
   , 'userId', 'shopId'
@@ -51,8 +50,9 @@ function compareObj(_old, _new, _path, item){
         delete _tmpNew[a];
       }else{
         if(_new[a] === undefined){
+          const _v = _tmpOld[a];
           delete _tmpOld[a];
-          path = `${_path}/${a}, new: undefined`;
+          path = `${_path}/${a}=${_v}, new: undefined`;
         }else{
           const _oldItem = _tmpOld[a], _newItem = _tmpNew[a];
           delete _tmpOld[a];
@@ -113,16 +113,19 @@ export default function HttpReqCompare({}){
 
   const _values = useRef({
     httpMethod: httpMethods[0].name,
-    token: 'aa488143-ccc3-46dd-82d4-a74a3020a2ed',
-    oldUrl: 'http://115.238.181.86:13311',
+    token: 'cX74pi4jsVPb0EZy2pCQO0BPpnys0jS8rM8i9blnnbTcdygOd2uO8phGap7wVqmF',
+    oldUrl: 'http://10.0.13.93:19999',
     newUrl: 'http://127.0.0.1:8013'
   });
+  const [headers, setHeaders] = useState([
+    {_id: -999, tokenLabel: tokenLabel, token: 'cX74pi4jsVPb0EZy2pCQO0BPpnys0jS8rM8i9blnnbTcdygOd2uO8phGap7wVqmF'}
+  ]);
 
   const [httpReqList, setHttpReqList] = useState(window.fileOp.readHttpReq(1));
 
   function httpReqChange(event, item){
     item[event.target.name] = event.target.value;
-    if(event.target.name === 'ignoreField'){
+    if(event.target.name === 'ignoreField' && item.ignoreField.charAt(item.ignoreField.length - 1) !== ','){
       item.ignoreField += ',';
     }
     setHttpReqList(
@@ -133,16 +136,33 @@ export default function HttpReqCompare({}){
   function valueChange(event){
     _values.current[event.target.name] = event.target.value;
   }
+  function headerChange(event, item){
+    item[event.target.name] = event.target.value;
+    setHeaders(headers.map(a => a._id === item._id ? item : a))
+  }
 
   function sendReq(item){
+    const req = {};
+    req.type = item.httpMethod;
+    const _headers = headers.reduce((a, b) => {
+      a[b.tokenLabel] = b.token;
+      return a;
+    }, {});
+    console.log("header", _headers);
+    req.header = _headers;
+
     const reqData = params2Json(item.reqParam);
-    const oldReq = Http(_values.current.oldUrl + item.oldReqPath, reqData, {type: item.httpMethod, header: {'X-Ss-Mall-Token': _values.current.token}})
-    const newReq = Http(_values.current.newUrl + item.newReqPath, reqData, {type: item.httpMethod, header: {'X-Ss-Mall-Token': _values.current.token}})
+    const oldReq = Http(_values.current.oldUrl + item.oldReqPath, reqData, {...req, Origin: _values.current.oldUrl})
+    const newReq = Http(_values.current.newUrl + item.newReqPath, reqData, {...req, Origin: _values.current.newUrl})
     Promise.all([oldReq, newReq]).then(resList => {
       if(resList.length != 2){
         item.error = true;
         item.path = '/';
-      }else{
+      }else if(resList[0].errcode !== 0 || resList[1].errcode !== 0){
+        item.error = true;
+        item.path = '请求失败';
+      }
+      else{
         item.path = compareResult(resList[0], resList[1], item);
         item.error = !!item.path;
       }
@@ -176,12 +196,30 @@ export default function HttpReqCompare({}){
     httpReqChange(event, item);
   }
 
+  function addHead(){
+    setHeaders([
+      ...headers,
+      {_id: globalId()}
+    ])
+  }
+  function delHead(item){
+    setHeaders(headers.filter(a => a._id !== item._id))
+  }
+
   return (
     <>
-      <div>
-        <Label>{tokenLabel}</Label>
-        <Input onChange={valueChange} name='token' style={{ width: '50%'}} defaultValue={_values.current.token}/>
-      </div>
+      {
+        headers.map((a, i)=> {
+          return <Row key={a._id}>
+            <Input onChange={event => headerChange(event, a)} name='tokenLabel' style={{ width: '100px'}} value={a.tokenLabel ? a.tokenLabel : ''}/>
+            <Input onChange={event => headerChange(event, a)} name='token' style={{ width: '50%'}} value={a.token ? a.token : ''}/>
+            <Button color='primary' onClick={addHead}>新增</Button>
+            {
+              i > 0 && <Button color='danger' onClick={() => delHead(a)}>删除</Button>
+            }
+          </Row>
+        })
+      }
       <hr />
       <div className='x-http-req-url'>
         <div>

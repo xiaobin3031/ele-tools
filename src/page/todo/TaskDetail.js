@@ -122,9 +122,13 @@ export default function TaskDetail({_item, _saveOrUpdateTask}){
           {
             !!task.taskInfo.subTasks && task.taskInfo.subTasks.length > 0 &&
               task.taskInfo.subTasks.map(a => {
+                const _class = ['checkbox', 'sm'];
+                if(!!a.complete){
+                  _class.push('complete')
+                }
                 return (
                   <Row className='sub-task-list flex' key={a._id}>
-                    <div className='checkbox sm' onClick={event => subTaskComplete(event, a)}></div>
+                    <div className={_class.join(' ')} onClick={event => subTaskComplete(event, a)}></div>
                     <span>{a.content}</span>
                   </Row>
                 )

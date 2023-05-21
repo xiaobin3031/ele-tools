@@ -1,11 +1,54 @@
 const fs = require('fs')
-const path = require('path')
 
 const dbPath = 'data/todo';
-
 fs.mkdir(dbPath, {recursive: true}, (err) => {
   console.log('create dir', dbPath, err)
 })
+
+let notifyObjs = {};
+let interval = void 0;
+function refreshNotify(){
+  if(!!interval){
+    window.clearInterval(interval);
+  }
+  notifyObjs = readNotifyTask();
+  if(Object.keys(notifyObjs).length > 0){
+    interval = windwo.setInterval(() => {
+      
+    }, 60000)// 1分钟
+  }
+}
+
+// 小于60秒都算
+function timeEqual(time, notifyTime){
+  return (notifyTime.getTime() - time.getTime()) < 60000
+}
+refreshNotify();
+
+function readNotifyTask(){
+  const path = `${dbPath}/notify.task.json`
+  const _exist = fs.existsSync(path)
+  if(_exist){
+    const _data = fs.readFileSync(path, {encoding: 'utf-8'});
+    if(!!_data){
+      return JSON.parse(_data);
+    }
+  }
+  return {}
+}
+
+function saveOrUpdateNotify({_id, _groupId, _notifyTime}){
+  const _notifies = readNotifyTask();
+  const _group = _notifies[_groupId];
+  if(!_group){
+    _group = {};
+  }
+  _group[_id] = _notifyTime;
+  _notifies[_groupId] = _group;
+  fs.writeFile(`${dbPath}/notify.task.json`, new Uint8Array(Buffer.from(JOSN.stringify(_notifies))), err => {
+    // todo log
+  });
+}
 
 function readGroupList({type = 'task', groupId}){
   if(!groupId && type !== 'group'){
@@ -57,6 +100,9 @@ function saveOrUpdateTask({item, type = 'group', groupId}){
             _data.push(item);
           }
           fs.writeFile(path, new Uint8Array(Buffer.from(JSON.stringify(_data))), (err) => {
+            if(!err && !!item.notifyTime && !!groupId){
+              saveOrUpdateNotify({_id: item._id, _groupId: groupId, _notifyTime: item.notifyTime})
+            }
           })
         }
       })
