@@ -149,9 +149,14 @@ export default function Todo({}){
   function renameGroup(groupId){
     setRenameGroupId(groupId);
   }
+  function finishRenameGroup(){
+    setRenameGroupId(-1);
+  }
   function removeGroup(groupId){
     window.todoDb.removeGroupOrTask({_id: groupId});
     setGroupList(window.todoDb.readTaskList({type: 'group'}));
+    setSelectGroup({})
+    setTaskList([])
   }
 
   function addGroup(item){
@@ -171,7 +176,9 @@ export default function Todo({}){
   return (
     <div className="x-todo">
       <div className="x-todo-container">
-        <TaskGroup _selectGroup={clickGroup} _list={groupList} _renameGroupId={renameGroupId} _addGroup={addGroup} _updateGroup={updateGroup}/>
+        <TaskGroup _selectGroup={clickGroup} 
+          _finishRenameGroup={finishRenameGroup}
+          _list={groupList} _renameGroupId={renameGroupId} _addGroup={addGroup} _updateGroup={updateGroup}/>
         <TaskList key={selectGroup._id} _groupId={selectGroup._id} 
           _groupName={selectGroup.name} _list={taskList} 
           _hideTaskDetail={hideTaskDetail}

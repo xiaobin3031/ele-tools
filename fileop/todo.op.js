@@ -7,6 +7,8 @@ fs.mkdir(dbPath, {recursive: true}, (err) => {
 
 let notifyObjs = {};
 let interval = void 0;
+let running = false;
+const maxTaskShowCount = 2; //最大任务通知数
 function refreshNotify(){
   if(!!interval){
     window.clearInterval(interval);
@@ -14,14 +16,47 @@ function refreshNotify(){
   notifyObjs = readNotifyTask();
   if(Object.keys(notifyObjs).length > 0){
     interval = windwo.setInterval(() => {
-      
+      if(running) return;
+      running = true;
+      try{
+        const tasksToNotify = [];
+        for(let groupId in notifyObjs){
+          const taskList = readGroupList({groupId: groupId})
+          if(taskList.length > 0){
+            const notifyTasks = notifyObjs[groupId]
+            if(!!notifyTasks && notifyTasks.length > 0){
+              for(let taskId in notifyTasks){
+                if(timeEqual(new Date(notifyTasks[taskId].notifyTime))){
+                  const task = taskList.filter(a => a._id === taskId._id)[0]
+                  if(!!task){
+                    tasksToNotify.push(task);
+                    if(tasksToNotify.length > maxTaskShowCount){
+                      break;
+                    }
+                  }
+                }
+              }
+              if(tasksToNotify.length > maxTaskShowCount){
+                break;
+              }
+            }
+          }
+        }
+        if(tasksToNotify.length > 0){
+          const notifyBody = tasksToNotify.map(a => a.taskInfo.notifyTime + '\n' + a.content).join('\n');
+          new window.Notification(`${Math.min(maxTaskShowCount, tasksToNotify.length)}项待办`, { body: notifyBody })
+        }
+      }catch(e){
+
+      }
+      running = false;
     }, 60000)// 1分钟
   }
 }
 
 // 小于60秒都算
-function timeEqual(time, notifyTime){
-  return (notifyTime.getTime() - time.getTime()) < 60000
+function timeEqual(notifyTime){
+  return (notifyTime.getTime() - new Date().getTime()) < 60000
 }
 refreshNotify();
 

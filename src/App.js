@@ -29,10 +29,10 @@ function App() {
       //<Scene />
   return (
     <div>
-      {/* <Todo /> */}
+      <Todo />
       {/* <Calendar props={{calendar: {}}}/> */}
       {/* <Order /> */}
-      <HttpReqCompare />
+      {/* <HttpReqCompare /> */}
     </div>
   )
 }
