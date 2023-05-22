@@ -50,6 +50,11 @@
   animation: app-content-showing .5s ease;
   animation-fill-mode: forwards;
 }
+.app-close {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
 
 @keyframes App-logo-spin {
   from {

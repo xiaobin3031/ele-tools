@@ -1,6 +1,7 @@
 // import logo from './logo.svg';
 import React, { useState } from 'react';
 import './App.css';
+import SvgIcon from './component/SvgIcon';
 import './css/x.css'
 import Calendar from './page/calendar/Calendar';
 import Scene from './page/flow/Scene';
@@ -31,6 +32,13 @@ function App() {
     setAppOpen(true);
   }
 
+  function closeApp(){
+    if(window.confirm('是否关闭当前应用')){
+      setRenderText('')
+      setAppOpen(false)
+    }
+  }
+
   return (
     <div className="App">
       {
@@ -39,7 +47,7 @@ function App() {
             {
               apps.map(a => {
                 return (
-                  <div key={a._id} className='app-icon pointer' onDoubleClick={event => openApp(a)}>
+                  <div key={a._id} className='app-icon pointer' onDoubleClick={() => openApp(a)}>
                     <span>{a.name}</span>
                   </div>
                 )
@@ -49,6 +57,12 @@ function App() {
       }
       {
         !!appOpen && [renderText]
+      }
+      {
+        !!appOpen && 
+          <div className='app-close pointer' onClick={closeApp}>
+            <SvgIcon iconType='poweroff' color='red' size='md' />
+          </div>
       }
     </div>
   );
