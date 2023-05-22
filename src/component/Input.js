@@ -16,7 +16,7 @@ function Textarea(props){
 }
 
 export default function Input(props){
-  if(props.multiline === 1){
+  if(+props.multiline === 1){
     return (
       <Textarea {...props}/>
     )

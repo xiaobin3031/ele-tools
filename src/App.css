@@ -25,15 +25,17 @@
   color: #61dafb;
 }
 
+.apps {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto auto;
+  grid-gap: 30px;
+}
 .app-icon {
-  width: 50px;
-  height: 50px;
+  padding: 20px 10px;
   border-radius: 10px;
   background-color: rgb(155, 223, 255);
-  display: flex;
-  align-items: center;
+  display: inline-block;
   text-align: center;
-  justify-content: center;
 }
 .app-content {
   box-sizing: border-box;

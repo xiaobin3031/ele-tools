@@ -1,0 +1,63 @@
+export const stepNames = [
+  {
+    name: "while",
+    desc: "循环"
+  },
+  {
+    name: "buildIn",
+    desc: "内置函数"
+  },
+  {
+    name: "cache",
+    showEle: true,
+    desc: "存储"
+  },
+  {
+    name: "check",
+    showEle: true,
+    desc: "检查"
+  },
+  {
+    name: "click",
+    showEle: true,
+    desc: "点击"
+  },
+  {
+    name: "input",
+    showEle: true,
+    desc: "输入"
+  },
+  {
+    name: "pressKey",
+    desc: "按键"
+  },
+  {
+    name: "recycleView",
+    showEle: true,
+    desc: "recycleView列表"
+  },
+  {
+    name: "sleep",
+    desc: "睡眠"
+  },
+  {
+    name: "swipe",
+    showEle: true,
+    desc: "滑动"
+  },
+  {
+    name: "wait",
+    desc: "等待"
+  }
+]
+
+export const eleTypes = [
+  {
+    name: 'id',
+    desc: 'id'
+  },
+  {
+    name: 'text',
+    desc: '文本'
+  }
+]

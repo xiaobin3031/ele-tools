@@ -1,0 +1,10 @@
+.pos-auto {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  grid-gap: 30px;
+}
+.pos-auto .step-card {
+  min-height: 200px;
+  border-radius: 10px;
+  border: 1px solid #c3c3c3c3;
+}

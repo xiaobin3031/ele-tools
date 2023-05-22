@@ -6,6 +6,7 @@ import './css/x.css'
 import Calendar from './page/calendar/Calendar';
 import Scene from './page/flow/Scene';
 import HttpReqCompare from './page/hankyu/HttpReqCompare';
+import PosAuto from './page/pos/PosAuto';
 import Todo from './page/todo/Todo';
 import Todo2 from './page/todo/Todo2';
 import globalId from './util/globalId';
@@ -21,6 +22,28 @@ const apps = [
         </div>
       )
     }
+  },
+  {
+    _id: 'posAutomation',
+    name: 'Pos-Auto',
+    render: () => {
+      return (
+        <div key={globalId()}>
+          <PosAuto />
+        </div>
+      )
+    }
+  },
+  {
+    _id: 'scene',
+    name: '第一版pos',
+    render: () => {
+      return (
+        <div key={globalId()}>
+          <Scene />
+        </div>
+      )
+    }
   }
 ]
 function App() {
@@ -28,8 +51,12 @@ function App() {
   const [appOpen, setAppOpen] = useState(false);
 
   function openApp(item){
-    setRenderText(item.render())
-    setAppOpen(true);
+    if(!!item.render){
+      setRenderText(item.render())
+      setAppOpen(true);
+    }else{
+      window.alert('功能正在加紧筹备...')
+    }
   }
 
   function closeApp(){
@@ -43,7 +70,7 @@ function App() {
     <div className="App">
       {
         !appOpen && 
-          <div style={{ padding: '10px' }}>
+          <div style={{ padding: '10px' }} className="apps">
             {
               apps.map(a => {
                 return (
