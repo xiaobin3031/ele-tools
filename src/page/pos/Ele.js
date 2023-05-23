@@ -61,10 +61,11 @@ export default function Ele({_eleChange, ele}){
     <Row>
       <Select list={eleTypes} showSelect={false} name="eleType" onChange={eleTypeChange} />
       <Input style={{
-        marginLeft: '10px',
-        fontSize: '0.7em',
-        width: '120px'
-      }} name="eleId" placeholder={`请输入元素的${eleType === 'text' ? '文本' : 'id'}值`} onChange={valueChange} value={!ele.id && !!ele.text ? ele.text : ele.id} />
+          marginLeft: '10px',
+          fontSize: '0.7em',
+          width: '120px'
+        }} name="eleId" placeholder={`请输入元素的${eleType === 'text' ? '文本' : 'id'}值`} onChange={valueChange} 
+        value={(!ele.id && !!ele.text ? ele.text : ele.id) || ''} />
       <span style={{marginLeft: '10px'}}>
         <ButtonGroup size="sm" list={eleBtnGroup} groupType="checkbox" valuecheck={eleAttrChange} />
       </span>

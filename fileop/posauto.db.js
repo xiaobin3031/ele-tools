@@ -39,6 +39,10 @@ function saveOrUpdateStep({step, filename="common"}){
           })
         }
       })
+    }else{
+      fs.writeFile(path, new Uint8Array(Buffer.from(JSON.stringify([step]))), (err) => {
+        // log
+      })
     }
   })
 }

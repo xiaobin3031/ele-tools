@@ -9,7 +9,6 @@ import Ele from "../Ele";
 
 export default function BrokeStep({_eleChange, _brokeChange, broke}){
 
-  console.log('broke', broke);
   const type = (!!broke.activity || (!!broke.activities && broke.activities.length > 0)) ? 'byFunc' : 'byEle';
   const [brokeType, setBrokeType] = useState(type);
   const [brokeTypes, setBrokeTypes] = useState([

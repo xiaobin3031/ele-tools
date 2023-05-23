@@ -154,6 +154,8 @@ export function formatStepData(step){
     }
     data.perform = step.perform;
     data._id = step._id;
+    data.name = step.name;
+    data.description = step.description;
   }
   return data;
 }

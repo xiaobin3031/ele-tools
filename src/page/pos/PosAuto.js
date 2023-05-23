@@ -14,7 +14,14 @@ export default function PosAuto({}){
 
   useEffect(() => {
     const _steps = window.posDb.readSteps({});
-    console.log('_steps', _steps);
+    // 补充数据
+    _steps.forEach(a => {
+      const _step = stepNames.filter(b => b.name === a.perform)[0];
+      if(!!_step){
+        a.showEle = !!_step.showEle;
+        a.hasSubSteps = !!_step.hasSubSteps;
+      }
+    })
     setSteps(_steps);
   }, [])
 

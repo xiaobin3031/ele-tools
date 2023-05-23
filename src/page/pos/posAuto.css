@@ -4,9 +4,9 @@
     display: grid;
     padding: 0px 10px;
     grid-template-columns: 
-        calc((100% - calc(var(--card-gap) * 2)) / 3)
-        calc((100% - calc(var(--card-gap) * 2)) / 3)
-        calc((100% - calc(var(--card-gap) * 2)) / 3);
+        calc((100% - calc(var(--card-gap) * 1)) / 2)
+        calc((100% - calc(var(--card-gap) * 1)) / 2)
+        calc((100% - calc(var(--card-gap) * 1)) / 2);
     grid-gap: var(--card-gap);
   }
 }
