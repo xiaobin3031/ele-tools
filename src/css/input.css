@@ -5,6 +5,9 @@
   box-sizing: border-box;
   width: 100%;
 }
+.x-input.sm {
+  font-size: 0.7em;
+}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

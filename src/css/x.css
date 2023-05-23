@@ -18,6 +18,9 @@ select:focus {
 .pointer {
   cursor: pointer;
 }
+.sm {
+  font-size: 0.8em;
+}
 
 
 @keyframes scale-disappear {

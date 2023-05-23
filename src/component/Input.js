@@ -4,6 +4,9 @@ function formatClass(props, _classList){
   if(props.borderclear === 1){
     _classList.push('border-clear');
   }
+  if(!!props.size){
+    _classList.push(props.size);
+  }
 }
 
 function Textarea(props){

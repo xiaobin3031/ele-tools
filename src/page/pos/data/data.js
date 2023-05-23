@@ -1,7 +1,26 @@
+export const activities = [
+  {
+    name: "HomeActivity",
+    desc: "首页"
+  }
+]
+
+export const eleTypes = [
+  {
+    name: 'id',
+    desc: 'id'
+  },
+  {
+    name: 'text',
+    desc: '文本'
+  }
+]
+
 export const stepNames = [
   {
     name: "while",
-    desc: "循环"
+    desc: "循环",
+    hasSubSteps: true
   },
   {
     name: "buildIn",
@@ -51,13 +70,41 @@ export const stepNames = [
   }
 ]
 
-export const eleTypes = [
+export const uiBillField = [
   {
-    name: 'id',
-    desc: 'id'
+    name: 'payOrderNum'
   },
   {
-    name: 'text',
-    desc: '文本'
+    name: "tranId"
+  },
+  {
+    name: "bTranId"
+  },
+  {
+    name: "orderType"
+  },
+  {
+    name: "tranType"
+  },
+  {
+    name: "multiBillPre"
+  },
+  {
+    name: "multiBillFlag"
+  },
+  {
+    name: "saleDate"
+  },
+  {
+    name: "goodsAmt"
+  },
+  {
+    name: "vipAmt"
+  },
+  {
+    name: "disAmt"
+  },
+  {
+    name: "vipNo"
   }
 ]

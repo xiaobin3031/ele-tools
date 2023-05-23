@@ -10,55 +10,42 @@ const defaultProps = {
   value: '_value',
   clickBtn: '_clickBtn'
 };
-function CheckboxGroup({list, ...props}){
+function CheckboxGroup({list, valuecheck, ...props}){
   const _props = {...defaultProps, ...props};
 
-  const _checks = useRef(list.map(() => false));
-
-  function checkedButton(event, index){
-    _checks.current[index] = !_checks.current[index];
-    if(_checks.current[index]){
-      event.target.classList.add('active');
-    }else{
-      event.target.classList.remove('active');
-    }
-    if(!!_props.valueCheck){
-      _props.valueCheck(
-        list.filter((_, index) => _checks.current[index])
-      );
-    }
+  function checkedButton(item){
+    item.checked = !item.checked;
+    valuecheck(
+      list.filter(a => !!a.checked || (!!item.checked && a._id === item._id))
+    );
   }
 
   return (
-    list.map((a, index) => {
-      return <Button key={`x-button-group-button-${buttonGlobalId++}`}
+    list.map(a => {
+      return <Button className={!!a.checked ? 'active' : ''} key={`x-button-group-button-${buttonGlobalId++}`} {...props}
         type={a[_props.type]}
         color={a[_props.color]}
         outline
-        onClick={(event) => checkedButton(event, index)}
+        onClick={() => checkedButton(a)}
        >{a[_props.text]}</Button>
     })
   )
 }
 
-function RadioGroup({list, ...props}){
+function RadioGroup({list, valuecheck, ...props}){
   const _props = {...defaultProps, ...props};
 
-  function checkedButton(event, item){
-    if(!!_props.valueCheck){
-      _props.valueCheck(item);
-    }
-    Array.from(event.target.parentNode.children).filter(a => a.classList.contains('active')).forEach(a => a.classList.remove('active'));
-    event.target.classList.add('active');
+  function checkedButton(item){
+    valuecheck(item);
   }
 
   return (
     list.map((a) => {
-      return <Button key={`x-button-group-button-${buttonGlobalId++}`}
+      return <Button className={!!a.checked ? 'active' : ''} key={`x-button-group-button-${buttonGlobalId++}`} {...props}
         type={a[_props.type]}
         color={a[_props.color]}
         outline
-        onClick={(event) => checkedButton(event, a)}
+        onClick={() => checkedButton(a)}
        >{a[_props.text]}</Button>
     })
   )
@@ -79,11 +66,14 @@ function InnerButtonGroup({list, ...props}){
   )
 }
 
-export function Button({children, type="button", color, outline, size='md', ...props}){
+export function Button({children, type="button", color, outline, size='md', className='', ...props}){
 
   const _classList = ['x-button', color, size];
   if(outline){
     _classList.push('outline');
+  }
+  if(!!className){
+    Array.from(className.split(' ')).forEach(a => _classList.push(a));
   }
 
   return (
@@ -93,7 +83,7 @@ export function Button({children, type="button", color, outline, size='md', ...p
 
 /**
  * @param groupType button(defualt), radio, checkbox 
- * @param valueCheck type=radio,checkbox时生效
+ * @param valuecheck type=radio,checkbox时生效
  */
 export function ButtonGroup({list, groupType = 'button', ...props}){
 

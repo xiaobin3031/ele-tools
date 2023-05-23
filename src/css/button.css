@@ -76,6 +76,9 @@
   color: white;
 }
 
+.x-button-group {
+  display: inline-block;
+}
 .x-button-group > .x-button {
   margin: 0;
   border-radius: 0px;

@@ -3,6 +3,7 @@ const { contextBridge } = require('electron')
 const fs = require('fs')
 const path = require('path')
 const todoOp = require('./fileop/todo.op.js')
+const posautoOp = require('./fileop/posauto.db.js')
 
 const dirPrefix = 'data/';
 const dirObj = {
@@ -104,3 +105,4 @@ contextBridge.exposeInMainWorld('fileOp', {
 });
 
 contextBridge.exposeInMainWorld('todoDb', todoOp);
+contextBridge.exposeInMainWorld('posDb', posautoOp);

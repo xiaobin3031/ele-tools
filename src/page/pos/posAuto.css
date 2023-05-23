@@ -1,10 +1,43 @@
-.pos-auto {
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  grid-gap: 30px;
+@media only screen and (max-width: 1400px) {
+  .pos-auto {
+    --card-gap: 30px;
+    display: grid;
+    padding: 0px 10px;
+    grid-template-columns: 
+        calc((100% - calc(var(--card-gap) * 2)) / 3)
+        calc((100% - calc(var(--card-gap) * 2)) / 3)
+        calc((100% - calc(var(--card-gap) * 2)) / 3);
+    grid-gap: var(--card-gap);
+  }
 }
+@media only screen and (min-width: 1401px) {
+  .pos-auto {
+    --card-gap: 30px;
+    display: grid;
+    padding: 0px 10px;
+    grid-template-columns: 
+        calc((100% - calc(var(--card-gap) * 3)) / 4) 
+        calc((100% - calc(var(--card-gap) * 3)) / 4) 
+        calc((100% - calc(var(--card-gap) * 3)) / 4) 
+        calc((100% - calc(var(--card-gap) * 3)) / 4);
+    grid-gap: var(--card-gap);
+  }
+}
+
 .pos-auto .step-card {
-  min-height: 200px;
   border-radius: 10px;
   border: 1px solid #c3c3c3c3;
+}
+.pos-auto .step-card .foot {
+  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+}
+.pos-auto .step-card .head > .row:first-child {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 10px;
 }
