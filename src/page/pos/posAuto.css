@@ -1,29 +1,3 @@
-@media only screen and (max-width: 1400px) {
-  .pos-auto {
-    --card-gap: 30px;
-    display: grid;
-    padding: 0px 10px;
-    grid-template-columns: 
-        calc((100% - calc(var(--card-gap) * 1)) / 2)
-        calc((100% - calc(var(--card-gap) * 1)) / 2)
-        calc((100% - calc(var(--card-gap) * 1)) / 2);
-    grid-gap: var(--card-gap);
-  }
-}
-@media only screen and (min-width: 1401px) {
-  .pos-auto {
-    --card-gap: 30px;
-    display: grid;
-    padding: 0px 10px;
-    grid-template-columns: 
-        calc((100% - calc(var(--card-gap) * 3)) / 4) 
-        calc((100% - calc(var(--card-gap) * 3)) / 4) 
-        calc((100% - calc(var(--card-gap) * 3)) / 4) 
-        calc((100% - calc(var(--card-gap) * 3)) / 4);
-    grid-gap: var(--card-gap);
-  }
-}
-
 .pos-auto .step-card {
   border-radius: 10px;
   border: 1px solid #c3c3c3c3;

@@ -98,8 +98,14 @@ export default function SvgIcon({iconType='default', size='sm', color, children,
 
   const _color = color || defaultVal.color;
 
+  const _class = ['svg-icon'].mergeString(props.className)
+  _class.push(iconType)
+
+  const _props = {...props}
+  delete _props.className;
+
   return (
-    <span style={_style} {...props}>
+    <span className={_class.join(' ')} style={_style} {..._props}>
       <GetIcon iconType={iconType} width={_style.width} height={_style.height} color={_color} />
       { children }
     </span>

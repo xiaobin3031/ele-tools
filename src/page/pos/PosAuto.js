@@ -7,51 +7,42 @@ import { initFlow } from './data/init';
 import './posAuto.css'
 import Step from './Step';
 import { formatStepData, formatSteps } from './data/format'
+import StepList from './StepList';
 
 export default function PosAuto({}){
-
-  const [steps, setSteps] = useState({});
-
-  useEffect(() => {
-    const _steps = window.posDb.readSteps({});
-    // 补充数据
-    _steps.forEach(a => {
-      const _step = stepNames.filter(b => b.name === a.perform)[0];
-      if(!!_step){
-        a.showEle = !!_step.showEle;
-        a.hasSubSteps = !!_step.hasSubSteps;
-      }
-    })
-    setSteps(_steps);
-  }, [])
+new Array
+  const [steps, setSteps] = useState(window.posDb.readSteps({}));
+  const [step, setStep] = useState(null);
 
   function addStep(){
     let _step = {perform: stepNames[0].name, _id: globalId()}
     _step = initFlow(_step);
-    setSteps([ ...steps, _step ])
+    setStep(_step);
   }
 
   function delStep(_id){
-    setSteps(steps.filter(a => a._id !== _id))
+    setStep(null);
+    // setSteps(steps.filter(a => a._id !== _id))
   }
 
   function saveStep(_step){
-    window.posDb.saveOrUpdateStep({step: formatStepData(_step)});
+    const tmpStep = formatStepData(_step);
+    setStep(null);
+    setSteps(steps.merge(tmpStep))
+    window.posDb.saveOrUpdateStep({step: tmpStep});
   }
 
   return (
-    <div className="pos-auto-args">
+    <Row className="pos-auto">
       <Row>
         <Button onClick={addStep}>添加步骤</Button>
       </Row>
-      <div className="pos-auto">
-        {
-          steps.length > 0 && 
-            steps.map(a => {
-              return <Step key={a._id} _step={a} _delStep={delStep} _saveStep={saveStep} />
-            })
-        }
-      </div>
-    </div>
+      {
+        !!step && <Step key={step._id} _step={step} _delStep={delStep} _saveStep={saveStep} />
+      }
+      {
+        !!steps && steps.length > 0 && <StepList _steps={steps} />
+      }
+    </Row>
   )
 }
