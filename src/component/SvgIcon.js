@@ -75,7 +75,7 @@ function GetIcon({iconType, width, height, color}){
 const _initSize = 20;
 export default function SvgIcon({iconType='default', size='sm', color, children, ...props}){
 
-  let _style = {};
+  let _style = {display: 'flex'};
   switch(size){
     case 'md':
       _style.width = `${_initSize * 1.5}`;
@@ -92,11 +92,25 @@ export default function SvgIcon({iconType='default', size='sm', color, children,
   }
   _style = {..._style, ...(props.style || {})}
 
-  if(!!children && !_style.display){
-    _style.display = 'flex';
-  }
+  // if(!!children && !_style.display){
+  //   _style.display = 'flex';
+  // }
 
-  const _color = color || defaultVal.color;
+  let _color;
+  if(!!color){
+    if(color.charAt(0) === '-'){
+      const root = document.querySelector(':root');
+      const pColor = window.getComputedStyle(root).getPropertyValue('--color' + color);
+      if(!!pColor){
+        _color = pColor;
+      }
+    }else{
+      _color = color;
+    }
+  }
+  if(!_color){
+    _color = defaultVal.color;
+  }
 
   const _class = ['svg-icon'].mergeString(props.className)
   _class.push(iconType)

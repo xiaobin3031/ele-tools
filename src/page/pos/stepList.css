@@ -46,8 +46,32 @@
 } */
 
 .step-view {
-  display: flex;
+  /* display: flex; */
+  align-items: center;
+  display: grid;
+  grid-template-columns: max-content 200px auto max-content max-content;
+  grid-gap: 10px;
   border: 1px solid #c3c3c3c3;
   border-radius: 10px;
   padding: 10px;
+}
+
+.step-view .content,
+.step-view .log {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: inherit;
+}
+.step-view .log {
+  text-align: center;
+}
+.step-view .perform {
+  color: white;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 0.8em;
+}
+.step-view .perform.while {
+  background-color: rgb(60, 60, 255);
 }

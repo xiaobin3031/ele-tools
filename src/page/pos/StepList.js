@@ -8,24 +8,23 @@ function StepView({_step, _stepModify, _stepRemove}){
 
   //todo 测试
   _step.running = true;
+  const _stepName = stepNames.filter(a => a.name === _step.perform)[0];
+  const performName = !!_stepName ? _stepName.desc : _stepName.perform;
 
-  function getContentName(){
-    let content;
-    if(!!_step.name){
-      content = _step.name;
-    }else{
-      const _stepName = stepNames.filter(a => a.name === _step.perform)[0];
-      content = !!_stepName ? _stepName.desc : _step.perform;
+  function removeStep(){
+    if(window.confirm('是否删除该流程')){
+      _stepRemove(_step._id);
     }
-    return content;
   }
 
   return (
     <Row>
       <div className="step-view">
-        <span className='content'>{getContentName()}</span>
-        <SvgIcon iconType='pen'/>
-        <SvgIcon iconType='ashbin'/>
+        <span className={`perform ${_stepName.name}`}>{performName}</span>
+        <span className='content'>{!!_step.name ? _step.name : ''}</span>
+        <span className='log'></span>
+        <SvgIcon iconType='pen' color='-warning' onClick={() => _stepModify(_step._id)}/>
+        <SvgIcon iconType='ashbin' color='-danger' onClick={removeStep}/>
       </div>
     </Row>
   )

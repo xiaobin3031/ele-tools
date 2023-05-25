@@ -7,7 +7,7 @@ export default function Row({children, className, ...props}){
   const _classList = ['row']
   if(!!className){
     const _class = className.split(' ');
-    for(let i in _class){
+    for(let i=0; i<_class.length;i++){
       _classList.push(_class[i])
     }
   }

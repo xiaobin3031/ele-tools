@@ -22,7 +22,24 @@ new Array
 
   function delStep(_id){
     setStep(null);
-    // setSteps(steps.filter(a => a._id !== _id))
+    setSteps(steps.filter(a => a._id !== _id))
+  }
+
+  function toModifyStep(_id){
+    if(step != null){
+      if(!window.confirm("当前流程正在修改，是否覆盖?")){
+        return;
+      }
+    }
+    const _step = steps.filter(a => a._id === _id)[0];
+    if(!!_step){
+      const stepName = stepNames.filter(a => a.name === _step.perform)[0];
+      if(!!stepName){
+        _step.showEle = stepName.showEle;
+        _step.hasSubSteps = stepName.hasSubSteps;
+      }
+      setStep(_step);
+    }
   }
 
   function saveStep(_step){
@@ -41,7 +58,7 @@ new Array
         !!step && <Step key={step._id} _step={step} _delStep={delStep} _saveStep={saveStep} />
       }
       {
-        !!steps && steps.length > 0 && <StepList _steps={steps} />
+        !!steps && steps.length > 0 && <StepList _steps={steps} _stepRemove={delStep} _stepModify={toModifyStep}/>
       }
     </Row>
   )
