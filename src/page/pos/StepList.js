@@ -21,15 +21,13 @@ function StepView({_step, _stepModify, _stepRemove}){
   }
 
   return (
-    <div>
+    <Row>
       <div className="step-view">
-        <div className='content'>{getContentName()}</div>
-      </div>
-      <div className='step-view-icons'>
+        <span className='content'>{getContentName()}</span>
         <SvgIcon iconType='pen'/>
         <SvgIcon iconType='ashbin'/>
       </div>
-    </div>
+    </Row>
   )
 }
 

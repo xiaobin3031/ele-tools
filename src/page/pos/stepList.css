@@ -1,4 +1,4 @@
-.steps-view {
+/* .steps-view {
   --step-view-width: 100px;
   --gap: 80px;
   --columns: 6;
@@ -37,11 +37,17 @@
 }
 .step-view-icons .svg-icon {
   position: absolute;
-  /* display: none; */
 }
 .step-view-icons .svg-icon.pen {
   left: -20px;
 }
 .step-view-icons .svg-icon.ashbin {
   right: -20px;
+} */
+
+.step-view {
+  display: flex;
+  border: 1px solid #c3c3c3c3;
+  border-radius: 10px;
+  padding: 10px;
 }
