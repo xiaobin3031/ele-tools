@@ -17,16 +17,28 @@ function StepView({_step, _stepModify, _stepRemove}){
     }
   }
 
+  function dragStart(event){
+    console.log('event', event);
+    console.log('event.target', event.target);
+    console.log('event.currentTarget', event.currentTarget);
+    const _classList = event.currentTarget.classList;
+    if(!_classList.contains("dragging")){
+      _classList.add("dragging")
+    }
+  }
+
   return (
-    <Row>
-      <div className="step-view">
-        <span className={`perform ${_stepName.name}`}>{performName}</span>
-        <span className='content'>{!!_step.name ? _step.name : ''}</span>
-        <span className='log'></span>
-        <SvgIcon iconType='pen' color='-warning' onClick={() => _stepModify(_step._id)}/>
-        <SvgIcon iconType='ashbin' color='-danger' onClick={removeStep}/>
-      </div>
-    </Row>
+    <div className='step-view-drag dragging' draggable={true} onDragStart={dragStart}>
+      <Row>
+        <div className="step-view">
+          <span className={`perform ${_stepName.name}`}>{performName}</span>
+          <span className='content'>{!!_step.name ? _step.name : _step.perform}</span>
+          <span className='log'></span>
+          <SvgIcon className='pointer' iconType='pen' color='-warning' onClick={() => _stepModify(_step._id)}/>
+          <SvgIcon className='pointer' iconType='ashbin' color='-danger' onClick={removeStep}/>
+        </div>
+      </Row>
+    </div>
   )
 }
 

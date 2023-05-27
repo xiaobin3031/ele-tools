@@ -24,7 +24,7 @@ export const stepNames = [
   },
   {
     name: "buildIn",
-    desc: "内置函数"
+    desc: "内置参数"
   },
   {
     name: "cache",
@@ -53,7 +53,7 @@ export const stepNames = [
   {
     name: "recycleView",
     showEle: true,
-    desc: "recycleView列表"
+    desc: "列表"
   },
   {
     name: "sleep",
@@ -106,5 +106,12 @@ export const uiBillField = [
   },
   {
     name: "vipNo"
+  }
+]
+
+export const buildInMethods = [
+  {
+    name: "waitForPrint",
+    desc: "等待打印结束"
   }
 ]

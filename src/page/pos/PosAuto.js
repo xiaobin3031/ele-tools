@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from '../../component/Button';
 import Row from '../../component/Row';
 import globalId from '../../util/globalId';
@@ -6,7 +6,7 @@ import { stepNames } from './data/data';
 import { initFlow } from './data/init';
 import './posAuto.css'
 import Step from './Step';
-import { formatStepData, formatSteps } from './data/format'
+import { formatStepData } from './data/format'
 import StepList from './StepList';
 
 export default function PosAuto({}){
@@ -22,7 +22,9 @@ new Array
 
   function delStep(_id){
     setStep(null);
-    setSteps(steps.filter(a => a._id !== _id))
+    const _steps = steps.filter(a => a._id !== _id);
+    setSteps(_steps)
+    window.posDb.saveSteps({list:_steps});
   }
 
   function toModifyStep(_id){
@@ -38,6 +40,7 @@ new Array
         _step.showEle = stepName.showEle;
         _step.hasSubSteps = stepName.hasSubSteps;
       }
+      _step._modify = true;
       setStep(_step);
     }
   }

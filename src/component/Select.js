@@ -1,5 +1,5 @@
 
-export default function Select({list, value="name", desc="desc", showSelect=true, key="key", ...attr}){
+export default function Select({list, value="name", desc="desc", showSelect=true, key="key", ...props}){
 
   const style = {
     padding: '3px',
@@ -7,9 +7,9 @@ export default function Select({list, value="name", desc="desc", showSelect=true
   }
 
   return (
-    <select style={style} {...attr}>
+    <select style={style} {...props}>
       {
-        showSelect && !attr.multiple && <option value="">请选择</option>
+        showSelect && !props.multiple && <option value="">请选择</option>
       }
       {
         !!list && list.length &&

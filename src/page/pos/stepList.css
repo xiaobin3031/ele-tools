@@ -46,7 +46,6 @@
 } */
 
 .step-view {
-  /* display: flex; */
   align-items: center;
   display: grid;
   grid-template-columns: max-content 200px auto max-content max-content;
@@ -73,5 +72,22 @@
   font-size: 0.8em;
 }
 .step-view .perform.while {
-  background-color: rgb(60, 60, 255);
+  background-color: rgb(60, 60, 255, 0.5);
+}
+.step-view .perform.buildIn {
+  background-color: rgb(60, 60, 255, 0.5);
+}
+
+.step-view-drag.dragging {
+  animation: step-view-dragging 1.5s ease;
+  animation-fill-mode: forwards;
+  overflow: hidden;
+}
+
+@keyframes step-view-dragging {
+  0% {
+  }
+  100% {
+    height: 0px;
+  }
 }
