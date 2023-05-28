@@ -1,3 +1,4 @@
+import '../css/svgIcon.css'
 const defaultVal = {
   color: '#666666',
   width: '20',
@@ -43,6 +44,16 @@ function Poweroff({width, height, color}){
     <svg t="1684744252244" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3942" width={width} height={height}><path d="M705.6 124.9c-5.3-2.7-11.6 1.2-11.6 7.2v64.2c0 5.5 2.9 10.6 7.5 13.6 22.4 14.1 43.2 30.7 62.2 49.8 32.7 32.8 58.4 70.9 76.3 113.3 18.5 43.9 27.9 90.5 27.9 138.7 0 48.1-9.4 94.8-27.9 138.7-17.9 42.4-43.6 80.5-76.3 113.3-32.7 32.8-70.8 58.5-113.2 76.4-43.8 18.6-90.5 28-138.5 28s-94.7-9.4-138.5-28c-42.4-17.9-80.5-43.6-113.2-76.4-32.7-32.8-58.4-70.9-76.3-113.3-18.5-43.9-27.9-90.5-27.9-138.7 0-48.1 9.4-94.8 27.9-138.7 17.9-42.4 43.6-80.5 76.3-113.3 19-19 39.8-35.6 62.2-49.8 4.7-2.9 7.5-8.1 7.5-13.6V132c0-6-6.3-9.8-11.6-7.2C178.5 195.2 82 339.3 80 506.3 77.2 745.1 272.5 943.5 511.2 944c239 0.5 432.8-193.3 432.8-432.4 0-169.2-97-315.7-238.4-386.7z" p-id="3943" fill={color}></path><path d="M480 560h64c4.4 0 8-3.6 8-8V88c0-4.4-3.6-8-8-8h-64c-4.4 0-8 3.6-8 8v464c0 4.4 3.6 8 8 8z" p-id="3944" fill={color}></path></svg>
   )
 }
+function DirectionUp({width, height, color}){
+  return (
+    <svg t="1685278700579" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3413" width={width} height={height}><path d="M896 467.2l-362.666667-341.333333c-2.133333-2.133333-6.4-4.266667-8.533333-6.4-4.266667-2.133333-6.4-2.133333-10.666667-2.133334s-8.533333 0-10.666666 2.133334c-4.266667 2.133333-6.4 4.266667-8.533334 6.4l-362.666666 341.333333c-12.8 12.8-12.8 32-2.133334 44.8 12.8 12.8 32 12.8 44.8 2.133333l309.333334-290.133333V874.666667c0 17.066667 14.933333 32 32 32s32-14.933333 32-32V224L853.333333 514.133333c6.4 6.4 14.933333 8.533333 21.333334 8.533334 8.533333 0 17.066667-4.266667 23.466666-10.666667 12.8-12.8 10.666667-32-2.133333-44.8z" fill={color} p-id="3414"></path></svg>
+  )
+}
+function DirectionDown({width, height, color}){
+  return (
+    <svg t="1685278777075" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3565" width={width} height={height}><path d="M898.133333 512c-12.8-12.8-32-12.8-44.8-2.133333L544 800V149.333333c0-17.066667-14.933333-32-32-32s-32 14.933333-32 32v650.666667L170.666667 509.866667c-12.8-12.8-34.133333-10.666667-44.8 2.133333-12.8 12.8-10.666667 34.133333 2.133333 44.8l362.666667 341.333333c2.133333 2.133333 6.4 4.266667 8.533333 6.4 4.266667 2.133333 6.4 2.133333 10.666667 2.133334s8.533333 0 10.666666-2.133334c4.266667-2.133333 6.4-4.266667 8.533334-6.4l362.666666-341.333333c17.066667-12.8 19.2-32 6.4-44.8z" fill={color} p-id="3566"></path></svg>
+  )
+}
 function DefaultIcon({width, height, color}){
   return (
     <svg t="1683551616064" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="5517" width={width} height={height}><path d="M853.333333 149.333333h-138.666666V106.666667c0-17.066667-14.933333-32-32-32s-32 14.933333-32 32v42.666666h-277.333334V106.666667c0-17.066667-14.933333-32-32-32s-32 14.933333-32 32v42.666666H170.666667c-40.533333 0-74.666667 34.133333-74.666667 74.666667v618.666667C96 883.2 130.133333 917.333333 170.666667 917.333333h682.666666c40.533333 0 74.666667-34.133333 74.666667-74.666666v-618.666667C928 183.466667 893.866667 149.333333 853.333333 149.333333zM170.666667 213.333333h138.666666v64c0 17.066667 14.933333 32 32 32s32-14.933333 32-32v-64h277.333334v64c0 17.066667 14.933333 32 32 32s32-14.933333 32-32v-64H853.333333c6.4 0 10.666667 4.266667 10.666667 10.666667v194.133333c-4.266667-2.133333-6.4-2.133333-10.666667-2.133333H170.666667c-4.266667 0-6.4 0-10.666667 2.133333v-194.133333c0-6.4 4.266667-10.666667 10.666667-10.666667z m682.666666 640H170.666667c-6.4 0-10.666667-4.266667-10.666667-10.666666V477.866667c4.266667 2.133333 6.4 2.133333 10.666667 2.133333h682.666666c4.266667 0 6.4 0 10.666667-2.133333v364.8c0 6.4-4.266667 10.666667-10.666667 10.666666z" fill={color} p-id="5518"></path><path d="M384 608h-85.333333c-17.066667 0-32 14.933333-32 32s14.933333 32 32 32h85.333333c17.066667 0 32-14.933333 32-32s-14.933333-32-32-32zM725.333333 608h-192c-17.066667 0-32 14.933333-32 32s14.933333 32 32 32h192c17.066667 0 32-14.933333 32-32s-14.933333-32-32-32z" fill={color} p-id="5519"></path></svg>
@@ -67,6 +78,10 @@ function GetIcon({iconType, width, height, color}){
       return <Pen width={width} height={height} color={color} />
     case 'poweroff':
       return <Poweroff width={width} height={height} color={color} />
+    case 'directionUp':
+      return <DirectionUp width={width} height={height} color={color} />
+    case 'directionDown':
+      return <DirectionDown width={width} height={height} color={color} />
     default:
       return <DefaultIcon width={width} height={height} color={color} />
   }
@@ -75,26 +90,7 @@ function GetIcon({iconType, width, height, color}){
 const _initSize = 20;
 export default function SvgIcon({iconType='default', size='sm', color, children, ...props}){
 
-  let _style = {display: 'flex'};
-  switch(size){
-    case 'md':
-      _style.width = `${_initSize * 1.5}`;
-      _style.height = `${_initSize * 1.5}`;
-      break;
-    case 'lg':
-      _style.width = `${_initSize * 2}`;
-      _style.height = `${_initSize * 2}`;
-      break;
-    default: 
-      _style.width = `${_initSize}`;
-      _style.height = `${_initSize}`;
-      break;
-  }
-  _style = {..._style, ...(props.style || {})}
-
-  // if(!!children && !_style.display){
-  //   _style.display = 'flex';
-  // }
+  let _style = {...(props.style || {})}
 
   let _color;
   if(!!color){
@@ -112,7 +108,7 @@ export default function SvgIcon({iconType='default', size='sm', color, children,
     _color = defaultVal.color;
   }
 
-  const _class = ['svg-icon'].mergeString(props.className)
+  const _class = ['svg-icon', size].mergeString(props.className)
   _class.push(iconType)
 
   const _props = {...props}

@@ -10,7 +10,7 @@ import { formatStepData } from './data/format'
 import StepList from './StepList';
 
 export default function PosAuto({}){
-new Array
+  
   const [steps, setSteps] = useState(window.posDb.readSteps({}));
   const [step, setStep] = useState(null);
 
@@ -52,6 +52,28 @@ new Array
     window.posDb.saveOrUpdateStep({step: tmpStep});
   }
 
+  /**
+   * 移动步骤的顺序，
+   * @param  index 步骤的下标索引
+   * @param  direction 0 上移，1 下移
+   */
+  function stepChangePosition(index, direction){
+    if(index < 0 || index >= steps.length){
+      return;
+    }
+    let _steps = steps.splice(index, 1);
+    if(0 === direction){
+      index = index - 1;
+    }else if(1 === direction){
+      index = index + 1;
+    }
+    if(index >= 0 && index <= steps.length && !!_steps){
+      steps.splice(index, 0, _steps[0]);
+      setSteps([...steps]);
+      window.posDb.saveSteps({list: steps});
+    }
+  }
+
   return (
     <Row className="pos-auto">
       <Row>
@@ -61,7 +83,8 @@ new Array
         !!step && <Step key={step._id} _step={step} _delStep={delStep} _saveStep={saveStep} />
       }
       {
-        !!steps && steps.length > 0 && <StepList _steps={steps} _stepRemove={delStep} _stepModify={toModifyStep}/>
+        !!steps && steps.length > 0 && 
+          <StepList _steps={steps} _stepRemove={delStep} _stepModify={toModifyStep} _stepChangePosition={stepChangePosition}/>
       }
     </Row>
   )

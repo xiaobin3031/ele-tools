@@ -70,7 +70,7 @@ export const stepNames = [
   }
 ]
 
-export const uiBillField = [
+export const uiBillFields = [
   {
     name: 'payOrderNum'
   },

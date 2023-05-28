@@ -1,0 +1,19 @@
+.svg-icon {
+  --normal-size: 20px;
+  width: var(--normal-size);
+  height: var(--normal-size);
+  display: inline-flex;
+}
+
+.svg-icon.sm {
+  width: var(--normal-size);
+  height: var(--normal-size);
+}
+.svg-icon.md {
+  width: calc(var(--normal-size) * 1.5);
+  height: calc(var(--normal-size) * 1.5);
+}
+.svg-icon.lg {
+  width: calc(var(--normal-size) * 2);
+  height: calc(var(--normal-size) * 2);
+}

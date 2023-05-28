@@ -17,7 +17,7 @@ Array.prototype.merge = function(item){
 Array.prototype.mergeString = function(string, split=' '){
   if(!!string){
     const strs = string.split(split);
-    for(let i in strs){
+    for(let i = 0;i<strs.length;i++){
       this.push(strs[i]);
     }
   }

@@ -1,4 +1,4 @@
-import { stepNames, uiBillField } from "./data";
+import { stepNames, uiBillFields } from "./data";
 
 function defaultVal(val, defVal){
   if(val === void 0 || val === null || val < defVal){
@@ -52,8 +52,8 @@ function formatCache(step){
   data.index = defaultVal(step.index, 0);
   data.viewId = step.viewId;
   data.cacheKey = step.cacheKey;
-  if(!!step.uiBillField && step.uiBillField.length > 0){
-    data.uiBillField = step.uiBillField.filter(a => uiBillField.some(b => b.name === a))
+  if(!!step.uiBillFields && step.uiBillFields.length > 0){
+    data.uiBillFields = step.uiBillFields.filter(a => uiBillFields.some(b => b.name === a))
   }
   return data;
 }

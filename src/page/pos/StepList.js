@@ -4,7 +4,11 @@ import SvgIcon from '../../component/SvgIcon';
 import { stepNames } from './data/data'
 import './stepList.css'
 
-function StepView({_step, _stepModify, _stepRemove}){
+const dragInfo = {
+
+}
+
+function StepView({_step, _stepModify, _stepRemove, _stepChangePosition, _index}){
 
   //todo 测试
   _step.running = true;
@@ -17,39 +21,31 @@ function StepView({_step, _stepModify, _stepRemove}){
     }
   }
 
-  function dragStart(event){
-    console.log('event', event);
-    console.log('event.target', event.target);
-    console.log('event.currentTarget', event.currentTarget);
-    const _classList = event.currentTarget.classList;
-    if(!_classList.contains("dragging")){
-      _classList.add("dragging")
-    }
-  }
-
   return (
-    <div className='step-view-drag dragging' draggable={true} onDragStart={dragStart}>
-      <Row>
-        <div className="step-view">
-          <span className={`perform ${_stepName.name}`}>{performName}</span>
-          <span className='content'>{!!_step.name ? _step.name : _step.perform}</span>
-          <span className='log'></span>
+    <div className='step-view-drag' stepid={_step._id}>
+      <div className="step-view">
+        <span className={`perform ${_stepName.name}`}>{performName}</span>
+        <span className='content'>{!!_step.name ? _step.name : _step.perform}</span>
+        <span className='log'></span>
+        <span>
           <SvgIcon className='pointer' iconType='pen' color='-warning' onClick={() => _stepModify(_step._id)}/>
+          <SvgIcon className='pointer' iconType='directionUp' onClick={() => _stepChangePosition(_index, 0)}/>
+          <SvgIcon className='pointer' iconType='directionDown' onClick={() => _stepChangePosition(_index, 1)}/>
           <SvgIcon className='pointer' iconType='ashbin' color='-danger' onClick={removeStep}/>
-        </div>
-      </Row>
+        </span>
+      </div>
     </div>
   )
 }
 
-export default function StepList({_steps, _stepModify, _stepRemove}){
+export default function StepList({_steps, _stepModify, _stepRemove, _stepChangePosition}){
 
   return (
     <Row className="steps-view">
       {
         !!_steps && _steps.length > 0 &&
-          _steps.map(a => {
-            return <StepView key={a._id} _step={a} _stepModify={_stepModify} _stepRemove={_stepRemove}/>
+          _steps.map((a, index) => {
+            return <StepView key={a._id} _step={a} _stepModify={_stepModify} _stepRemove={_stepRemove} _stepChangePosition={_stepChangePosition} _index={index}/>
           })
       }
     </Row>
