@@ -9,7 +9,7 @@ import HttpReqCompare from './page/hankyu/HttpReqCompare';
 import PosAuto from './page/pos/PosAuto';
 import Todo from './page/todo/Todo';
 import Todo2 from './page/todo/Todo2';
-import globalId from './util/globalId';
+import { globalId } from './util/global';
 
 const apps = [
   {

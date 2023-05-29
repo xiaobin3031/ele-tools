@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './todo.css'
-import globalId from '../../util/globalId';
+import { globalId } from '../../util/global';
 import SvgIcon from '../../component/SvgIcon';
 import Input from '../../component/Input';
 import Row from '../../component/Row';

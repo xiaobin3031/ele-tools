@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../../component/Button';
 import Row from '../../component/Row';
-import globalId from '../../util/globalId';
+import { globalId } from '../../util/global';
 import { stepNames } from './data/data';
 import { initFlow } from './data/init';
 import './posAuto.css'

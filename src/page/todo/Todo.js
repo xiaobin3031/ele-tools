@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './todo.css'
-import globalId from '../../util/globalId';
+import { globalId } from '../../util/global';
 import SvgIcon from '../../component/SvgIcon';
 import ReactDOM from 'react-dom/client';
 import TaskList from './TaskList';

@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import SvgIcon from '../../component/SvgIcon';
-import globalId from '../../util/globalId';
-// import './todo2.css'
+import { globalId } from '../../util/global';
 import Input from '../../component/Input';
 import Row from '../../component/Row';
 import DateTimePicker from '../../component/DateTimePicker';

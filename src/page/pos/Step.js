@@ -4,7 +4,7 @@ import { Button } from '../../component/Button';
 import Input from '../../component/Input';
 import Row from '../../component/Row';
 import Select from '../../component/Select';
-import globalId from '../../util/globalId';
+import { globalId } from '../../util/global';
 import { stepNames } from './data/data';
 import { initFlow } from './data/init';
 import Ele from './Ele';

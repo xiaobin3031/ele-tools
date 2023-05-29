@@ -5,7 +5,7 @@ import React, { useRef, useState } from 'react'
 import Select from '../../component/Select';
 import { Button } from '../../component/Button';
 import Http from '../../js/Http';
-import globalId from '../../util/globalId';
+import { globalId } from '../../util/global';
 import Row from '../../component/Row';
 
 const httpMethods = [

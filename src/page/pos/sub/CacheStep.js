@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ButtonGroup } from "../../../component/Button";
 import Row from "../../../component/Row";
 import Input from "../../../component/Input";
-import Select from "../../../component/Select";
+import Select2 from "../../../component/Select2";
 import { uiBillFields } from "../data/data";
 
 
@@ -17,7 +17,7 @@ export default function CacheStep({_step, _stepChange}){
       checked: !checked
     },
     {
-      _text: '按订单',
+      _text: '按订单字段',
       _value: 'byBill',
       _color: 'primary',
       checked: checked
@@ -33,7 +33,8 @@ export default function CacheStep({_step, _stepChange}){
   }
   
   function stepChange(event){
-
+    _step[event.target.name] = event.target.value;
+    _stepChange({..._step});
   }
 
   function uiBillFieldChange(event){
@@ -42,7 +43,7 @@ export default function CacheStep({_step, _stepChange}){
 
   return (
     <Row>
-      <Row>
+      <Row style={{ display: 'flex', alignItems: 'center'}}>
         <ButtonGroup list={valuesType} groupType="radio" size="sm" valuecheck={changeValueType}/>
         <span style={{ marginLeft: '10px' }}>
           {
@@ -59,10 +60,11 @@ export default function CacheStep({_step, _stepChange}){
           }
           {
             valueType === 'byBill' &&
-              <Select list={uiBillFields} multiple onChange={uiBillFieldChange} />
+              <Select2 list={uiBillFields} multiple onChange={uiBillFieldChange} />
           }
         </span>
       </Row>
     </Row>
+    
   )
 }

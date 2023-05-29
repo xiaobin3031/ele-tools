@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Icon from "../../component/Icon";
 import Input from "../../component/Input";
-import globalId from "../../util/globalId";
+import { globalId } from '../../util/global';
 import CreateTask from "./CreateTask";
 import './todo.css'
 

@@ -1,3 +1,4 @@
+import '../css/row.css'
 
 export default function Row({children, className, ...props}){
   const style = {

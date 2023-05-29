@@ -5,7 +5,7 @@ import { useRef, useState } from "react"
 import Row from '../../component/Row';
 import Input from '../../component/Input';
 import { Button } from '../../component/Button';
-import globalId from '../../util/globalId';
+import { globalId } from '../../util/global';
 import Icon from '../../component/Icon';
 
 let weekId= 1;

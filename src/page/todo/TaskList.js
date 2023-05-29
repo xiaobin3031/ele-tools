@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import globalId from '../../util/globalId';
+import { globalId } from '../../util/global';
 import SvgIcon from '../../component/SvgIcon';
 import CreateTask from './CreateTask';
 
