@@ -180,7 +180,7 @@ export default function Todo({}){
           _finishRenameGroup={finishRenameGroup}
           _list={groupList} _renameGroupId={renameGroupId} _addGroup={addGroup} _updateGroup={updateGroup}/>
         <TaskList key={selectGroup._id} _groupId={selectGroup._id} 
-          _groupName={selectGroup.name} _list={taskList} 
+          _groupName={selectGroup.name} 
           _hideTaskDetail={hideTaskDetail}
           _clickTask={clickTask}/>
       </div>

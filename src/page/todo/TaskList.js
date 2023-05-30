@@ -3,14 +3,21 @@ import { globalId } from '../../util/global';
 import SvgIcon from '../../component/SvgIcon';
 import CreateTask from './CreateTask';
 
-export default function TaskList({_list = [], _groupId, _groupName, _clickTask, _hideTaskDetail}){
+export default function TaskList({_groupId, _groupName, _clickTask, _hideTaskDetail}){
 
   const [todoList, setTodoList] = useState([])
+  const [uncompleteTodoList, setUncompleteTodoList] = useState([]);
+  const [completeTodoList, setCompleteTodoList] = useState([]);
+  const [completeCount, setCompleteCount] = useState(0);
   const taskListsRef = useRef(null)
+  const showCompleteList = useRef(false);
+
   useEffect(() => {
-    // 直接用useState无法生效，只能用这种方式
-    setTodoList(window.todoDb.readTaskList({type: 'task', groupId: _groupId}));
-  }, [_list]);
+    const _todoList = window.todoDb.readTaskList({type: 'task', groupId: _groupId});
+    setTodoList(_todoList);
+    setUncompleteTodoList(_todoList.filter(a => !a.complete))
+    setCompleteCount(_todoList.filter(a => !!a.complete).length)
+  }, [_groupId])
 
   function createNewTask(event){
     if(event.keyCode === 13){
@@ -91,19 +98,47 @@ export default function TaskList({_list = [], _groupId, _groupName, _clickTask, 
     clearTaskSelectStatus();
   }
 
+  function refreshList(_todoList){
+
+  }
+
+  function toggleCompleteList(){
+    if(completeCount > 0){
+      showCompleteList.current = !showCompleteList.current;
+      if(showCompleteList.current){
+        setCompleteTodoList(todoList.filter(a => !!a.complete))
+      }else{
+        setCompleteTodoList([])
+      }
+    }
+  }
+
   return (
     <div className="task-list" onClick={clickTaskList}>
       <div className='task-list-list' ref={taskListsRef}>
         {
-          todoList.length > 0 &&
-            todoList.map((a, index) => {
-              const _class = ['checkbox'];
-              if(!!a.complete){
-                _class.push('complete')
-              }
+          uncompleteTodoList.length > 0 &&
+            uncompleteTodoList.map((a, index) => {
               return (
                 <div att={a._id} key={a._id} className='item' onClick={event => clickTask(event, a)}>
-                  <div className={_class.join(' ')} onClick={(event) => taskComplete(event, a)}></div>
+                  <div className="checkbox" onClick={(event) => taskComplete(event, a)}></div>
+                  <span>{a.content}</span>
+                  {
+                    !a.complete && <SvgIcon iconType='ashbin' color='rgba(255, 127, 88, 0.8)' onClick={event => removeTask(event, a, index)} className='remove'/>
+                  }
+                </div>
+              )
+            })
+        }
+        <div style={{ borderBottom: '1px solid #c3c3c3c3' }}>
+          <label className='task-list-complete-list' onClick={toggleCompleteList}>已完成   ({completeCount})</label>
+        </div>
+        {
+          completeTodoList.length > 0 &&
+            completeTodoList.map((a, index) => {
+              return (
+                <div att={a._id} key={a._id} className='item' onClick={event => clickTask(event, a)}>
+                  <div className="checkbox complete" onClick={(event) => taskComplete(event, a)}></div>
                   <span>{a.content}</span>
                   {
                     !a.complete && <SvgIcon iconType='ashbin' color='rgba(255, 127, 88, 0.8)' onClick={event => removeTask(event, a, index)} className='remove'/>
