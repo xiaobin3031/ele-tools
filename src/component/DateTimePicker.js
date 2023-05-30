@@ -146,7 +146,7 @@ function getDateValue(_dateFormat, _defaultValue){
   return dateValue;
 }
 
-function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue, _closeSelect, ...props}){
+function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue, ...props}){
 
   const now = new Date();
   const dateVal = {
@@ -266,7 +266,7 @@ function CalendarSelect({_valueChange, _dateFormat = 'yyyy-MM-dd', _defaultValue
             <td colSpan={7}>
               <div>
                 <div>
-                  <Button size='sm' onClick={_closeSelect}>关闭</Button>
+                  <Button size='sm' onClick={() => _valueChange('')}>清除</Button>
                 </div>
                 <div>
                   <Button size='sm' color='primary' 
@@ -354,7 +354,7 @@ export default function DateTimePicker({showOnFocus=false, dateFormat, value, da
       <CalendarSelect 
         onMouseEnter={() => blurOnCloseSelect.current = false}
         onMouseLeave={() => blurOnCloseSelect.current = true}
-        _valueChange={selectDate} _dateFormat={dateFormat} _defaultValue={getDefaultValue()} _closeSelect={closeSelect}/>
+        _valueChange={selectDate} _dateFormat={dateFormat} _defaultValue={getDefaultValue()}/>
     </div>
   )
 }

@@ -117,10 +117,11 @@
 .task-detail-container {
   position: fixed;
   height: 100%;
-  width: 0px;
+  width: 60%;
   top: 0;
-  right: 0;
+  left: 100%;
   background-color: white;
+  border-left: 1px solid black;
 }
 .task-detail-container.show {
   animation: task-detail-show-animation .3s ease;
@@ -177,21 +178,18 @@
 }
 @keyframes task-detail-show-animation {
   0% {
-    width: 0px;
-    border-left: 1px solid black;
+    left: 100%;
   }
   100% {
-    width: 60%;
-    border-left: 1px solid black;
+    left: 40%;
   }
 }
 @keyframes task-detail-hide-animation {
   0% {
-    width: 60%;
-    border-left: 1px solid black;
+    left: 40%;
   }
   100% {
-    width: 0px;
+    left: 100%;
   }
 }
 

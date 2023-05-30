@@ -15,8 +15,7 @@ export default function TaskList({_groupId, _groupName, _clickTask, _hideTaskDet
   useEffect(() => {
     const _todoList = window.todoDb.readTaskList({type: 'task', groupId: _groupId});
     setTodoList(_todoList);
-    setUncompleteTodoList(_todoList.filter(a => !a.complete))
-    setCompleteCount(_todoList.filter(a => !!a.complete).length)
+    refreshList(_todoList);
   }, [_groupId])
 
   function createNewTask(event){
@@ -29,10 +28,8 @@ export default function TaskList({_groupId, _groupName, _clickTask, _hideTaskDet
         return;
       }
       const newItem = {_id: globalId(), content: taskContent, pId: _groupId};
-      setTodoList([
-        ...todoList,
-        newItem
-      ])
+      setTodoList([ ...todoList, newItem ])
+      setUncompleteTodoList([ ...uncompleteTodoList, newItem ])
       event.target.value = '';
       window.todoDb.saveOrUpdateTask({
         item: newItem,
@@ -43,17 +40,12 @@ export default function TaskList({_groupId, _groupName, _clickTask, _hideTaskDet
     }
   }
 
-  let groupName;
-  if(!!_groupName && !!_groupId){
-    groupName = `新增[${_groupName}]的任务`
-  }else{
-    groupName = '未选择列表';
-  }
-
   function taskComplete(event, item){
     event.stopPropagation();
     item.complete = !item.complete;
-    setTodoList(todoList.map(a => a._id === item._id ? item : a))
+    const _list = todoList.map(a => a._id === item._id ? item : a);
+    setTodoList(_list)
+    refreshList(_list)
     window.todoDb.saveOrUpdateTask({item: item, type: 'task', groupId: item.pId})
     if(item.complete){
       event.target.classList.add('complete')
@@ -76,20 +68,16 @@ export default function TaskList({_groupId, _groupName, _clickTask, _hideTaskDet
     Array.from(taskListsRef.current.children).filter(a => a.classList.contains('select')).forEach(a => a.classList.remove('select'))
   }
 
-  function removeTask(event, item, index){
+  function removeTask(event, item){
     event.stopPropagation();
     if(window.confirm(`是否删除该任务?`)){
-      if(!item._id){
-        todoList[index]._id = globalId();
-        todoList[index].deleted = 1;
-        window.todoDb.refreshTaskList({list: todoList, groupId: _groupId})
-      }else{
-        const _item = {...item, deleted: 1}
-        window.todoDb.saveOrUpdateTask({
-          item: _item, type: 'task', groupId: _groupId
-        })
-      }
-      setTodoList(todoList.filter((a, i) => index !== i));
+      const _item = {...item, deleted: 1}
+      window.todoDb.saveOrUpdateTask({
+        item: _item, type: 'task', groupId: _groupId
+      })
+      const _list = todoList.filter(a => a._id !== item._id); 
+      setTodoList(_list);
+      refreshList(_list)
     }
   }
 
@@ -99,7 +87,14 @@ export default function TaskList({_groupId, _groupName, _clickTask, _hideTaskDet
   }
 
   function refreshList(_todoList){
-
+    setUncompleteTodoList(_todoList.filter(a => !a.complete))
+    if(showCompleteList.current){
+      const completeList = _todoList.filter(a => !!a.complete);
+      setCompleteTodoList(completeList)
+      setCompleteCount(completeList.length)
+    }else{
+      setCompleteCount(_todoList.filter(a => !!a.complete).length)
+    }
   }
 
   function toggleCompleteList(){
@@ -124,7 +119,7 @@ export default function TaskList({_groupId, _groupName, _clickTask, _hideTaskDet
                   <div className="checkbox" onClick={(event) => taskComplete(event, a)}></div>
                   <span>{a.content}</span>
                   {
-                    !a.complete && <SvgIcon iconType='ashbin' color='rgba(255, 127, 88, 0.8)' onClick={event => removeTask(event, a, index)} className='remove'/>
+                    !a.complete && <SvgIcon iconType='ashbin' color='rgba(255, 127, 88, 0.8)' onClick={event => removeTask(event, a)} className='remove'/>
                   }
                 </div>
               )

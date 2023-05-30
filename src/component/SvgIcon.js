@@ -115,9 +115,11 @@ export default function SvgIcon({iconType='default', size='sm', color, children,
   delete _props.className;
 
   return (
-    <span className={_class.join(' ')} style={_style} {..._props}>
-      <GetIcon iconType={iconType} width={_style.width} height={_style.height} color={_color} />
-      { children }
+    <span style={{ display: 'flex' }}>
+      <span className={_class.join(' ')} style={_style} {..._props}>
+        <GetIcon iconType={iconType} width={_style.width} height={_style.height} color={_color} />
+      </span>
+      <span>{ children }</span>
     </span>
   )
 }

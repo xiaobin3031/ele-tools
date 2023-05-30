@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './todo.css'
 import { globalId } from '../../util/global';
 import SvgIcon from '../../component/SvgIcon';
@@ -39,6 +39,7 @@ export default function TaskDetail({_item, _saveOrUpdateTask}){
     }
     return item;
   });
+  const [subTaskId, setSubTaskId] = useState(null);
 
   function subTaskComplete(event, item){
     event.stopPropagation();
@@ -89,7 +90,6 @@ export default function TaskDetail({_item, _saveOrUpdateTask}){
   function updateTaskInfo(event){
     if(event.type === 'blur'){
       _saveOrUpdateTask(task);
-      console.log('blur');
     }else if(event.type === 'keydown' && event.keyCode === 13){
       _saveOrUpdateTask(task);
       event.target.blur();
@@ -100,6 +100,26 @@ export default function TaskDetail({_item, _saveOrUpdateTask}){
     const _task = {...task}
     _task.taskInfo.notifyTime = _value;
     updateTask(_task);
+  }
+
+  function toModifySubTask(item){
+    setSubTaskId(item._id)
+  }
+
+  function modifySubTask(event){
+    if(event.keyCode !== 13) return;
+    let matched = false;
+    for(let i=0;i<task.taskInfo.subTasks.length;i++){
+      if(task.taskInfo.subTasks[i]._id === subTaskId){
+        task.taskInfo.subTasks[i].content = event.target.value;
+        matched = true;
+        break;
+      }
+    }
+    if(matched){
+      updateTask({...task})
+    }
+    setSubTaskId(null)
   }
 
   return (
@@ -121,27 +141,44 @@ export default function TaskDetail({_item, _saveOrUpdateTask}){
         <Row className='sub-task'>
           {
             !!task.taskInfo.subTasks && task.taskInfo.subTasks.length > 0 &&
-              task.taskInfo.subTasks.map(a => {
-                const _class = ['checkbox', 'sm'];
-                if(!!a.complete){
-                  _class.push('complete')
-                }
+              task.taskInfo.subTasks.filter(a => !a.complete).map(a => {
                 return (
                   <Row className='sub-task-list flex' key={a._id}>
-                    <div className={_class.join(' ')} onClick={event => subTaskComplete(event, a)}></div>
-                    <span>{a.content}</span>
+                    {
+                      !!subTaskId && subTaskId === a._id 
+                        && <Input autoFocus='autofocus' style={{marginLeft: '25px'}} defaultValue={a.content} 
+                              onBlur={() => setSubTaskId(null)} onKeyDown={modifySubTask} name="content" />
+                    }
+                    {
+                      (!subTaskId || subTaskId !== a._id) && 
+                        <>
+                          <div className="checkbox sm" onClick={event => subTaskComplete(event, a)}></div>
+                          <span className='pointer' onClick={() => toModifySubTask(a)}>{a.content}</span>
+                        </>
+                    }
                   </Row>
                 )
               })
           }
           <Row className='flex'>
             <SvgIcon iconType='add' onClick={subPrepareAddGroup}/>
-            <input placeholder='添加子任务' 
+            <input placeholder='添加子任务'
               onKeyDown={createNewSubTask}
               onFocus={subPrepareAddGroup}
               onBlur={subFinishAddGroup}
               />
           </Row>
+          {
+            !!task.taskInfo.subTasks && task.taskInfo.subTasks.length > 0 &&
+              task.taskInfo.subTasks.filter(a => !!a.complete).map(a => {
+                return (
+                  <Row className='sub-task-list flex' key={a._id}>
+                    <div className="checkbox sm complete" onClick={event => subTaskComplete(event, a)}></div>
+                    <span className='pointer' onClick={() => toModifySubTask(a)}>{a.content}</span>
+                  </Row>
+                )
+              })
+          }
         </Row>
         <Row className='dead-time'>
           <SvgIcon iconType='notification'/>

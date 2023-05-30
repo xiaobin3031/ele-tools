@@ -39,6 +39,8 @@
 }
 .picker-region {
   font-size: 0.7em;
+  border: 1px solid #c3c3c3ce;
+  margin-top: 3px;
 }
 .picker-region .year-month-ctrl {
   display: inline-flex;
