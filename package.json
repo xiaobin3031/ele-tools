@@ -1,7 +1,7 @@
 {
   "name": "ele-tools",
   "version": "0.1.0",
-  "description": "",
+  "description": "ele-tools",
   "main": "main.js",
   "homepage": ".",
   "scripts": {
@@ -10,11 +10,19 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "ele": "electron .",
-    "ele-dev": "electron . dev"
+    "ele-dev": "electron . dev",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "forge-start": "electron-forge start"
   },
   "author": "xuweibin",
   "license": "ISC",
   "devDependencies": {
+    "@electron-forge/cli": "^6.1.1",
+    "@electron-forge/maker-deb": "^6.1.1",
+    "@electron-forge/maker-rpm": "^6.1.1",
+    "@electron-forge/maker-squirrel": "^6.1.1",
+    "@electron-forge/maker-zip": "^6.1.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -41,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
   }
 }
