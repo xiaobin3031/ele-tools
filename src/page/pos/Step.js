@@ -153,6 +153,7 @@ export default function Step({_step, _delStep, _saveStep}){
         </div>
 
         <div>
+          <Button size='sm' onClick={() => _delStep(0)}>取消</Button>
           {
             stepCanModify && <Button style={{marginLeft: '20px'}} size='sm' color='success' onClick={saveStep}>保存</Button>
           }

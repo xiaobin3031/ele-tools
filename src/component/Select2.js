@@ -61,6 +61,9 @@ function MultiSelect({list, name, desc, showSelect, onChange, size, ...props}){
     event.stopPropagation();
     itemList.forEach(a => a.checked = false);
     setItemList([...itemList])
+    if(!!onChange){
+      onChange([])
+    }
   }
 
   const selectedItemList = itemList.filter(a => !!a.checked);

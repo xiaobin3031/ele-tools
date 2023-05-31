@@ -55,6 +55,7 @@ function formatCache(step){
   if(!!step.uiBillFields && step.uiBillFields.length > 0){
     data.uiBillFields = step.uiBillFields.filter(a => uiBillFields.some(b => b.name === a))
   }
+  data.element = formatEle(step.element);
   return data;
 }
 

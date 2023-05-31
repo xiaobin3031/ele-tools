@@ -22,9 +22,11 @@ export default function PosAuto({}){
 
   function delStep(_id){
     setStep(null);
-    const _steps = steps.filter(a => a._id !== _id);
-    setSteps(_steps)
-    window.posDb.saveSteps({list:_steps});
+    if(!!_id){
+      const _steps = steps.filter(a => a._id !== _id);
+      setSteps(_steps)
+      window.posDb.saveSteps({list:_steps});
+    }
   }
 
   function toModifyStep(_id){

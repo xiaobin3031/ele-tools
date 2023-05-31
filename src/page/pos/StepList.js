@@ -4,10 +4,6 @@ import SvgIcon from '../../component/SvgIcon';
 import { stepNames } from './data/data'
 import './stepList.css'
 
-const dragInfo = {
-
-}
-
 function StepView({_step, _stepModify, _stepRemove, _stepChangePosition, _index}){
 
   //todo 测试
@@ -27,7 +23,7 @@ function StepView({_step, _stepModify, _stepRemove, _stepChangePosition, _index}
         <span className={`perform ${_stepName.name}`}>{performName}</span>
         <span className='content'>{!!_step.name ? _step.name : _step.perform}</span>
         <span className='log'></span>
-        <span>
+        <span style={{ display: 'inline-flex' }}>
           <SvgIcon className='pointer' iconType='pen' color='-warning' onClick={() => _stepModify(_step._id)}/>
           <SvgIcon className='pointer' iconType='directionUp' onClick={() => _stepChangePosition(_index, 0)}/>
           <SvgIcon className='pointer' iconType='directionDown' onClick={() => _stepChangePosition(_index, 1)}/>

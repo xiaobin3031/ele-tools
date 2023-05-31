@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ButtonGroup } from "../../../component/Button";
 import Row from "../../../component/Row";
 import Input from "../../../component/Input";
@@ -9,6 +9,7 @@ import { uiBillFields } from "../data/data";
 export default function CacheStep({_step, _stepChange}){
 
   const checked = !!_step.uiBillField && _step.uiBillField.length > 0;
+  const uiBillFieldsRef = useRef(uiBillFields)
   const [valuesType, setValuesType] = useState([
     {
       _text: '按列表',
@@ -37,8 +38,9 @@ export default function CacheStep({_step, _stepChange}){
     _stepChange({..._step});
   }
 
-  function uiBillFieldChange(event){
-
+  function uiBillFieldChange(items){
+    _step.uiBillField = items.map(a => a.name);
+    _stepChange({..._step})
   }
 
   return (
@@ -60,7 +62,7 @@ export default function CacheStep({_step, _stepChange}){
           }
           {
             valueType === 'byBill' &&
-              <Select2 list={uiBillFields} multiple onChange={uiBillFieldChange} />
+              <Select2 list={uiBillFieldsRef.current} multiple onChange={uiBillFieldChange} />
           }
         </span>
       </Row>
