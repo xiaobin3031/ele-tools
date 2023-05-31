@@ -6,11 +6,36 @@
 }
 .select.multiple > .selected {
   border: 1px solid #c3c3c3c3;
-  padding: 5px;
-  height: 15px;
+  height: 25px;
   width: inherit;
   border-radius: 5px;
   cursor: pointer;
+  overflow: hidden;
+}
+.select.multiple > .icon {
+  position: absolute;
+  right: 3px;
+  top: 5px;
+  display: none;
+  cursor: pointer;
+}
+.select.multiple:hover > .icon {
+  display: block;
+}
+.select.multiple > .selected > .item {
+  display: inline-flex;
+  align-items: center;
+  background-color: #c3c3c3c3;
+  font-size: 0.7em;
+  border-radius: 3px;
+  padding: 3px;
+  margin-left: 3px;
+}
+.select.multiple > .selected > .item > span:first-child {
+  max-width: 70px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 .select.multiple > .select-region {
   width: 210px;
@@ -25,21 +50,14 @@
   overflow-y: scroll;
   overflow-x: hidden;
 }
-.select.multiple > .select-region.showing {
+.select.multiple > .select-region.show{
   display: block;
   animation: select-region-show-animation .25s ease;
   animation-fill-mode: forwards;
 }
-.select.multiple > .select-region.show {
-  display: block;
-  max-height: 200px;
-}
-.select.multiple > .select-region.hiding {
+.select.multiple > .select-region.hide {
   animation: select-region-hide-animation .25s ease;
   animation-fill-mode: forwards;
-}
-.select.multiple > .select-region.hide {
-  display: none;
 }
 .select.multiple > .select-region > .item {
   padding-top: 3px;

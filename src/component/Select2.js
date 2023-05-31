@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import '../css/select.css'
-import { registCloseFunc, unRegistCloseFunc } from '../util/global'
+import { globalId, registCloseFunc, unRegistCloseFunc } from '../util/global'
+import SvgIcon from './SvgIcon'
 
 function SingleSelect({list, name, desc, showSelect, onChange, ...props}){
 
@@ -27,21 +28,23 @@ function MultiSelect({list, name, desc, showSelect, onChange, size, ...props}){
     if(hoverItemFlag.current || !selectRegionRef.current){
       return;
     }
-    selectRegionShow.current = false;
-    selectRegionRef.current.classList.remove('show')
-    selectRegionRef.current.classList.add('hiding')
+    setShowSelectRegion(false);
+    unRegistCloseFunc(closeSelectRegion)
   }
   const [itemList, setItemList] = useState([...list])
   const hoverItemFlag = useRef(false);
   const selectRegionRef = useRef(null);
-  const selectRegionShow = useRef(false);
+
+  const [showSelectRegion, setShowSelectRegion] = useState(false);
 
   function clickSelectDiv(event){
     event.stopPropagation();
-    if(!selectRegionRef.current.classList.contains('showing')){
-      selectRegionRef.current.classList.add('showing')
+    if(showSelectRegion){
+      setShowSelectRegion(false);
+      unRegistCloseFunc(closeSelectRegion)
+    }else{
+      setShowSelectRegion(true);
       registCloseFunc(closeSelectRegion);
-      selectRegionShow.current = true;
     }
   }
 
@@ -54,25 +57,41 @@ function MultiSelect({list, name, desc, showSelect, onChange, size, ...props}){
     }
   }
 
-  function selectRegionEnd(event){
-    if(selectRegionShow.current){
-      if(selectRegionRef.current.classList.contains('showing')){
-        selectRegionRef.current.classList.remove('showing')
-        selectRegionRef.current.classList.add('show')
-      }
-    }else{
-      if(selectRegionRef.current.classList.contains("hiding")){
-        selectRegionRef.current.classList.remove('hiding')
-        selectRegionRef.current.classList.add('hide')
-        unRegistCloseFunc(closeSelectRegion)
-      }
-    }
+  function clearAll(event){
+    event.stopPropagation();
+    itemList.forEach(a => a.checked = false);
+    setItemList([...itemList])
   }
 
+  const selectedItemList = itemList.filter(a => !!a.checked);
   return (
     <div className={`select multiple ${size}`} {...props}>
-      <div className='selected' onClick={clickSelectDiv}></div>
-      <div className='select-region' ref={selectRegionRef} onAnimationEnd={selectRegionEnd}>
+      <div className='selected' onClick={clickSelectDiv}>
+        {
+          selectedItemList.length > 0 && 
+            selectedItemList.slice(0, 2).map(a => {
+              return (
+                <span className='item' key={a._id}>
+                  <span>{a.name}</span>
+                  <SvgIcon iconType='close' style={{
+                    width: '13px',
+                    height: '13px'
+                  }}/>
+                </span>
+              )
+            })
+        }
+        {
+          selectedItemList.length > 2 && 
+            <span className='item' key={globalId()}>
+              <span>...{selectedItemList.length - 2}</span>
+            </span>
+        }
+      </div>
+      <span className='icon' key={globalId()}>
+        <SvgIcon iconType='closeFill' style={{ width: '15px', height: '15px' }} onClick={clearAll}/>
+      </span>
+      <div className={`select-region ${showSelectRegion ? 'show' : 'hide'}`} ref={selectRegionRef}>
         {
           !!itemList && itemList.length > 0 &&
             itemList.map(a => {
