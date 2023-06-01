@@ -23,4 +23,22 @@ Array.prototype.mergeString = function(string, split=' '){
   }
   return this;
 }
+
+String.prototype.beginWith = function(prefix){
+  if(!!prefix){
+    if(this.indexOf(prefix) > -1){
+      return true;
+    }
+  }
+  return false;
+}
+
+
+
+
+
+
+
+
+
 export default {};
