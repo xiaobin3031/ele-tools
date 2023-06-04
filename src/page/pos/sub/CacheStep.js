@@ -8,8 +8,12 @@ import { uiBillFields } from "../data/data";
 
 export default function CacheStep({_step, _stepChange}){
 
-  const checked = !!_step.uiBillField && _step.uiBillField.length > 0;
-  const uiBillFieldsRef = useRef(uiBillFields)
+  const checked = !!_step.uiBillFields && _step.uiBillFields.length > 0;
+  const _fields = [...uiBillFields]
+  if(checked){
+    _fields.forEach(a => a.checked = _step.uiBillFields.indexOf(a.name) > -1)
+  }
+  const uiBillFieldsRef = useRef(_fields)
   const [valuesType, setValuesType] = useState([
     {
       _text: '按列表',
@@ -31,6 +35,13 @@ export default function CacheStep({_step, _stepChange}){
     setValueType(item._value);
     valuesType.forEach(a => a.checked = a._value === item._value)
     setValuesType([...valuesType])
+    if(item._value === 'byList'){
+      _step.uiBillFields = [];
+    }else if(item._value === 'byBill'){
+      _step.index = void 0;
+      _step.viewId = void 0;
+    }
+    _stepChange({..._step})
   }
   
   function stepChange(event){
@@ -39,7 +50,7 @@ export default function CacheStep({_step, _stepChange}){
   }
 
   function uiBillFieldChange(items){
-    _step.uiBillField = items.map(a => a.name);
+    _step.uiBillFields = items.map(a => a.name);
     _stepChange({..._step})
   }
 

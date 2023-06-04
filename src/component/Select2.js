@@ -112,8 +112,8 @@ function MultiSelect({list, name, desc, showSelect, onChange, size, ...props}){
 export default function Select2({list, name="name", desc="desc", size="sm", showSelect=true, onChange, ...props}){
 
   if(props.multiple){
-    return <MultiSelect list={list} name={name} desc={desc} showSelect={showSelect} {...props}/>
+    return <MultiSelect list={list} name={name} desc={desc} showSelect={showSelect} onChange={onChange} {...props}/>
   }else{
-    return <SingleSelect  list={list} name={name} desc={desc} showSelect={showSelect} {...props} />
+    return <SingleSelect  list={list} name={name} desc={desc} showSelect={showSelect} onChange={onChange} {...props} />
   }
 }

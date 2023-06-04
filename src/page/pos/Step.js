@@ -22,7 +22,7 @@ import WaitStep from './sub/WaitStep';
 import WhileStep from './sub/WhileStep';
 
 export default function Step({_step, _delStep, _saveStep}){
-  const [step, setStep] = useState(_step);
+  const [step, setStep] = useState({..._step});
   const [steps, setSteps] = useState(_step.flows || []);
   const [stepCanModify, setStepCanModify] = useState(!!_step._modify);
 
