@@ -25,6 +25,8 @@ export default function Step({_step, _delStep, _saveStep}){
   const [step, setStep] = useState({..._step});
   const [steps, setSteps] = useState(_step.flows || []);
   const [stepCanModify, setStepCanModify] = useState(!!_step._modify);
+  const [matchFlows, setMatchFlows] = useState(_step.match ? _step.match.flows : [])
+  const [mismatchFlows, setMismatchFlows] = useState(_step.mismatch ? _step.mismatch.flows : [])
 
   function changeStepName(event){
     const val = event.target.value;
@@ -51,6 +53,15 @@ export default function Step({_step, _delStep, _saveStep}){
   function addStep(){
     const step = initFlow({perform: stepNames[0].name, _id: globalId()})
     setSteps([...steps, step])
+  }
+
+  function addMatchStep(){
+    const step = initFlow({perform: stepNames[0].name, _id: globalId()})
+    setMatchFlows([...matchFlows, step])
+  }
+  function addMismatchStep(){
+    const step = initFlow({perform: stepNames[0].name, _id: globalId()})
+    setMismatchFlows([...mismatchFlows, step])
   }
 
   function saveStep(){
@@ -149,6 +160,13 @@ export default function Step({_step, _delStep, _saveStep}){
         <div>
           {
             step.hasSubSteps && stepCanModify && <Button size='sm' onClick={addStep}>添加步骤</Button>
+          }
+          {
+            'check' === step.perform && 
+              <>
+                <Button size='sm' onClick={addMatchStep}>匹配时的步骤</Button>
+                <Button size='sm' onClick={addMismatchStep}>不匹配时的步骤</Button>
+              </>
           }
         </div>
 

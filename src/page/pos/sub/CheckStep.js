@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import Row from "../../../component/Row"
 import { ButtonGroup } from "../../../component/Button"
 import Select from "../../../component/Select"
@@ -7,6 +7,7 @@ import Ele from "../Ele"
 
 export default function CheckStep({_step, _stepChange}){
 
+  console.log('check.step', _step)
   const [checkTypes, setCheckTypes] = useState([
     {
       _text: '校验页面',
@@ -35,6 +36,18 @@ export default function CheckStep({_step, _stepChange}){
     _stepChange({..._step})
   }
 
+  function changeOptional(event){
+    event.stopPropagation();
+    _step.optional = !_step.optional;
+    _stepChange({..._step})
+  }
+
+  function changeOptionalByLabel(event){
+    event.preventDefault();
+    _step.optional = !_step.optional;
+    _stepChange({..._step})
+  }
+
   return (
     <div>
       <Row>
@@ -48,6 +61,10 @@ export default function CheckStep({_step, _stepChange}){
               <Ele ele={_step.element} _eleChange={changeElement} />
             </div>
         }
+        <label onClick={changeOptionalByLabel} className="pointer">
+          <input className="pointer" type="checkbox" onChange={() => {}} onClick={changeOptional} checked={_step.optional}/>
+          当未匹配，且没有后续流程时，抛出异常
+        </label>
       </Row>
 
     </div>
