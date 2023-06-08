@@ -1,7 +1,8 @@
 const fs = require('fs')
+const path = require('path')
 
 const dbPath = 'data/posauto';
-fs.mkdir(dbPath, {recursive: true}, (err) => {
+fs.mkdir(path.join(__dirname, dbPath), {recursive: true}, (err) => {
   console.log('create dir', dbPath, err)
 })
 
@@ -50,16 +51,19 @@ function saveOrUpdateStep({step, filename="common"}){
 function readSteps({filename = 'common'}){
   const path = getPath(filename);
   if(fs.existsSync(path)){
+    console.log('========, file exist', path)
     const data = fs.readFileSync(path, {encoding: 'utf-8'});
     if(!!data){
       return JSON.parse(data).filter(a => !!a);
     }
+  }else{
+    console.log('========, file not exist', path)
   }
   return [];
 }
 
 function getPath(filename){
-  return `${dbPath}/${filename}.json`
+  return path.join(__dirname, `${dbPath}/${filename}.json`)
 }
 module.exports = {
   saveSteps: saveSteps,
