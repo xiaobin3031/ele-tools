@@ -4,26 +4,40 @@ import { ButtonGroup } from "../../../component/Button";
 import Input from "../../../component/Input";
 import Select2 from "../../../component/Select2";
 
+function getType(_step){
+  if(!!_step.text){
+    return 'text';
+  }
+  if(!!_step.randomMax && !!_step.randomMin && _step.randomMax > 0 && _step.randomMin > 0){
+    return 'random'
+  }
+  if(!!_step.cacheKey){
+    return 'cache'
+  }
+  return null;
+}
+
 export default function InputStep({_step, _stepChange}){
 
+  const _type = getType(_step);
   const [inputTypes, setInputTypes] = useState([
     {
       _color: 'primary',
       _text: '文本',
       _value: 'text',
-      checked: false
+      checked: _type === 'text'
     },
     {
       _color: 'primary',
       _text: '随机数字',
       _value: 'random',
-      checked: false
+      checked: _type === 'random'
     },
     {
       _color: 'primary',
       _text: '缓存',
       _value: 'cache',
-      checked: false
+      checked: _type === 'cache'
     }
   ])
 

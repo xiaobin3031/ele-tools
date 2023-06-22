@@ -115,3 +115,5 @@ export const buildInMethods = [
     desc: "等待打印结束"
   }
 ]
+
+export const androidKeys = []
