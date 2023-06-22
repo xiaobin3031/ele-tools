@@ -86,7 +86,8 @@ export function Button({children, type="button", color, outline, size='md', clas
  * @param valuecheck type=radio,checkbox时生效
  */
 export function ButtonGroup({list, groupType = 'button', ...props}){
-
+  console.log('btngrp', list)
+  console.log('btngrp.props', props)
   return (
     <>
       {

@@ -92,6 +92,9 @@
 .step-view .perform.pressKey {
   background-color: rgb(60, 60, 255, 0.5);
 }
+.step-view .perform.recycleView {
+  background-color: rgb(60, 60, 255, 0.5);
+}
 .step-view > span:last-child > span:last-child {
   margin-left: 10px;
 }

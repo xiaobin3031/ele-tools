@@ -101,15 +101,18 @@ function formatPressKey(step){
 function formatRecycleView(step){
   const data = {};
   data.numberPerPage = defaultVal(step.numberPerPage, 0);
-  data.rangeBegin = defaultVal(step.rangeBegin, -1);
-  data.rangeEnd = defaultVal(step.rangeEnd, -1);
-  data.random = !!step.random;
-  data.randomCount = defaultVal(step.randomCount, 0);
-  if(!!step.indexes && step.indexes.length > 0){
+  data.rangeBegin = defaultVal(step.indexType === 'range' ? step.rangeBegin : null, -1);
+  data.rangeEnd = defaultVal(step.indexType === 'range' ? step.rangeEnd : null, -1);
+  data.random = step.indexType === 'random';
+  data.randomCount = defaultVal(!!data.random ? step.randomCount : null, 0);
+  if(step.indexType === 'index' && !!step.indexes && step.indexes.length > 0){
     data.indexes = step.indexes.filter(a => a >= 0);
   }
   data.childViewId = step.childViewId;
   data.flows = formatSteps(step.flows);
+
+  // 以下字段不传递到pos侧
+  data.indexType = step.indexType;
   return data;
 }
 

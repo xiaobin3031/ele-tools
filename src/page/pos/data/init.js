@@ -125,7 +125,7 @@ const initRecycleView = (flow) => {
   flow.rangeEnd = -1;
   flow.random = false;
   flow.randomCount = 0;
-  flow.indexes = [];
+  flow.indexes = '';
   flow.childViewId = '';
   flow.flows = [];
   return flow;
