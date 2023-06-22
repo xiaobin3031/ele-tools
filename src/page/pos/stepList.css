@@ -98,6 +98,9 @@
 .step-view .perform.sleep {
   background-color: rgb(60, 60, 255, 0.5);
 }
+.step-view .perform.swipe {
+  background-color: rgb(60, 60, 255, 0.5);
+}
 .step-view > span:last-child > span:last-child {
   margin-left: 10px;
 }
