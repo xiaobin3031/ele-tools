@@ -176,7 +176,9 @@ export default function Step({_step, _delStep, _saveStep}){
       </div>
       {
         <>
-          <hr />
+          {
+            step.perform !== 'click' && <hr />
+          }
           <div className='body'>
             {
               step.perform === 'while' && <WhileStep _step={step} _stepChange={stepChange}/>

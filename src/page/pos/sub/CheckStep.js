@@ -7,7 +7,6 @@ import Ele from "../Ele"
 
 export default function CheckStep({_step, _stepChange}){
 
-  console.log('check.step', _step)
   const [checkTypes, setCheckTypes] = useState([
     {
       _text: '校验页面',

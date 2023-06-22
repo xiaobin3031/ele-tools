@@ -3,7 +3,7 @@ import '../css/select.css'
 import { globalId, registCloseFunc, unRegistCloseFunc } from '../util/global'
 import SvgIcon from './SvgIcon'
 
-function SingleSelect({list, name, desc, showSelect, onChange, ...props}){
+function SingleSelect({list, _name, _desc, showSelect, onChange, ...props}){
 
   return (
     <select {...props} onChange={onChange}>
@@ -14,7 +14,7 @@ function SingleSelect({list, name, desc, showSelect, onChange, ...props}){
         !!list && list.length > 0 &&
           list.map(a => {
             return (
-              <option value={a[name]} key={a[name]}>{a[desc] || a[name]}</option>
+              <option value={a[_name]} key={a[_name]}>{a[_desc] || a[_name]}</option>
             )
           })
       }
@@ -22,7 +22,7 @@ function SingleSelect({list, name, desc, showSelect, onChange, ...props}){
   )
 }
 
-function MultiSelect({list, name, desc, showSelect, onChange, size, ...props}){
+function MultiSelect({list, _name, _desc, showSelect, onChange, size, ...props}){
 
   const closeSelectRegion = () => {
     if(hoverItemFlag.current || !selectRegionRef.current){
@@ -50,7 +50,7 @@ function MultiSelect({list, name, desc, showSelect, onChange, size, ...props}){
 
   function clickItem(item){
     item.checked = !item.checked;
-    const newItemList = itemList.map(a => a[name] === item[name] ? item : a);
+    const newItemList = itemList.map(a => a[_name] === item[_name] ? item : a);
     setItemList(newItemList)
     if(!!onChange){
       onChange(newItemList.filter(a => !!a.checked))
@@ -98,10 +98,10 @@ function MultiSelect({list, name, desc, showSelect, onChange, size, ...props}){
         {
           !!itemList && itemList.length > 0 &&
             itemList.map(a => {
-              return <div className={`item ${!!a.checked ? 'checked' : ''}`} key={a[name]}
+              return <div className={`item ${!!a.checked ? 'checked' : ''}`} key={a[_name]}
                 onClick={() => clickItem(a)}
                 onMouseEnter={() => hoverItemFlag.current = true} 
-                onMouseLeave={() => hoverItemFlag.current = false}>{a[desc] || a[name]}</div>
+                onMouseLeave={() => hoverItemFlag.current = false}>{a[_desc] || a[_name]}</div>
             })
         }
       </div>
@@ -109,11 +109,11 @@ function MultiSelect({list, name, desc, showSelect, onChange, size, ...props}){
   )
 }
 
-export default function Select2({list, name="name", desc="desc", size="sm", showSelect=true, onChange, ...props}){
+export default function Select2({list, _name="name", _desc="desc", size="sm", showSelect=true, onChange, ...props}){
 
   if(props.multiple){
-    return <MultiSelect list={list} name={name} desc={desc} showSelect={showSelect} onChange={onChange} {...props}/>
+    return <MultiSelect list={list} _name={_name} _desc={_desc} showSelect={showSelect} onChange={onChange} {...props}/>
   }else{
-    return <SingleSelect  list={list} name={name} desc={desc} showSelect={showSelect} onChange={onChange} {...props} />
+    return <SingleSelect  list={list} _name={_name} _desc={_desc} showSelect={showSelect} onChange={onChange} {...props} />
   }
 }

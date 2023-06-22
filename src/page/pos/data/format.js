@@ -149,11 +149,11 @@ export function formatStepData(step){
     case 'wait': data = formatWait(step); break;
   }
   if(!!data){
+    data.perform = step.perform;
     const tmpStep = stepNames.filter(a => a.name === data.perform)[0];
-    if(!!tmpStep){
+    if(!!tmpStep && !!tmpStep.showEle){
       data.element = formatEle(step.element);
     }
-    data.perform = step.perform;
     data._id = step._id;
     data.name = step.name;
     data.description = step.description;

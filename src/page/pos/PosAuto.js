@@ -14,6 +14,7 @@ export default function PosAuto({}){
   const [steps, setSteps] = useState(window.posDb.readSteps({}));
   const [step, setStep] = useState(null);
 
+  console.log('steps', steps)
   function addStep(){
     let _step = {perform: stepNames[0].name, _id: globalId()}
     _step = initFlow(_step);

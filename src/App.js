@@ -10,6 +10,12 @@ import PosAuto from './page/pos/PosAuto';
 import Todo from './page/todo/Todo';
 import Todo2 from './page/todo/Todo2';
 import { globalId } from './util/global';
+function emptyFunc(){}
+
+window.posDb = {};
+window.posDb.saveSteps = emptyFunc;
+window.posDb.readSteps = () => {return []};
+window.posDb.saveOrUpdateStep = emptyFunc
 
 const apps = [
   {
