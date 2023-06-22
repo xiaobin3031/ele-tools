@@ -51,10 +51,10 @@ export default function BrokeStep({_eleChange, _brokeChange, broke}){
             onChange: activityChange
           }}/>
         }
+        {
+          brokeType === 'byEle' && <Ele _eleChange={eleChange} ele={broke.element}/>
+        }
       </Row>
-      {
-        brokeType === 'byEle' && <Ele _eleChange={eleChange} ele={broke.element}/>
-      }
     </>
   )
 }

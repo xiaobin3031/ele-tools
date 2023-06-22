@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ButtonGroup } from '../../component/Button';
 import Input from '../../component/Input';
 import Row from '../../component/Row';
@@ -58,7 +58,7 @@ export default function Ele({_eleChange, ele}){
   }
 
   return (
-    <Row>
+    <div style={{marginLeft: '10px', display: 'inline-block'}}>
       <Select list={eleTypes} showSelect={false} name="eleType" onChange={eleTypeChange} />
       <Input style={{
           marginLeft: '10px',
@@ -69,6 +69,6 @@ export default function Ele({_eleChange, ele}){
       <span style={{marginLeft: '10px'}}>
         <ButtonGroup size="sm" list={eleBtnGroup} groupType="checkbox" valuecheck={eleAttrChange} />
       </span>
-    </Row>
+    </div>
   )
 }

@@ -53,7 +53,8 @@ export const stepNames = [
   {
     name: "recycleView",
     showEle: true,
-    desc: "列表"
+    desc: "列表",
+    hasSubSteps: true
   },
   {
     name: "sleep",
@@ -66,7 +67,8 @@ export const stepNames = [
   },
   {
     name: "wait",
-    desc: "等待"
+    desc: "等待",
+    hasSubSteps: true
   }
 ]
 

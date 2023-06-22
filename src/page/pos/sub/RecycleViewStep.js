@@ -64,7 +64,7 @@ export default function RecycleViewStep({_step, _stepChange}){
           <>
             <Input style={{marginLeft: '10px', width: '100px'}} value={_step.rangeBegin}
               size="sm" name="rangeBegin" placeholder="开始下标" onChange={valueChange} />
-            <Input style={{marginLeft: '10px', width: '100px'}} value={_step.rangeEnd}
+            <Input style={{marginLeft: '10px', width: '100px'}} 
               size="sm" name="rangeEnd" placeholder="结束结束" onChange={valueChange} />
           </>
       }

@@ -133,6 +133,7 @@ function formatWait(step){
   data.time = defaultVal(step.time, 1);
   data.maxTime = defaultVal(step.maxTime, 60);
   data.flows = formatSteps(step.flows);
+  data.broke = formatBroke(step.broke);
   return data;
 }
 

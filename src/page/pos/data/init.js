@@ -141,6 +141,7 @@ const initSwipe = (flow) => {
 const initWait = (flow) => {
   flow.time = 1;
   flow.maxTime = 60;
+  flow.broke = initBroke();
   flow.flows = [];
   return flow;
 }
