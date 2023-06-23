@@ -114,6 +114,6 @@ export default function Select2({list, _name="name", _desc="desc", size="sm", sh
   if(props.multiple){
     return <MultiSelect list={list} _name={_name} _desc={_desc} showSelect={showSelect} onChange={onChange} {...props}/>
   }else{
-    return <SingleSelect  list={list} _name={_name} _desc={_desc} showSelect={showSelect} onChange={onChange} {...props} />
+    return <SingleSelect  list={list} _name={_name} _desc={_desc} showSelect={showSelect} onChange={onChange} {...props}/>
   }
 }

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '../../component/Button';
 import Input from '../../component/Input';
 import Row from '../../component/Row';
-import Select from '../../component/Select';
+import Select2 from '../../component/Select2';
 import { globalId } from '../../util/global';
 import { stepNames } from './data/data';
 import { initFlow } from './data/init';
@@ -164,15 +164,15 @@ export default function Step({_step, _delStep, _saveStep}){
     <div className='step-card' key={_step._id}>
       <div className='head'>
         <Row>
-          <Input size="sm" name="name" placeholder="请输入步骤名称" onChange={valueChange} value={!!step.name ? step.name : ''}/>
-          <Input size="sm" name="description" placeholder="请输入步骤描述" onChange={valueChange} value={!!step.description ? step.description : ''}/>
+          <Input size="sm" name="name" placeholder="请输入步骤名称" onChange={valueChange} value={step.name}/>
+          <Input size="sm" name="description" placeholder="请输入步骤描述" onChange={valueChange} value={step.description}/>
         </Row>
         <Row>
-          <Select list={stepNames} onChange={changeStepName} showSelect={false}/>
+          <Select2 value={step.perform} list={stepNames} onChange={changeStepName} showSelect={false}/>
+          {
+            !!step.showEle && <Ele _eleChange={eleChange} ele={step.element}/>
+          }
         </Row>
-        {
-          !!step.showEle && <Ele _eleChange={eleChange} ele={step.element}/>
-        }
       </div>
       {
         <>
