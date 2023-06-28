@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '../../component/Button';
 import Row from '../../component/Row';
 import { globalId } from '../../util/global';
@@ -8,13 +8,21 @@ import './posAuto.css'
 import Step from './Step';
 import { formatStepData } from './data/format'
 import StepList from './StepList';
+import posAutoTest from '../../../remote/pos/posAutoTest';
 
 export default function PosAuto({}){
+
+  useEffect(() => {
+    posAutoTest.start();
+
+    return () => {
+      posAutoTest.stop();
+    }
+  }, [])
   
   const [steps, setSteps] = useState(window.posDb.readSteps({}));
   const [step, setStep] = useState(null);
 
-  console.log('steps', steps)
   function addStep(){
     let _step = {perform: stepNames[0].name, _id: globalId()}
     _step = initFlow(_step);
