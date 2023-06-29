@@ -8,17 +8,20 @@ import './posAuto.css'
 import Step from './Step';
 import { formatStepData } from './data/format'
 import StepList from './StepList';
-import posAutoTest from '../../../remote/pos/posAutoTest';
+// import posAutoTest from './remote/posAutoTest';
 
 export default function PosAuto({}){
 
-  useEffect(() => {
-    posAutoTest.start();
+  console.log(window.adb);
+  window.adb.deviceList();
 
-    return () => {
-      posAutoTest.stop();
-    }
-  }, [])
+  // useEffect(() => {
+  //   posAutoTest.start();
+
+  //   return () => {
+  //     posAutoTest.stop();
+  //   }
+  // }, [])
   
   const [steps, setSteps] = useState(window.posDb.readSteps({}));
   const [step, setStep] = useState(null);

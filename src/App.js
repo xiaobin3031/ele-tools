@@ -12,10 +12,12 @@ import Todo2 from './page/todo/Todo2';
 import { globalId } from './util/global';
 function emptyFunc(){}
 
-window.posDb = {};
-window.posDb.saveSteps = emptyFunc;
-window.posDb.readSteps = () => {return []};
-window.posDb.saveOrUpdateStep = emptyFunc
+if(navigator.userAgent.indexOf('Electron') === -1){
+  window.posDb = {};
+  window.posDb.saveSteps = emptyFunc;
+  window.posDb.readSteps = () => {return []};
+  window.posDb.saveOrUpdateStep = emptyFunc
+}
 
 const apps = [
   {

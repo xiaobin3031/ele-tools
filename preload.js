@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const todoOp = require('./fileop/todo.op.js')
 const posautoOp = require('./fileop/posauto.db.js')
+const { execSync } = require('child_process')
 
 const dirPrefix = 'data/';
 const dirObj = {
@@ -106,3 +107,18 @@ contextBridge.exposeInMainWorld('fileOp', {
 
 contextBridge.exposeInMainWorld('todoDb', todoOp);
 contextBridge.exposeInMainWorld('posDb', posautoOp);
+
+
+
+function deviceList(){
+  const data = execCmdSync('adb device list', {encoding: 'string'});
+  console.log('device list', data)
+}
+
+function execCmdSync(cmd, ops = {}){
+  return execSync(cmd, ops);
+}
+
+contextBridge.exposeInMainWorld('adb', {
+  deviceList: deviceList
+})
