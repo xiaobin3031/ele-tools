@@ -111,7 +111,8 @@ contextBridge.exposeInMainWorld('posDb', posautoOp);
 
 
 function deviceList(){
-  const data = execCmdSync('adb device list', {encoding: 'string'});
+  //todo 这里会获取不到adb命令，需要获取绝对路径
+  const data = execCmdSync('adb device list');
   console.log('device list', data)
 }
 
