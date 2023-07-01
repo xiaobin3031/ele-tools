@@ -11,6 +11,7 @@ import Todo from './page/todo/Todo';
 import Todo2 from './page/todo/Todo2';
 import { globalId } from './util/global';
 import system from './system';
+import Devices from './page/pos/Devices';
 function emptyFunc(){}
 
 system.whenNotElectron(() => {

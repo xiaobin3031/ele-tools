@@ -28,8 +28,8 @@ const DATATYPE_LOG = 3; // 日志信息
 const DATATYPE_LOG_STEP = 4; // 单步日志信息
 // 内容类型 end
 
-const connectCallbacks = [];
-const responseCallbacks = {};
+let connectCallbacks = [];
+let responseCallbacks = {};
 
 /**
  * 获取文本的长度

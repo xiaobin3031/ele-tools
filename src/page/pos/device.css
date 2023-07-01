@@ -1,0 +1,17 @@
+.pos-devices {
+  padding: 10px;
+}
+.pos-devices .content {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-gap: 30px;
+}
+.pos-devices .content .device {
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px;
+}
+.pos-devices .content .device .icon {
+  display: flex;
+  align-items: center;
+}

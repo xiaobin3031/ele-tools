@@ -4,6 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const todoOp = require('./fileop/todo.op.js')
 const posautoOp = require('./fileop/posauto.db.js')
+const posRemote = require('./remote/pos/posAutoTest.js')
 const { execSync } = require('child_process')
 
 const dirPrefix = 'data/';
@@ -107,13 +108,36 @@ contextBridge.exposeInMainWorld('fileOp', {
 
 contextBridge.exposeInMainWorld('todoDb', todoOp);
 contextBridge.exposeInMainWorld('posDb', posautoOp);
+contextBridge.exposeInMainWorld('posRemote', posRemote)
 
 
 
 function deviceList(){
   //todo 这里会获取不到adb命令，需要获取绝对路径
-  const data = execCmdSync('adb device list');
-  console.log('device list', data)
+  const adbPath = "/Users/lixiaolin/Library/Android/sdk/platform-tools"
+  const adb = `${adbPath}/adb`
+  const data = execCmdSync(`${adb} devices -l`);
+  // BH9027W372             device usb:337903616X product:G8232 model:G8232 device:G8232 transport_id:3
+  // 192.168.31.151:5555    device                product:G8232 model:G8232 device:G8232 transport_id:6
+  const clientString = data.toString();
+  const clients = clientString.split('\n');
+  const clientArray = []
+  if(clients.length > 1){
+    for(let i = 1;i<clients.length; i++){
+      if(!clients[i]) continue;
+      const infoString = clients[i].split(/\s+/g); 
+      const info = {};
+      info.clientId = infoString[0];
+      for(let j=1;j<infoString.length;j++){
+        if(infoString[j].indexOf(':') > -1){
+          const infos = infoString[j].split(':')
+          info[infos[0]] = infos[1];
+        }
+      }
+      clientArray.push(info);
+    }
+  }
+  return clientArray;
 }
 
 function execCmdSync(cmd, ops = {}){
