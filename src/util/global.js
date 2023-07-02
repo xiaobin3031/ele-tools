@@ -26,6 +26,7 @@ export function unRegistCloseFunc(func){
     }
   }
 }
+// 全局click事件，用来实现点击空白处关闭某个对话框的功能
 window.addEventListener('click', function(event){
   event.stopPropagation();
   event.preventDefault();

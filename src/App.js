@@ -12,6 +12,7 @@ import Todo2 from './page/todo/Todo2';
 import { globalId } from './util/global';
 import system from './system';
 import Devices from './page/pos/Devices';
+import Setting from './page/setting/setting';
 function emptyFunc(){}
 
 system.whenNotElectron(() => {
@@ -19,6 +20,10 @@ system.whenNotElectron(() => {
   window.posDb.saveSteps = emptyFunc;
   window.posDb.readSteps = () => {return []};
   window.posDb.saveOrUpdateStep = emptyFunc
+
+  window.setting = {};
+  window.setting.read = () => {return []}
+  window.setting.sync = emptyFunc
 })
 
 const apps = [
@@ -51,6 +56,17 @@ const apps = [
       return (
         <div key={globalId()}>
           <Scene />
+        </div>
+      )
+    }
+  },
+  {
+    _id: 'setting',
+    name: '设置',
+    render: () => {
+      return (
+        <div key={globalId()}>
+          <Setting />
         </div>
       )
     }

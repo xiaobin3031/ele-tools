@@ -5,6 +5,7 @@ const path = require('path')
 const todoOp = require('./fileop/todo.op.js')
 const posautoOp = require('./fileop/posauto.db.js')
 const posRemote = require('./remote/pos/posAutoTest.js')
+const setting = require('./fileop/setting.db.js')
 const { execSync } = require('child_process')
 
 const dirPrefix = 'data/';
@@ -109,6 +110,7 @@ contextBridge.exposeInMainWorld('fileOp', {
 contextBridge.exposeInMainWorld('todoDb', todoOp);
 contextBridge.exposeInMainWorld('posDb', posautoOp);
 contextBridge.exposeInMainWorld('posRemote', posRemote)
+contextBridge.exposeInMainWorld('setting', setting)
 
 
 

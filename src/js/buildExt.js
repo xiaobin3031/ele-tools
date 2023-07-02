@@ -1,4 +1,4 @@
-Array.prototype.merge = function(item){
+Array.prototype.merge = function(item, prepend = false){
   if(!!item){
     let pushed = false;
     for(let i=0;i<this.length;i++){
@@ -9,7 +9,11 @@ Array.prototype.merge = function(item){
       }
     }
     if(!pushed){
-      this.push(item);
+      if(prepend){
+        this.unshift(item);
+      }else{
+        this.push(item);
+      }
     }
   }
   return this;
